@@ -38,6 +38,7 @@ export class MasterItemsService {
       const masterItems = await this.masterItems.find({
         skip: size * (page - 1),
         take: size,
+        relations: ['extendInfoList'],
       });
       return {
         ok: true,
