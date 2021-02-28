@@ -20,7 +20,9 @@ export class MasterItemExtend {
   @Field((type) => String)
   marketSubCode: string;
 
-  @ManyToOne(() => MasterItem, (master) => master.extendInfoList)
+  @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
+    primary: true,
+  })
   @Field((type) => MasterItem)
   masterItem: MasterItem;
 

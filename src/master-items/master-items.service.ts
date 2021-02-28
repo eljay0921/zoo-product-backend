@@ -64,25 +64,37 @@ export class MasterItemsService {
       }
 
       const totalResult: CreateMasterItemsResult[] = [];
+
       for (
         let index = 0;
         index < createMasterItemsInput.masterItems.length;
         index++
       ) {
-        const eachMasterItem = createMasterItemsInput.masterItems[index];
+        const eachItem = createMasterItemsInput.masterItems[index];
+
+        // 원본상품 insert
         const resultMasterItem = await this.masterItems.save(
-          this.masterItems.create(eachMasterItem),
+          this.masterItems.create(eachItem),
         );
 
         const eachResult = new CreateMasterItemsResult(index);
         if (resultMasterItem.id > 0) {
           eachResult.masterItemId = resultMasterItem.id;
 
+          // 확장정보 insert
+          const extendInfoList: MasterItemExtend[] = [];
+          eachItem.extInfoList.forEach((ext) => {
+            const extendInfo = new MasterItemExtend();
+            extendInfo.masterItem = resultMasterItem;
+            extendInfo.marketCode = ext.marketCode;
+            extendInfo.marketSubCode = ext.marketSubCode;
+            extendInfo.info = ext.info;
+
+            extendInfoList.push(extendInfo);
+          });
+
           await this.masterItemsExtends.save(
-            this.masterItemsExtends.create({
-              masterItem: resultMasterItem,
-              ...eachMasterItem.extInfo,
-            }),
+            this.masterItemsExtends.create(extendInfoList),
           );
         } else {
           eachResult.masterItemId = -1;

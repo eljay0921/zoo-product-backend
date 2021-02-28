@@ -16,8 +16,8 @@ export class CreateMasterItemsInputBase extends OmitType(MasterItem, [
   'createdAt',
   'updatedAt',
 ]) {
-  @Field((type) => CreateMasterItemsInputExtend, { nullable: true })
-  extInfo?: CreateMasterItemsInputExtend;
+  @Field((type) => [CreateMasterItemsInputExtend], { nullable: true })
+  extInfoList?: CreateMasterItemsInputExtend[];
 }
 
 @InputType()
@@ -29,18 +29,6 @@ export class CreateMasterItemsInput {
 //#endregion
 
 //#region output DTO
-@InputType()
-export class CreateMasterItemsOutputExtend extends OmitType(MasterItemExtend, [
-  'masterItem',
-]) {}
-@InputType()
-export class CreateMasterItemsOutputBase extends OmitType(MasterItem, [
-  'extendInfoList',
-]) {
-  @Field((type) => CreateMasterItemsOutputExtend, { nullable: true })
-  extInfo?: CreateMasterItemsOutputExtend;
-}
-
 @ObjectType()
 export class CreateMasterItemsResult {
   constructor(private readonly seq: number) {}
