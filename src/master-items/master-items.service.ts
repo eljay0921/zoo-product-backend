@@ -86,7 +86,7 @@ export class MasterItemsService {
           const extendInfoList: MasterItemExtend[] = [];
           eachItem.extInfoList.forEach((ext) => {
             const extendInfo = new MasterItemExtend();
-            extendInfo.masterItem = resultMasterItem;
+            extendInfo.masterItemId = resultMasterItem.id;
             extendInfo.marketCode = ext.marketCode;
             extendInfo.marketSubCode = ext.marketSubCode;
             extendInfo.info = ext.info;

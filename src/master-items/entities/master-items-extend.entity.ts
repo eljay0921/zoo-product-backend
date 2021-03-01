@@ -1,17 +1,14 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryColumn,
-  CreateDateColumn,
-} from 'typeorm';
-import { MasterItem } from './master-items.entity';
+import { Column, Entity, PrimaryColumn, CreateDateColumn } from 'typeorm';
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class MasterItemExtend {
+  @PrimaryColumn({ type: 'int' })
+  @Field((type) => Number)
+  masterItemId: number;
+
   @PrimaryColumn({ type: 'char', length: 1 })
   @Field((type) => String)
   marketCode: string;
@@ -19,12 +16,6 @@ export class MasterItemExtend {
   @PrimaryColumn({ type: 'char', length: 4 })
   @Field((type) => String)
   marketSubCode: string;
-
-  @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
-    primary: true,
-  })
-  @Field((type) => MasterItem)
-  masterItem: MasterItem;
 
   @Column({ type: 'simple-json' })
   @Field((type) => String)

@@ -3,11 +3,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -16,6 +14,10 @@ export class MasterItem {
   @PrimaryGeneratedColumn()
   @Field((type) => Number)
   id: number;
+
+  @PrimaryColumn({ type: 'varchar', length: 20 })
+  @Field((type) => String)
+  userId: string;
 
   @Column({ length: 300 })
   @Field((type) => String)
@@ -64,8 +66,4 @@ export class MasterItem {
   @CreateDateColumn()
   @Field((type) => Date)
   updatedAt: Date;
-
-  @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
-  @Field((type) => [MasterItemExtend], { nullable: true })
-  extendInfoList?: MasterItemExtend[];
 }

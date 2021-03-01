@@ -6,13 +6,11 @@ import { MasterItem } from '../entities/master-items.entity';
 //#region  input DTO
 @InputType()
 export class CreateMasterItemsInputExtend extends OmitType(MasterItemExtend, [
-  'masterItem',
   'createdAt',
 ]) {}
 @InputType()
 export class CreateMasterItemsInputBase extends OmitType(MasterItem, [
   'id',
-  'extendInfoList',
   'createdAt',
   'updatedAt',
 ]) {
