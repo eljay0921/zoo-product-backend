@@ -12,6 +12,8 @@ export class CreateMasterItemsInputExtend extends OmitType(MasterItemExtend, [
 @InputType()
 export class CreateMasterItemsInputBase extends OmitType(MasterItem, [
   'id',
+  'selectionList',
+  'addOptionList',
   'extendInfoList',
   'createdAt',
   'updatedAt',
@@ -37,7 +39,7 @@ export class CreateMasterItemsResult {
   masterItemId?: number;
 
   @Field(() => String)
-  message?: string;
+  message?: string = "";
 }
 @ObjectType()
 export class CreateMasterItemsOutput extends CoreOutput {
