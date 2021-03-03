@@ -71,10 +71,11 @@ export class MasterItemsService {
         index++
       ) {
         const eachItem = createMasterItemsInput.masterItems[index];
+        const masterItem:MasterItem = { ... eachItem, additionalInfo: eachItem.basicExtInfo };
 
         // 원본상품 insert
         const resultMasterItem = await this.masterItems.save(
-          this.masterItems.create(eachItem),
+          this.masterItems.create(masterItem),
         );
 
         const eachResult = new CreateMasterItemsResult(index);

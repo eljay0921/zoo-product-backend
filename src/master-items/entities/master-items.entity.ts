@@ -3,11 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
+import { AdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -15,7 +15,7 @@ import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.
 export class MasterItem {
   @PrimaryGeneratedColumn()
   @Field((type) => Number)
-  id: number;
+  id?: number;
 
   @Column({ length: 300 })
   @Field((type) => String)
@@ -25,7 +25,7 @@ export class MasterItem {
   @Field((type) => String)
   categoryCode: string;
 
-  @Column({ type: 'simple-json' })
+  @Column('simple-json')
   @Field((type) => String)
   categoryInfo: string;
 
@@ -45,25 +45,25 @@ export class MasterItem {
   @Field((type) => String, { nullable: true })
   description?: string;
 
-  @Column({ type: 'simple-json', nullable: true })
-  @Field((type) => String, { nullable: true })
-  selectionInfo?: string;
+  @Column('simple-array', { nullable: true })
+  @Field((type) => [String], { nullable: true })
+  selectionInfo?: string[];
 
-  @Column({ type: 'simple-json', nullable: true })
-  @Field((type) => String, { nullable: true })
-  additionalInfo?: string;
+  @Column('simple-json', { nullable: true })
+  @Field((type) => AdditionalInfo, { nullable: true })
+  additionalInfo?: AdditionalInfo;
 
-  @Column({ type: 'simple-json', nullable: true })
+  @Column('simple-json', { nullable: true })
   @Field((type) => String, { nullable: true })
   sellingItemInfo?: string;
 
   @CreateDateColumn()
   @Field((type) => Date)
-  createdAt: Date;
+  createdAt?: Date;
 
   @CreateDateColumn()
   @Field((type) => Date)
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
   @Field((type) => [MasterItemExtend], { nullable: true })
