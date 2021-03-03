@@ -72,9 +72,12 @@ export class CreateMasterItemsResult {
   constructor(private readonly seq: number) {}
 
   @Field(() => Number)
-  masterItemId?: number;
+  masterItemId: number;
 
-  @Field(() => String)
+  @Field(() => Boolean)
+  ok: boolean;
+
+  @Field(() => String, { nullable:true })
   message?: string;
 }
 @ObjectType()

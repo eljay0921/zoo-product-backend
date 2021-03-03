@@ -93,27 +93,55 @@ export class MasterItemsService {
         if (resultMasterItem.id > 0) {
           eachResult.masterItemId = resultMasterItem.id;
 
-          // 선택사항 insert
-          const selectionInfoList: MasterItemSelection[] = [];
-          eachItem.selectionInfoListInput?.forEach((selection) => {
-            const selectionInfo: MasterItemSelection = { ...selection, masterItem:resultMasterItem };
-            selectionInfoList.push(selectionInfo);
-          });
+            // 선택사항 insert
+          const selectionPromise = new Promise((resolve, reject) => {
+            const selectionInfoList: MasterItemSelection[] = [];
+            eachItem.selectionInfoListInput?.forEach((selection) => {
+              const selectionInfo: MasterItemSelection = { ...selection, masterItem:resultMasterItem };
+              selectionInfoList.push(selectionInfo);
+            });
 
-          await this.masterItemsSelections.save(
-            this.masterItemsSelections.create(selectionInfoList),
-          );
+            const result = this.masterItemsSelections.save(
+              this.masterItemsSelections.create(selectionInfoList),
+            );
+
+            if (result)
+            {
+              resolve(result);
+            } else {
+              reject();
+            }
+          });
 
           // 확장정보 insert
-          const extendInfoList: MasterItemExtend[] = [];
-          eachItem.extendInfoListInput?.forEach((ext) => {
-            const extendInfo: MasterItemExtend = { ...ext, masterItem:resultMasterItem };
-            extendInfoList.push(extendInfo);
-          });
+          const extendPromise = new Promise((resolve, reject) => {
+            const extendInfoList: MasterItemExtend[] = [];
+            eachItem.extendInfoListInput?.forEach((ext) => {
+              const extendInfo: MasterItemExtend = { ...ext, masterItem:resultMasterItem };
+              extendInfoList.push(extendInfo);
+            });
+  
+            const result = this.masterItemsExtends.save(
+              this.masterItemsExtends.create(extendInfoList),
+            );
 
-          await this.masterItemsExtends.save(
-            this.masterItemsExtends.create(extendInfoList),
-          );
+            if (result)
+            {
+              resolve(result);
+            } else {
+              reject();
+            }
+          });
+          
+          Promise.all([selectionPromise, extendPromise])
+          .then((result) => {
+            eachResult.ok = true;
+          })
+          .catch(err => {
+              console.log(err);
+              eachResult.ok = false;
+              eachResult.message = err.sqlMessage?.toString();
+          });
 
         } else {
           eachResult.masterItemId = -1;
