@@ -24,7 +24,7 @@ export class MasterItemExtend {
     primary: true,
   })
   @Field((type) => MasterItem)
-  masterItem: MasterItem;
+  masterItem?: MasterItem;
 
   @Column('simple-json')
   @Field((type) => String)
@@ -32,5 +32,5 @@ export class MasterItemExtend {
 
   @CreateDateColumn()
   @Field((type) => Date)
-  createdAt: Date;
+  createdAt?: Date;
 }

@@ -10,6 +10,7 @@ import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.
 import { MasterItemAdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
 import { MasterItemSellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
 import { MasterItemCategoryInfo } from '../json-entities/master-items-categoryInfo.entity';
+import { MasterItemSelection } from './master-items-selection.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -31,11 +32,11 @@ export class MasterItem {
   @Field((type) => MasterItemCategoryInfo)
   categoryInfo: MasterItemCategoryInfo;
 
-  @Column()
+  @Column({ type:'int' })
   @Field((type) => Number)
   price: number;
 
-  @Column()
+  @Column({ type:'mediumint' })
   @Field((type) => Number)
   count: number;
 
@@ -67,7 +68,11 @@ export class MasterItem {
   @Field((type) => Date)
   updatedAt?: Date;
 
-  // relation
+  // relation entities
+
+  @OneToMany(() => MasterItemSelection, (selection) => selection.masterItem)
+  @Field((type) => [MasterItemSelection], { nullable: true })
+  selectionInfoList?: MasterItemSelection[];
 
   @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
   @Field((type) => [MasterItemExtend], { nullable: true })

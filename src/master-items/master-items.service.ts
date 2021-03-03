@@ -8,6 +8,7 @@ import {
 } from './dtos/create-master-items.dto';
 import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
+import { MasterItemSelection } from './entities/master-items-selection.entity';
 import { MasterItem } from './entities/master-items.entity';
 
 @Injectable()
@@ -17,6 +18,8 @@ export class MasterItemsService {
     private readonly masterItems: Repository<MasterItem>,
     @InjectRepository(MasterItemExtend)
     private readonly masterItemsExtends: Repository<MasterItemExtend>,
+    @InjectRepository(MasterItemSelection)
+    private readonly masterItemsSelections: Repository<MasterItemSelection>,
   ) {}
 
   async getItems(page: number, size: number): Promise<ReadMasterItemsOutput> {
@@ -38,7 +41,7 @@ export class MasterItemsService {
       const masterItems = await this.masterItems.find({
         skip: size * (page - 1),
         take: size,
-        relations: ['extendInfoList'],
+        relations: ['selectionInfoList', 'extendInfoList'],
       });
       return {
         ok: true,
@@ -90,21 +93,28 @@ export class MasterItemsService {
         if (resultMasterItem.id > 0) {
           eachResult.masterItemId = resultMasterItem.id;
 
+          // 선택사항 insert
+          const selectionInfoList: MasterItemSelection[] = [];
+          eachItem.selectionInfoListInput?.forEach((selection) => {
+            const selectionInfo: MasterItemSelection = { ...selection, masterItem:resultMasterItem };
+            selectionInfoList.push(selectionInfo);
+          });
+
+          await this.masterItemsSelections.save(
+            this.masterItemsSelections.create(selectionInfoList),
+          );
+
           // 확장정보 insert
           const extendInfoList: MasterItemExtend[] = [];
-          eachItem.extendInfoListInput.forEach((ext) => {
-            const extendInfo = new MasterItemExtend();
-            extendInfo.masterItem = resultMasterItem;
-            extendInfo.marketCode = ext.marketCode;
-            extendInfo.marketSubCode = ext.marketSubCode;
-            extendInfo.info = ext.info;
-
+          eachItem.extendInfoListInput?.forEach((ext) => {
+            const extendInfo: MasterItemExtend = { ...ext, masterItem:resultMasterItem };
             extendInfoList.push(extendInfo);
           });
 
           await this.masterItemsExtends.save(
             this.masterItemsExtends.create(extendInfoList),
           );
+
         } else {
           eachResult.masterItemId = -1;
           eachResult.message = '원본상품 생성 실패';
