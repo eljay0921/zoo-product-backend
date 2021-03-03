@@ -2,16 +2,20 @@ import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
 import { MasterItem } from '../entities/master-items.entity';
-import { AdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
-import { SellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
+import { MasterItemAdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
+import { MasterItemCategoryInfo } from '../json-entities/master-items-categoryInfo.entity';
+import { MasterItemSellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
 
 //#region  input DTO
 
 @InputType()
-export class AdditionalInfoInput extends AdditionalInfo {}
+export class CategoryInfoInput extends MasterItemCategoryInfo {}
 
 @InputType()
-export class SellingItemInfoInput extends SellingItemInfo {}
+export class AdditionalInfoInput extends MasterItemAdditionalInfo {}
+
+@InputType()
+export class SellingItemInfoInput extends MasterItemSellingItemInfo {}
 
 @InputType()
 export class MasterItemExtendInput extends OmitType(MasterItemExtend, [
@@ -22,12 +26,16 @@ export class MasterItemExtendInput extends OmitType(MasterItemExtend, [
 @InputType()
 export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'id',
+  'categoryInfo',
   'additionalInfo',
   'sellingItemInfo',
   'extendInfoList',
   'createdAt',
   'updatedAt',
 ]) {
+
+  @Field(() => CategoryInfoInput, { nullable:true })
+  categoryInfoInput:CategoryInfoInput;
   
   @Field(() => AdditionalInfoInput, { nullable:true })
   additionalInfoInput?: AdditionalInfoInput;

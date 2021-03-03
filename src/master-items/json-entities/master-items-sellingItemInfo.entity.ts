@@ -28,7 +28,7 @@ registerEnumType(SendPayType, { name: "SendPayType" });
 
 @InputType({isAbstract:true})
 @ObjectType()
-export class SellingItemInfo {
+export class MasterItemSellingItemInfo {
     @Field(() => SendType, { nullable:true })
     sendType?:SendType
 

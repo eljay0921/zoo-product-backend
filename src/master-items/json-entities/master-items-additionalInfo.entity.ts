@@ -9,7 +9,7 @@ registerEnumType(Tax, { name: "Tax" });
 
 @InputType({isAbstract:true})
 @ObjectType()
-export class AdditionalInfo {
+export class MasterItemAdditionalInfo {
     @Field(() => Tax, { nullable:true })
     tax?:Tax
 

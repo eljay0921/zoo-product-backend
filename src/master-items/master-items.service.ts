@@ -76,6 +76,7 @@ export class MasterItemsService {
         const eachItem = createMasterItemsInput.masterItems[index];
         const masterItem:MasterItem = { 
           ...eachItem, 
+          categoryInfo: eachItem.categoryInfoInput,
           additionalInfo: eachItem.additionalInfoInput,
           sellingItemInfo: eachItem.sellingItemInfoInput,
         };

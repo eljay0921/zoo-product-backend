@@ -7,8 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
-import { AdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
-import { SellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
+import { MasterItemAdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
+import { MasterItemSellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
+import { MasterItemCategoryInfo } from '../json-entities/master-items-categoryInfo.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -27,8 +28,8 @@ export class MasterItem {
   categoryCode: string;
 
   @Column('simple-json')
-  @Field((type) => String)
-  categoryInfo: string;
+  @Field((type) => MasterItemCategoryInfo)
+  categoryInfo: MasterItemCategoryInfo;
 
   @Column()
   @Field((type) => Number)
@@ -51,12 +52,12 @@ export class MasterItem {
   selectionInfo?: string[];
 
   @Column('simple-json', { nullable: true })
-  @Field((type) => AdditionalInfo, { nullable: true })
-  additionalInfo?: AdditionalInfo;
+  @Field((type) => MasterItemAdditionalInfo, { nullable: true })
+  additionalInfo?: MasterItemAdditionalInfo;
 
   @Column('simple-json', { nullable: true })
-  @Field((type) => SellingItemInfo, { nullable: true })
-  sellingItemInfo?: SellingItemInfo;
+  @Field((type) => MasterItemSellingItemInfo, { nullable: true })
+  sellingItemInfo?: MasterItemSellingItemInfo;
 
   @CreateDateColumn()
   @Field((type) => Date)
