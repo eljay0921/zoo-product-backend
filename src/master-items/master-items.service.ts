@@ -82,24 +82,20 @@ export class MasterItemsService {
           eachResult.masterItemId = resultMasterItem.id;
 
           // 확장정보 insert
-          if (eachItem.extInfoList)
-          {
-            const extendInfoList: MasterItemExtend[] = [];
-            eachItem.extInfoList.forEach((ext) => {
-              const extendInfo = new MasterItemExtend();
-              extendInfo.masterItem = resultMasterItem;
-              extendInfo.marketCode = ext.marketCode;
-              extendInfo.marketSubCode = ext.marketSubCode;
-              extendInfo.info = ext.info;
-  
-              extendInfoList.push(extendInfo);
-            });
-  
-            await this.masterItemsExtends.save(
-              this.masterItemsExtends.create(extendInfoList),
-            );
-          }
-          
+          const extendInfoList: MasterItemExtend[] = [];
+          eachItem.extInfoList.forEach((ext) => {
+            const extendInfo = new MasterItemExtend();
+            extendInfo.masterItem = resultMasterItem;
+            extendInfo.marketCode = ext.marketCode;
+            extendInfo.marketSubCode = ext.marketSubCode;
+            extendInfo.info = ext.info;
+
+            extendInfoList.push(extendInfo);
+          });
+
+          await this.masterItemsExtends.save(
+            this.masterItemsExtends.create(extendInfoList),
+          );
         } else {
           eachResult.masterItemId = -1;
           eachResult.message = '원본상품 생성 실패';

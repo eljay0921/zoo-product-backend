@@ -3,12 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
-import { MasterItemSelection } from './master-items-selection.entity';
-import { MasterItemAddoption } from './master-items-addoption.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -65,14 +64,6 @@ export class MasterItem {
   @CreateDateColumn()
   @Field((type) => Date)
   updatedAt: Date;
-
-  @OneToMany(() => MasterItemSelection, (selection) => selection.masterItem)
-  @Field((type) => [MasterItemSelection], { nullable:true })
-  selectionList?: MasterItemSelection[];
-
-  @OneToMany(() => MasterItemAddoption, (addOption) => addOption.masterItem)
-  @Field((type) => [MasterItemAddoption], { nullable:true })
-  addOptionList?: MasterItemAddoption[];
 
   @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
   @Field((type) => [MasterItemExtend], { nullable: true })
