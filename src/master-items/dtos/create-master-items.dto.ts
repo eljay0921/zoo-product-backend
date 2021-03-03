@@ -3,38 +3,46 @@ import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
 import { MasterItem } from '../entities/master-items.entity';
 import { AdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
+import { SellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
 
 //#region  input DTO
 
 @InputType()
-export class CreateMasterItemsInputAdditionalInfo extends AdditionalInfo {}
+export class AdditionalInfoInput extends AdditionalInfo {}
 
 @InputType()
-export class CreateMasterItemsInputExtend extends OmitType(MasterItemExtend, [
+export class SellingItemInfoInput extends SellingItemInfo {}
+
+@InputType()
+export class MasterItemExtendInput extends OmitType(MasterItemExtend, [
   'masterItem',
   'createdAt',
 ]) {}
 
 @InputType()
-export class CreateMasterItemsInputBase extends OmitType(MasterItem, [
+export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'id',
   'additionalInfo',
+  'sellingItemInfo',
   'extendInfoList',
   'createdAt',
   'updatedAt',
 ]) {
+  
+  @Field(() => AdditionalInfoInput, { nullable:true })
+  additionalInfoInput?: AdditionalInfoInput;
 
-  @Field(() => CreateMasterItemsInputAdditionalInfo, { nullable:true })
-  basicExtInfo?: CreateMasterItemsInputAdditionalInfo;
-
-  @Field((type) => [CreateMasterItemsInputExtend], { nullable: true })
-  extInfoList?: CreateMasterItemsInputExtend[];
+  @Field(() => SellingItemInfoInput, { nullable:true })
+  sellingItemInfoInput?: SellingItemInfoInput;
+  
+  @Field((type) => [MasterItemExtendInput], { nullable: true })
+  extendInfoListInput?: MasterItemExtendInput[];
 }
 
 @InputType()
 export class CreateMasterItemsInput {
-  @Field((type) => [CreateMasterItemsInputBase])
-  masterItems: CreateMasterItemsInputBase[];
+  @Field((type) => [MasterItemsBaseInput])
+  masterItems: MasterItemsBaseInput[];
 }
 
 //#endregion

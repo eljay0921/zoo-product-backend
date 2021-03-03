@@ -38,6 +38,7 @@ export class MasterItemsService {
       const masterItems = await this.masterItems.find({
         skip: size * (page - 1),
         take: size,
+        relations: ['extendInfoList'],
       });
       return {
         ok: true,
@@ -70,8 +71,14 @@ export class MasterItemsService {
         index < createMasterItemsInput.masterItems.length;
         index++
       ) {
+
+        // GraphQL로 받은 데이터를 typeorm entity 데이터로 변환
         const eachItem = createMasterItemsInput.masterItems[index];
-        const masterItem:MasterItem = { ... eachItem, additionalInfo: eachItem.basicExtInfo };
+        const masterItem:MasterItem = { 
+          ...eachItem, 
+          additionalInfo: eachItem.additionalInfoInput,
+          sellingItemInfo: eachItem.sellingItemInfoInput,
+        };
 
         // 원본상품 insert
         const resultMasterItem = await this.masterItems.save(
@@ -84,7 +91,7 @@ export class MasterItemsService {
 
           // 확장정보 insert
           const extendInfoList: MasterItemExtend[] = [];
-          eachItem.extInfoList.forEach((ext) => {
+          eachItem.extendInfoListInput.forEach((ext) => {
             const extendInfo = new MasterItemExtend();
             extendInfo.masterItem = resultMasterItem;
             extendInfo.marketCode = ext.marketCode;

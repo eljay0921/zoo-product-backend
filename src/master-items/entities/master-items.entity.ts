@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
 import { AdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
+import { SellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -54,8 +55,8 @@ export class MasterItem {
   additionalInfo?: AdditionalInfo;
 
   @Column('simple-json', { nullable: true })
-  @Field((type) => String, { nullable: true })
-  sellingItemInfo?: string;
+  @Field((type) => SellingItemInfo, { nullable: true })
+  sellingItemInfo?: SellingItemInfo;
 
   @CreateDateColumn()
   @Field((type) => Date)
@@ -64,6 +65,8 @@ export class MasterItem {
   @CreateDateColumn()
   @Field((type) => Date)
   updatedAt?: Date;
+
+  // relation
 
   @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
   @Field((type) => [MasterItemExtend], { nullable: true })
