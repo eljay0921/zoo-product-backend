@@ -1,0 +1,11 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3310,
+    "username": "root",
+    "password": "mmaria",
+    "database": "ProductManage",
+    "synchronize": true,
+    "logging": true,
+    "entities": ["dist/**/entities/*.entity.js"]
+}
