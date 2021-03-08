@@ -12,7 +12,17 @@ import { MasterItemSelection } from './master-items/entities/master-items-select
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3310,
+      username: 'root',
+      password: 'mmaria',
+      database: 'ProductManage',
+      synchronize: true,
+      logging: true,
+      entities: [MasterItem, MasterItemExtend, MasterItemSelection, User, Photo]
+    }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),

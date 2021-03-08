@@ -46,7 +46,6 @@ export class MasterItemsService {
       return {
         ok: true,
         masterItems,
-        count: masterItems.length,
       };
     } catch (error) {
       console.log(error);
