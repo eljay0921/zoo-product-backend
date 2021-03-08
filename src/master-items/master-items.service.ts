@@ -7,6 +7,7 @@ import {
   CreateMasterItemsResult,
 } from './dtos/create-master-items.dto';
 import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
+import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
 import { MasterItemSelection } from './entities/master-items-selection.entity';
 import { MasterItem } from './entities/master-items.entity';
@@ -20,6 +21,8 @@ export class MasterItemsService {
     private readonly masterItemsExtends: Repository<MasterItemExtend>,
     @InjectRepository(MasterItemSelection)
     private readonly masterItemsSelections: Repository<MasterItemSelection>,
+    @InjectRepository(MasterItemAddoption)
+    private readonly masterItemsAddOptions: Repository<MasterItemAddoption>,
   ) {}
 
   async getItems(page: number, size: number): Promise<ReadMasterItemsOutput> {
@@ -42,7 +45,7 @@ export class MasterItemsService {
         skip: size * (page - 1),
         take: size,
         order: { id:"ASC" },
-        relations: ['selectionInfoList', 'extendInfoList'],
+        relations: ['selectionInfoList', 'addOptionInfoList', 'extendInfoList'],
       });
       return {
         ok: true,
@@ -95,7 +98,7 @@ export class MasterItemsService {
         if (resultMasterItem.id > 0) {
           eachResult.masterItemId = resultMasterItem.id;
 
-            // 선택사항 insert
+          // 선택사항 insert
           const selectionPromise = new Promise((resolve, reject) => {
             const selectionInfoList: MasterItemSelection[] = [];
             eachItem.selectionInfoListInput?.forEach((selection) => {
@@ -105,6 +108,26 @@ export class MasterItemsService {
 
             const result = this.masterItemsSelections.save(
               this.masterItemsSelections.create(selectionInfoList),
+            );
+
+            if (result)
+            {
+              resolve(result);
+            } else {
+              reject();
+            }
+          });
+
+          // 추가구성 insert
+          const addOptionPromise = new Promise((resolve, reject) => {
+            const addOptionInfoList: MasterItemAddoption[] = [];
+            eachItem.addOptionInfoListInput?.forEach((addOption) => {
+              const addOptionInfo: MasterItemAddoption = { ...addOption, masterItem:resultMasterItem };
+              addOptionInfoList.push(addOptionInfo);
+            });
+
+            const result = this.masterItemsAddOptions.save(
+              this.masterItemsAddOptions.create(addOptionInfoList),
             );
 
             if (result)
@@ -135,14 +158,14 @@ export class MasterItemsService {
             }
           });
           
-          Promise.all([selectionPromise, extendPromise])
+          Promise.all([selectionPromise, addOptionPromise, extendPromise])
           .then((result) => {
             eachResult.ok = true;
           })
           .catch(err => {
-              console.log(err);
-              eachResult.ok = false;
-              eachResult.message = err.sqlMessage?.toString();
+            console.log(err);
+            eachResult.ok = false;
+            eachResult.message = err.sqlMessage?.toString();
           });
 
         } else {
