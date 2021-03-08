@@ -1,5 +1,6 @@
 import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/common/dtos/output.dto';
+import { MasterItemAddoption } from '../entities/master-items-addoption.entity';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
 import { MasterItemSelection } from '../entities/master-items-selection.entity';
 import { MasterItem } from '../entities/master-items.entity';
@@ -25,6 +26,12 @@ export class MasterItemSelectionInput extends OmitType(MasterItemSelection, [
 ]) {}
 
 @InputType()
+export class MasterItemAddOptionInput extends OmitType(MasterItemAddoption, [
+  'masterItem',
+  'createdAt',
+]) {}
+
+@InputType()
 export class MasterItemExtendInput extends OmitType(MasterItemExtend, [
   'masterItem',
   'createdAt',
@@ -35,6 +42,7 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'id',
   'categoryInfo',
   'selectionInfoList',
+  'addOptionInfoList',
   'additionalInfo',
   'sellingItemInfo',
   'extendInfoList',
@@ -47,6 +55,9 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
 
   @Field(() => [MasterItemSelectionInput], { nullable:true })
   selectionInfoListInput?: MasterItemSelectionInput[];
+
+  @Field(() => [MasterItemAddOptionInput], { nullable:true })
+  addOptionInfoListInput?: MasterItemAddOptionInput[];
   
   @Field(() => AdditionalInfoInput, { nullable:true })
   additionalInfoInput?: AdditionalInfoInput;

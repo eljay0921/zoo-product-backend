@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { Photo } from './user/entities/photo.entity';
 import { MasterItemSelection } from './master-items/entities/master-items-selection.entity';
+import { MasterItemAddoption } from './master-items/entities/master-items-addoption.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { MasterItemSelection } from './master-items/entities/master-items-select
       database: 'ProductManage',
       synchronize: true,
       logging: true,
-      entities: [MasterItem, MasterItemExtend, MasterItemSelection, User, Photo]
+      entities: [MasterItem, MasterItemExtend, MasterItemSelection, MasterItemAddoption, User, Photo]
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
