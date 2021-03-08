@@ -1,6 +1,8 @@
-import { Field } from "@nestjs/graphql";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+@InputType({ isAbstract:true })
+@ObjectType()
 @Entity()
 export class MarketTemplates {
     @PrimaryGeneratedColumn()
@@ -31,7 +33,7 @@ export class MarketTemplates {
     @Field((type) => String)
     description: string;
 
-    // TODO : JSON 타입으로 변경 => 상관 CSetInfoBase 참고
+    // TODO : JSON 타입으로 변경 => 구조는 상관 CSetInfoBase 참고
     @Column('simple-json')
     @Field((type) => String)
     baseInfo: string;

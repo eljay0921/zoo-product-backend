@@ -16,13 +16,13 @@ import { MasterItem } from './entities/master-items.entity';
 export class MasterItemsService {
   constructor(
     @InjectRepository(MasterItem)
-    private readonly masterItems: Repository<MasterItem>,
+    private readonly masterItemsRepo: Repository<MasterItem>,
     @InjectRepository(MasterItemExtend)
-    private readonly masterItemsExtends: Repository<MasterItemExtend>,
+    private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>,
     @InjectRepository(MasterItemSelection)
-    private readonly masterItemsSelections: Repository<MasterItemSelection>,
+    private readonly masterItemsSelectionsRepo: Repository<MasterItemSelection>,
     @InjectRepository(MasterItemAddoption)
-    private readonly masterItemsAddOptions: Repository<MasterItemAddoption>,
+    private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>,
   ) {}
 
   async getItems(page: number, size: number): Promise<ReadMasterItemsOutput> {
@@ -41,7 +41,7 @@ export class MasterItemsService {
         };
       }
 
-      const masterItems = await this.masterItems.find({
+      const masterItems = await this.masterItemsRepo.find({
         skip: size * (page - 1),
         take: size,
         order: { id:"ASC" },
@@ -90,8 +90,8 @@ export class MasterItemsService {
         };
 
         // 원본상품 insert
-        const resultMasterItem = await this.masterItems.save(
-          this.masterItems.create(masterItem),
+        const resultMasterItem = await this.masterItemsRepo.save(
+          this.masterItemsRepo.create(masterItem),
         );
 
         const eachResult = new CreateMasterItemsResult(index);
@@ -106,8 +106,8 @@ export class MasterItemsService {
               selectionInfoList.push(selectionInfo);
             });
 
-            const result = this.masterItemsSelections.save(
-              this.masterItemsSelections.create(selectionInfoList),
+            const result = this.masterItemsSelectionsRepo.save(
+              this.masterItemsSelectionsRepo.create(selectionInfoList),
             );
 
             if (result)
@@ -126,8 +126,8 @@ export class MasterItemsService {
               addOptionInfoList.push(addOptionInfo);
             });
 
-            const result = this.masterItemsAddOptions.save(
-              this.masterItemsAddOptions.create(addOptionInfoList),
+            const result = this.masterItemsAddOptionsRepo.save(
+              this.masterItemsAddOptionsRepo.create(addOptionInfoList),
             );
 
             if (result)
@@ -146,8 +146,8 @@ export class MasterItemsService {
               extendInfoList.push(extendInfo);
             });
   
-            const result = this.masterItemsExtends.save(
-              this.masterItemsExtends.create(extendInfoList),
+            const result = this.masterItemsExtendsRepo.save(
+              this.masterItemsExtendsRepo.create(extendInfoList),
             );
 
             if (result)
