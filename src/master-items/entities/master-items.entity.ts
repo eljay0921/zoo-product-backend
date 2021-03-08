@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
-import { MasterItemAdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
-import { MasterItemSellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
-import { MasterItemCategoryInfo } from '../json-entities/master-items-categoryInfo.entity';
+import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
+import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingItemInfo.type';
+import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
 import { MasterItemSelection } from './master-items-selection.entity';
 
 @InputType({ isAbstract: true })

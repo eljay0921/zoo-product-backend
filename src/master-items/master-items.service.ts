@@ -41,10 +41,12 @@ export class MasterItemsService {
       const masterItems = await this.masterItems.find({
         skip: size * (page - 1),
         take: size,
+        order: { id:"ASC" },
         relations: ['selectionInfoList', 'extendInfoList'],
       });
       return {
         ok: true,
+        count: masterItems?.length,
         masterItems,
       };
     } catch (error) {

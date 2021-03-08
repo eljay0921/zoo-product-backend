@@ -3,9 +3,9 @@ import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
 import { MasterItemSelection } from '../entities/master-items-selection.entity';
 import { MasterItem } from '../entities/master-items.entity';
-import { MasterItemAdditionalInfo } from '../json-entities/master-items-additionalInfo.entity';
-import { MasterItemCategoryInfo } from '../json-entities/master-items-categoryInfo.entity';
-import { MasterItemSellingItemInfo } from '../json-entities/master-items-sellingItemInfo.entity';
+import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
+import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
+import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingItemInfo.type';
 
 //#region  input DTO
 
