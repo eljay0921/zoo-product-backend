@@ -5,11 +5,10 @@ import { CommonModule } from './common/common.module';
 import { MasterItemsModule } from './master-items/master-items.module';
 import { MasterItem } from './master-items/entities/master-items.entity';
 import { MasterItemExtend } from './master-items/entities/master-items-extend.entity';
-import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
-import { Photo } from './user/entities/photo.entity';
 import { MasterItemSelection } from './master-items/entities/master-items-selection.entity';
 import { MasterItemAddoption } from './master-items/entities/master-items-addoption.entity';
+import { MarketTemplatesModule } from './market-templates/market-templates.module';
+import { MarketTemplates } from './market-templates/entities/market-templates.entity';
 
 @Module({
   imports: [
@@ -22,14 +21,14 @@ import { MasterItemAddoption } from './master-items/entities/master-items-addopt
       database: 'ProductManage',
       synchronize: true,
       logging: true,
-      entities: [MasterItem, MasterItemExtend, MasterItemSelection, MasterItemAddoption, User, Photo]
+      entities: [MasterItem, MasterItemExtend, MasterItemSelection, MasterItemAddoption, MarketTemplates]
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),
     MasterItemsModule,
     CommonModule,
-    UserModule,
+    MarketTemplatesModule,
   ],
   controllers: [],
   providers: [],
