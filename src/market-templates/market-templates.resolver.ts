@@ -1,4 +1,5 @@
-import { Args, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { MarketTemplatesInput, MarketTemplatesOutput } from "./dtos/create-market-templates.dto";
 import { ReadMarketTemplatesOutput } from "./dtos/read-market-templates.dto";
 import { MarketTemplates } from "./entities/market-templates.entity";
 import { MarketTemplatesService } from "./market-templates.service";
@@ -14,5 +15,11 @@ export class MarketTemplatesResolver {
         @Args('marketCode') marketCode:string, 
         @Args('marketCode') marketSubCode:string ): Promise<ReadMarketTemplatesOutput> {
             return this.marketTemplatesService.getMarketTemplates(templateId, marketCode, marketSubCode);
+    }
+
+    @Mutation(() => MarketTemplatesOutput)
+    async createMarketTemplates(
+        @Args('input') createMarketTemplatesInput:MarketTemplatesInput) : Promise<MarketTemplatesOutput> {
+            return this.marketTemplatesService.insertMarketTemplates(createMarketTemplatesInput);
     }
 }

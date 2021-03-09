@@ -38,25 +38,25 @@ export class MarketTemplates {
     @Field((type) => String)
     baseInfo: string;
 
-    @Column('simple-json')
-    @Field((type) => String)
-    basicExtendInfo: string;
+    @Column('simple-json', { nullable:true })
+    @Field((type) => String, { nullable:true })
+    basicExtendInfo?: string;
 
-    @Column('simple-json')
-    @Field((type) => String)
-    extendInfo: string;
+    @Column('simple-json', { nullable:true })
+    @Field((type) => String, { nullable:true })
+    extendInfo?: string;
 
-    @Column('simple-json')
-    @Field((type) => String)
-    deliveryInfo: string;
+    @Column('simple-json', { nullable:true })
+    @Field((type) => String, { nullable:true })
+    deliveryInfo?: string;
 
-    @Column('simple-json')
-    @Field((type) => String)
-    addServiceInfo: string;
+    @Column('simple-json', { nullable:true })
+    @Field((type) => String, { nullable:true })
+    addServiceInfo?: string;
 
-    @Column('simple-json')
-    @Field((type) => String)
-    etcInfo: string;
+    @Column('simple-json', { nullable:true })
+    @Field((type) => String, { nullable:true })
+    etcInfo?: string;
 
     @CreateDateColumn()
     @Field((type) => Date)

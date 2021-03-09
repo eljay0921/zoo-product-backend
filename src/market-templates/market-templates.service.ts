@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CoreOutput } from 'src/common/dtos/output.dto';
 import { Repository } from 'typeorm';
+import { MarketTemplatesInput, MarketTemplatesOutput } from './dtos/create-market-templates.dto';
 import { ReadMarketTemplatesOutput } from './dtos/read-market-templates.dto';
 import { MarketTemplates } from './entities/market-templates.entity';
 
@@ -38,6 +40,23 @@ export class MarketTemplatesService {
                 error: "올바르지 않은 요청입니다.",
             }
             
+        } catch (error) {
+            console.log(error);
+            return {
+              ok: false,
+              error,
+            };
+        }
+    }
+
+    async insertMarketTemplates(marketTemplatesInput:MarketTemplatesInput): Promise<MarketTemplatesOutput> {
+        try {
+            
+            const result = await this.marketTemplatesRepo.save(this.marketTemplatesRepo.create(marketTemplatesInput));
+            return {
+                ok: true
+            }
+
         } catch (error) {
             console.log(error);
             return {
