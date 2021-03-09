@@ -44,7 +44,7 @@ export class MasterItemsService {
       const masterItems = await this.masterItemsRepo.find({
         skip: size * (page - 1),
         take: size,
-        order: { id:"ASC" },
+        order: { id: 'ASC' },
         relations: ['selectionInfoList', 'addOptionInfoList', 'extendInfoList'],
       });
       return {
@@ -79,11 +79,10 @@ export class MasterItemsService {
         index < createMasterItemsInput.masterItems.length;
         index++
       ) {
-
         // GraphQL로 받은 데이터를 typeorm entity 데이터로 변환
         const eachItem = createMasterItemsInput.masterItems[index];
-        const masterItem:MasterItem = { 
-          ...eachItem, 
+        const masterItem: MasterItem = {
+          ...eachItem,
           categoryInfo: eachItem.categoryInfoInput,
           additionalInfo: eachItem.additionalInfoInput,
           sellingItemInfo: eachItem.sellingItemInfoInput,
@@ -102,7 +101,10 @@ export class MasterItemsService {
           const selectionPromise = new Promise((resolve, reject) => {
             const selectionInfoList: MasterItemSelection[] = [];
             eachItem.selectionInfoListInput?.forEach((selection) => {
-              const selectionInfo: MasterItemSelection = { ...selection, masterItem:resultMasterItem };
+              const selectionInfo: MasterItemSelection = {
+                ...selection,
+                masterItem: resultMasterItem,
+              };
               selectionInfoList.push(selectionInfo);
             });
 
@@ -110,8 +112,7 @@ export class MasterItemsService {
               this.masterItemsSelectionsRepo.create(selectionInfoList),
             );
 
-            if (result)
-            {
+            if (result) {
               resolve(result);
             } else {
               reject();
@@ -122,7 +123,10 @@ export class MasterItemsService {
           const addOptionPromise = new Promise((resolve, reject) => {
             const addOptionInfoList: MasterItemAddoption[] = [];
             eachItem.addOptionInfoListInput?.forEach((addOption) => {
-              const addOptionInfo: MasterItemAddoption = { ...addOption, masterItem:resultMasterItem };
+              const addOptionInfo: MasterItemAddoption = {
+                ...addOption,
+                masterItem: resultMasterItem,
+              };
               addOptionInfoList.push(addOptionInfo);
             });
 
@@ -130,8 +134,7 @@ export class MasterItemsService {
               this.masterItemsAddOptionsRepo.create(addOptionInfoList),
             );
 
-            if (result)
-            {
+            if (result) {
               resolve(result);
             } else {
               reject();
@@ -142,32 +145,33 @@ export class MasterItemsService {
           const extendPromise = new Promise((resolve, reject) => {
             const extendInfoList: MasterItemExtend[] = [];
             eachItem.extendInfoListInput?.forEach((ext) => {
-              const extendInfo: MasterItemExtend = { ...ext, masterItem:resultMasterItem };
+              const extendInfo: MasterItemExtend = {
+                ...ext,
+                masterItem: resultMasterItem,
+              };
               extendInfoList.push(extendInfo);
             });
-  
+
             const result = this.masterItemsExtendsRepo.save(
               this.masterItemsExtendsRepo.create(extendInfoList),
             );
 
-            if (result)
-            {
+            if (result) {
               resolve(result);
             } else {
               reject();
             }
           });
-          
-          Promise.all([selectionPromise, addOptionPromise, extendPromise])
-          .then((result) => {
-            eachResult.ok = true;
-          })
-          .catch(err => {
-            console.log(err);
-            eachResult.ok = false;
-            eachResult.message = err.sqlMessage?.toString();
-          });
 
+          await Promise.all([selectionPromise, addOptionPromise, extendPromise])
+            .then((result) => {
+              eachResult.ok = true;
+            })
+            .catch((err) => {
+              console.log(err);
+              eachResult.ok = false;
+              eachResult.message = err.sqlMessage?.toString();
+            });
         } else {
           eachResult.masterItemId = -1;
           eachResult.message = '원본상품 생성 실패';

@@ -8,9 +8,14 @@ import { MasterItemsResolver } from './master-items.resolver';
 import { MasterItemsService } from './master-items.service';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([MasterItem, MasterItemExtend, MasterItemSelection, MasterItemAddoption])
-    ],
-    providers: [MasterItemsResolver, MasterItemsService],
+  imports: [
+    TypeOrmModule.forFeature([
+      MasterItem,
+      MasterItemExtend,
+      MasterItemSelection,
+      MasterItemAddoption,
+    ]),
+  ],
+  providers: [MasterItemsResolver, MasterItemsService],
 })
 export class MasterItemsModule {}

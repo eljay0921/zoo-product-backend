@@ -49,22 +49,21 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'createdAt',
   'updatedAt',
 ]) {
+  @Field(() => CategoryInfoInput, { nullable: true })
+  categoryInfoInput: CategoryInfoInput;
 
-  @Field(() => CategoryInfoInput, { nullable:true })
-  categoryInfoInput:CategoryInfoInput;
-
-  @Field(() => [MasterItemSelectionInput], { nullable:true })
+  @Field(() => [MasterItemSelectionInput], { nullable: true })
   selectionInfoListInput?: MasterItemSelectionInput[];
 
-  @Field(() => [MasterItemAddOptionInput], { nullable:true })
+  @Field(() => [MasterItemAddOptionInput], { nullable: true })
   addOptionInfoListInput?: MasterItemAddOptionInput[];
-  
-  @Field(() => AdditionalInfoInput, { nullable:true })
+
+  @Field(() => AdditionalInfoInput, { nullable: true })
   additionalInfoInput?: AdditionalInfoInput;
 
-  @Field(() => SellingItemInfoInput, { nullable:true })
+  @Field(() => SellingItemInfoInput, { nullable: true })
   sellingItemInfoInput?: SellingItemInfoInput;
-  
+
   @Field((type) => [MasterItemExtendInput], { nullable: true })
   extendInfoListInput?: MasterItemExtendInput[];
 }
@@ -80,7 +79,9 @@ export class CreateMasterItemsInput {
 //#region output DTO
 @ObjectType()
 export class CreateMasterItemsResult {
-  constructor(private readonly seq: number) {}
+  constructor(private readonly seq: number) {
+    this.ok = false;
+  }
 
   @Field(() => Number)
   masterItemId: number;
@@ -88,7 +89,7 @@ export class CreateMasterItemsResult {
   @Field(() => Boolean)
   ok: boolean;
 
-  @Field(() => String, { nullable:true })
+  @Field(() => String, { nullable: true })
   message?: string;
 }
 @ObjectType()

@@ -25,7 +25,7 @@ export class MasterItem {
   @Field((type) => String)
   name: string;
 
-  @Column({ length: 10 })
+  @Column({ length: 12 })
   @Field((type) => String)
   categoryCode: string;
 
@@ -33,11 +33,11 @@ export class MasterItem {
   @Field((type) => MasterItemCategoryInfo)
   categoryInfo: MasterItemCategoryInfo;
 
-  @Column({ type:'int' })
+  @Column({ type: 'int' })
   @Field((type) => Number)
   price: number;
 
-  @Column({ type:'mediumint' })
+  @Column({ type: 'mediumint' })
   @Field((type) => Number)
   count: number;
 

@@ -1,68 +1,73 @@
-import { Field, InputType, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@InputType({ isAbstract:true })
+@InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class MarketTemplates {
-    @PrimaryGeneratedColumn()
-    @Field((type) => Number)
-    id?: number;
+  @PrimaryGeneratedColumn()
+  @Field((type) => Number)
+  id?: number;
 
-    @Column({ length: 1 })
-    @Field((type) => String)
-    marketCode: string;
+  @Column({ length: 1 })
+  @Field((type) => String)
+  marketCode: string;
 
-    @Column({ length: 4 })
-    @Field((type) => String)
-    marketSubCode: string;
+  @Column({ length: 4 })
+  @Field((type) => String)
+  marketSubCode: string;
 
-    @Column()
-    @Field((type) => Number)
-    smid: number;
+  @Column()
+  @Field((type) => Number)
+  smid: number;
 
-    @Column({ length: 40 })
-    @Field((type) => String)
-    marketID: string;
+  @Column({ length: 40 })
+  @Field((type) => String)
+  marketID: string;
 
-    @Column({ length: 100 })
-    @Field((type) => String)
-    name: string;
-    
-    @Column({ length: 100 })
-    @Field((type) => String)
-    description: string;
+  @Column({ length: 100 })
+  @Field((type) => String)
+  name: string;
 
-    // TODO : JSON 타입으로 변경 => 구조는 상관 CSetInfoBase 참고
-    @Column('simple-json')
-    @Field((type) => String)
-    baseInfo: string;
+  @Column({ length: 100 })
+  @Field((type) => String)
+  description: string;
 
-    @Column('simple-json', { nullable:true })
-    @Field((type) => String, { nullable:true })
-    basicExtendInfo?: string;
+  // TODO : JSON 타입으로 변경 => 구조는 상관 CSetInfoBase 참고
+  @Column('simple-json')
+  @Field((type) => String)
+  baseInfo: string;
 
-    @Column('simple-json', { nullable:true })
-    @Field((type) => String, { nullable:true })
-    extendInfo?: string;
+  @Column('simple-json', { nullable: true })
+  @Field((type) => String, { nullable: true })
+  basicExtendInfo?: string;
 
-    @Column('simple-json', { nullable:true })
-    @Field((type) => String, { nullable:true })
-    deliveryInfo?: string;
+  @Column('simple-json', { nullable: true })
+  @Field((type) => String, { nullable: true })
+  extendInfo?: string;
 
-    @Column('simple-json', { nullable:true })
-    @Field((type) => String, { nullable:true })
-    addServiceInfo?: string;
+  @Column('simple-json', { nullable: true })
+  @Field((type) => String, { nullable: true })
+  deliveryInfo?: string;
 
-    @Column('simple-json', { nullable:true })
-    @Field((type) => String, { nullable:true })
-    etcInfo?: string;
+  @Column('simple-json', { nullable: true })
+  @Field((type) => String, { nullable: true })
+  addServiceInfo?: string;
 
-    @CreateDateColumn()
-    @Field((type) => Date)
-    createdAt?: Date;
-    
-    @CreateDateColumn()
-    @Field((type) => Date)
-    updatedAt?: Date;
+  @Column('simple-json', { nullable: true })
+  @Field((type) => String, { nullable: true })
+  etcInfo?: string;
+
+  @CreateDateColumn()
+  @Field((type) => Date)
+  createdAt?: Date;
+
+  @CreateDateColumn()
+  @Field((type) => Date)
+  updatedAt?: Date;
 }

@@ -21,7 +21,13 @@ import { MarketTemplates } from './market-templates/entities/market-templates.en
       database: 'ProductManage',
       synchronize: true,
       logging: true,
-      entities: [MasterItem, MasterItemExtend, MasterItemSelection, MasterItemAddoption, MarketTemplates]
+      entities: [
+        MasterItem,
+        MasterItemExtend,
+        MasterItemSelection,
+        MasterItemAddoption,
+        MarketTemplates,
+      ],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,

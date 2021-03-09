@@ -1,49 +1,53 @@
-
-import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
+import {
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
 enum SendType {
-    None,
-    ECoupon,
-    DoorToDoor,
-    Post,
-    Quick,
-    Direct,
-    Cargo,
-    Joint,
-    Center,
-    Visit,
+  None,
+  ECoupon,
+  DoorToDoor,
+  Post,
+  Quick,
+  Direct,
+  Cargo,
+  Joint,
+  Center,
+  Visit,
 }
 
 enum SendPayType {
-    None,
-    Arrived,
-    Free,
-    Condition,
-    Group,
-    Individual,
+  None,
+  Arrived,
+  Free,
+  Condition,
+  Group,
+  Individual,
 }
 
-registerEnumType(SendType, { name: "SendType" });
-registerEnumType(SendPayType, { name: "SendPayType" });
+registerEnumType(SendType, { name: 'SendType' });
+registerEnumType(SendPayType, { name: 'SendPayType' });
 
-@InputType({isAbstract:true})
+@InputType({ isAbstract: true })
 @ObjectType()
 export class MasterItemSellingItemInfo {
-    @Field(() => SendType, { nullable:true })
-    sendType?:SendType
+  @Field(() => SendType, { nullable: true })
+  sendType?: SendType;
 
-    @Field(() => SendPayType, { nullable:true })
-    sendPayType?:SendPayType
+  @Field(() => SendPayType, { nullable: true })
+  sendPayType?: SendPayType;
 
-    @Field(() => String, { nullable:true })
-    sourceMarket?:string
+  @Field(() => String, { nullable: true })
+  sourceMarket?: string;
 
-    @Field(() => String, { nullable:true })
-    sellerId?:string
+  @Field(() => String, { nullable: true })
+  sellerId?: string;
 
-    @Field(() => String, { nullable:true })
-    sellingItemNo?:string
+  @Field(() => String, { nullable: true })
+  sellingItemNo?: string;
 
-    @Field(() => String, { nullable:true })
-    itemLink?:string
+  @Field(() => String, { nullable: true })
+  itemLink?: string;
 }
