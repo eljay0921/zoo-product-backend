@@ -11,9 +11,9 @@ export class MarketTemplatesResolver {
 
     @Query(() => ReadMarketTemplatesOutput)
     async getMarketTemplates(
-        @Args('id') templateId:number, 
-        @Args('marketCode') marketCode:string, 
-        @Args('marketCode') marketSubCode:string ): Promise<ReadMarketTemplatesOutput> {
+        @Args('id', { nullable:true }) templateId?:number, 
+        @Args('marketCode', { nullable:true }) marketCode?:string, 
+        @Args('marketSubCode', { nullable:true }) marketSubCode?:string ): Promise<ReadMarketTemplatesOutput> {
             return this.marketTemplatesService.getMarketTemplates(templateId, marketCode, marketSubCode);
     }
 
