@@ -9,6 +9,7 @@ import {
 import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
 import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
+import { MasterItemImage } from './entities/master-items-image.entity';
 import { MasterItemSelection } from './entities/master-items-selection.entity';
 import { MasterItem } from './entities/master-items.entity';
 
@@ -23,6 +24,8 @@ export class MasterItemsService {
     private readonly masterItemsSelectionsRepo: Repository<MasterItemSelection>,
     @InjectRepository(MasterItemAddoption)
     private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>,
+    @InjectRepository(MasterItemImage)
+    private readonly masterItemsImagesRepo: Repository<MasterItemImage>,
   ) {}
 
   async getItems(page: number, size: number): Promise<ReadMasterItemsOutput> {
@@ -45,7 +48,12 @@ export class MasterItemsService {
         skip: size * (page - 1),
         take: size,
         order: { id: 'ASC' },
-        relations: ['selectionInfoList', 'addOptionInfoList', 'extendInfoList'],
+        relations: [
+          'images',
+          'selectionInfoList',
+          'addOptionInfoList',
+          'extendInfoList',
+        ],
       });
       return {
         ok: true,
@@ -96,6 +104,28 @@ export class MasterItemsService {
         const eachResult = new CreateMasterItemsResult(index);
         if (resultMasterItem.id > 0) {
           eachResult.masterItemId = resultMasterItem.id;
+
+          // 이미지 insert
+          const imagePromise = new Promise((resolve, reject) => {
+            const imageList: MasterItemImage[] = [];
+            eachItem.imagesInput?.forEach((image) => {
+              const imageInfo: MasterItemImage = {
+                ...image,
+                masterItem: resultMasterItem,
+              };
+              imageList.push(imageInfo);
+            });
+
+            const result = this.masterItemsImagesRepo.save(
+              this.masterItemsImagesRepo.create(imageList),
+            );
+
+            if (result) {
+              resolve(result);
+            } else {
+              reject();
+            }
+          });
 
           // 선택사항 insert
           const selectionPromise = new Promise((resolve, reject) => {
@@ -163,7 +193,12 @@ export class MasterItemsService {
             }
           });
 
-          await Promise.all([selectionPromise, addOptionPromise, extendPromise])
+          await Promise.all([
+            imagePromise,
+            selectionPromise,
+            addOptionPromise,
+            extendPromise,
+          ])
             .then((result) => {
               eachResult.ok = true;
             })

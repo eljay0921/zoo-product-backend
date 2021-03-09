@@ -12,6 +12,7 @@ import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingIte
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
 import { MasterItemSelection } from './master-items-selection.entity';
 import { MasterItemAddoption } from './master-items-addoption.entity';
+import { MasterItemImage } from './master-items-image.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -70,6 +71,10 @@ export class MasterItem {
   updatedAt?: Date;
 
   // relation entities
+
+  @OneToMany(() => MasterItemImage, (image) => image.masterItem)
+  @Field((type) => [MasterItemImage], { nullable: true })
+  images?: MasterItemImage[];
 
   @OneToMany(() => MasterItemSelection, (selection) => selection.masterItem)
   @Field((type) => [MasterItemSelection], { nullable: true })

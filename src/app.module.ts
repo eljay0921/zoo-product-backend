@@ -9,6 +9,7 @@ import { MasterItemSelection } from './master-items/entities/master-items-select
 import { MasterItemAddoption } from './master-items/entities/master-items-addoption.entity';
 import { MarketTemplatesModule } from './market-templates/market-templates.module';
 import { MarketTemplates } from './market-templates/entities/market-templates.entity';
+import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MarketTemplates } from './market-templates/entities/market-templates.en
       entities: [
         MasterItem,
         MasterItemExtend,
+        MasterItemImage,
         MasterItemSelection,
         MasterItemAddoption,
         MarketTemplates,

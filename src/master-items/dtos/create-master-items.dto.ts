@@ -2,6 +2,7 @@ import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemAddoption } from '../entities/master-items-addoption.entity';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
+import { MasterItemImage } from '../entities/master-items-image.entity';
 import { MasterItemSelection } from '../entities/master-items-selection.entity';
 import { MasterItem } from '../entities/master-items.entity';
 import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
@@ -18,6 +19,9 @@ export class AdditionalInfoInput extends MasterItemAdditionalInfo {}
 
 @InputType()
 export class SellingItemInfoInput extends MasterItemSellingItemInfo {}
+
+@InputType()
+export class ImagesInput extends OmitType(MasterItemImage, ['masterItem']) {}
 
 @InputType()
 export class MasterItemSelectionInput extends OmitType(MasterItemSelection, [
@@ -41,6 +45,7 @@ export class MasterItemExtendInput extends OmitType(MasterItemExtend, [
 export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'id',
   'categoryInfo',
+  'images',
   'selectionInfoList',
   'addOptionInfoList',
   'additionalInfo',
@@ -51,6 +56,9 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
 ]) {
   @Field(() => CategoryInfoInput, { nullable: true })
   categoryInfoInput: CategoryInfoInput;
+
+  @Field(() => [ImagesInput], { nullable: true })
+  imagesInput?: ImagesInput[];
 
   @Field(() => [MasterItemSelectionInput], { nullable: true })
   selectionInfoListInput?: MasterItemSelectionInput[];
