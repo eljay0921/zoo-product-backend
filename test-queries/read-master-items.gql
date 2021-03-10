@@ -1,0 +1,65 @@
+query	{
+  getMasterItems(page:1, size:100)
+  {
+    ok
+    error
+    masterItems {
+      id
+      name
+      categoryCode
+      categoryInfo
+      {
+        fullCode
+        depth1Code
+        depth1Name
+        depth2Code
+        depth2Name
+        # ...
+      }
+      price
+      count
+      userCode
+      description
+      selectionInfo
+      selectionInfoList
+      {
+        order
+        valueInfo
+        count
+        price
+        userCode
+        extendInfo
+      }
+      addOptionInfoList
+      {
+        order
+        name
+        value
+        price
+        count
+        extendInfo
+      }
+      additionalInfo
+      {
+        tax
+        origin
+        brand
+      }
+      extendInfoList {
+        marketCode
+        marketSubCode
+        info
+      }
+      sellingItemInfo {
+        sendType
+        sendPayType
+        sourceMarket
+        sellerId	
+        sellingItemNo
+        itemLink
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
