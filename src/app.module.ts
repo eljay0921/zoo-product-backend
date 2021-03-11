@@ -16,7 +16,7 @@ import { MasterItemImage } from './master-items/entities/master-items-image.enti
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
-      port: 3310,
+      port: 3306,
       username: 'root',
       password: 'mmaria',
       database: 'ProductManage',
