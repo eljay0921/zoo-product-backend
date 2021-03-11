@@ -10,7 +10,6 @@ import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.
 import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
 import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingItemInfo.type';
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
-import { MasterItemSelection } from './master-items-selection.entity';
 import { MasterItemAddoption } from './master-items-addoption.entity';
 import { MasterItemImage } from './master-items-image.entity';
 
@@ -50,10 +49,6 @@ export class MasterItem {
   @Field((type) => String, { nullable: true })
   description?: string;
 
-  @Column('simple-array', { nullable: true })
-  @Field((type) => [String], { nullable: true })
-  selectionInfo?: string[];
-
   @Column('simple-json', { nullable: true })
   @Field((type) => MasterItemAdditionalInfo, { nullable: true })
   additionalInfo?: MasterItemAdditionalInfo;
@@ -75,10 +70,6 @@ export class MasterItem {
   @OneToMany(() => MasterItemImage, (image) => image.masterItem)
   @Field((type) => [MasterItemImage], { nullable: true })
   images?: MasterItemImage[];
-
-  @OneToMany(() => MasterItemSelection, (selection) => selection.masterItem)
-  @Field((type) => [MasterItemSelection], { nullable: true })
-  selectionInfoList?: MasterItemSelection[];
 
   @OneToMany(() => MasterItemAddoption, (addOption) => addOption.masterItem)
   @Field((type) => [MasterItemAddoption], { nullable: true })

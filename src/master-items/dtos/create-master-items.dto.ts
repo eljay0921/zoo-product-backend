@@ -3,7 +3,6 @@ import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemAddoption } from '../entities/master-items-addoption.entity';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
 import { MasterItemImage } from '../entities/master-items-image.entity';
-import { MasterItemSelection } from '../entities/master-items-selection.entity';
 import { MasterItem } from '../entities/master-items.entity';
 import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
@@ -24,12 +23,6 @@ export class SellingItemInfoInput extends MasterItemSellingItemInfo {}
 export class ImagesInput extends OmitType(MasterItemImage, ['masterItem']) {}
 
 @InputType()
-export class MasterItemSelectionInput extends OmitType(MasterItemSelection, [
-  'masterItem',
-  'createdAt',
-]) {}
-
-@InputType()
 export class MasterItemAddOptionInput extends OmitType(MasterItemAddoption, [
   'masterItem',
   'createdAt',
@@ -46,7 +39,7 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'id',
   'categoryInfo',
   'images',
-  'selectionInfoList',
+  // 'selectionInfoList',
   'addOptionInfoList',
   'additionalInfo',
   'sellingItemInfo',
@@ -60,8 +53,8 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
   @Field(() => [ImagesInput], { nullable: true })
   imagesInput?: ImagesInput[];
 
-  @Field(() => [MasterItemSelectionInput], { nullable: true })
-  selectionInfoListInput?: MasterItemSelectionInput[];
+  // @Field(() => [MasterItemSelectionInput], { nullable: true })
+  // selectionInfoListInput?: MasterItemSelectionInput[];
 
   @Field(() => [MasterItemAddOptionInput], { nullable: true })
   addOptionInfoListInput?: MasterItemAddOptionInput[];

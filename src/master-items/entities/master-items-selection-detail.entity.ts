@@ -6,21 +6,21 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { MasterItem } from './master-items.entity';
+import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
-export class MasterItemSelection {
+export class MasterItemSelectionDetail {
   @PrimaryColumn({ type: 'smallint' })
   @Field(() => Number)
   order: number;
 
-  @ManyToOne(() => MasterItem, (master) => master.selectionInfoList, {
+  @ManyToOne(() => MasterItemSelectionBase, (base) => base.details, {
     primary: true,
   })
-  @Field((type) => MasterItem)
-  masterItem: MasterItem;
+  @Field((type) => MasterItemSelectionBase)
+  base: MasterItemSelectionBase;
 
   @Column({ type: 'mediumint' })
   @Field(() => Number)

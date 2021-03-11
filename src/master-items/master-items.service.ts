@@ -10,7 +10,7 @@ import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
 import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
 import { MasterItemImage } from './entities/master-items-image.entity';
-import { MasterItemSelection } from './entities/master-items-selection.entity';
+import { MasterItemSelectionDetail } from './entities/master-items-selection-detail.entity';
 import { MasterItem } from './entities/master-items.entity';
 
 @Injectable()
@@ -20,8 +20,8 @@ export class MasterItemsService {
     private readonly masterItemsRepo: Repository<MasterItem>,
     @InjectRepository(MasterItemExtend)
     private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>,
-    @InjectRepository(MasterItemSelection)
-    private readonly masterItemsSelectionsRepo: Repository<MasterItemSelection>,
+    @InjectRepository(MasterItemSelectionDetail)
+    private readonly masterItemsSelectionsRepo: Repository<MasterItemSelectionDetail>,
     @InjectRepository(MasterItemAddoption)
     private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>,
     @InjectRepository(MasterItemImage)
@@ -128,26 +128,26 @@ export class MasterItemsService {
           });
 
           // 선택사항 insert
-          const selectionPromise = new Promise((resolve, reject) => {
-            const selectionInfoList: MasterItemSelection[] = [];
-            eachItem.selectionInfoListInput?.forEach((selection) => {
-              const selectionInfo: MasterItemSelection = {
-                ...selection,
-                masterItem: resultMasterItem,
-              };
-              selectionInfoList.push(selectionInfo);
-            });
+          // const selectionPromise = new Promise((resolve, reject) => {
+          //   const selectionInfoList: MasterItemSelectionDetail[] = [];
+          //   eachItem.selectionInfoListInput?.forEach((selection) => {
+          //     const selectionInfo: MasterItemSelectionDetail = {
+          //       ...selection,
+          //       masterItem: resultMasterItem,
+          //     };
+          //     selectionInfoList.push(selectionInfo);
+          //   });
 
-            const result = this.masterItemsSelectionsRepo.save(
-              this.masterItemsSelectionsRepo.create(selectionInfoList),
-            );
+          //   const result = this.masterItemsSelectionsRepo.save(
+          //     this.masterItemsSelectionsRepo.create(selectionInfoList),
+          //   );
 
-            if (result) {
-              resolve(result);
-            } else {
-              reject();
-            }
-          });
+          //   if (result) {
+          //     resolve(result);
+          //   } else {
+          //     reject();
+          //   }
+          // });
 
           // 추가구성 insert
           const addOptionPromise = new Promise((resolve, reject) => {
@@ -195,7 +195,7 @@ export class MasterItemsService {
 
           await Promise.all([
             imagePromise,
-            selectionPromise,
+            // selectionPromise,
             addOptionPromise,
             extendPromise,
           ])
