@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MasterItemExtend } from 'src/master-items/entities/master-items-extend.entity';
@@ -12,6 +13,7 @@ import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingIte
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
 import { MasterItemAddoption } from './master-items-addoption.entity';
 import { MasterItemImage } from './master-items-image.entity';
+import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -66,6 +68,9 @@ export class MasterItem {
   updatedAt?: Date;
 
   // relation entities
+
+  @Field(() => MasterItemSelectionBase, { nullable: true })
+  selectionBase?: MasterItemSelectionBase;
 
   @OneToMany(() => MasterItemImage, (image) => image.masterItem)
   @Field((type) => [MasterItemImage], { nullable: true })

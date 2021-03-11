@@ -39,7 +39,7 @@ export class MasterItemsBaseInput extends OmitType(MasterItem, [
   'id',
   'categoryInfo',
   'images',
-  // 'selectionInfoList',
+  'selectionBase',
   'addOptionInfoList',
   'additionalInfo',
   'sellingItemInfo',

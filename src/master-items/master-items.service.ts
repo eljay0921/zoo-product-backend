@@ -50,11 +50,12 @@ export class MasterItemsService {
         order: { id: 'ASC' },
         relations: [
           'images',
-          'selectionInfoList',
           'addOptionInfoList',
           'extendInfoList',
+          // 'selectionBase',
         ],
       });
+
       return {
         ok: true,
         count: masterItems?.length,
