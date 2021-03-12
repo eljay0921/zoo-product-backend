@@ -52,7 +52,7 @@ export class MasterItemsService {
           'images',
           'addOptionInfoList',
           'extendInfoList',
-          // 'selectionBase',
+          'selectionBase',
         ],
       });
 

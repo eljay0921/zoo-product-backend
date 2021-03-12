@@ -68,7 +68,7 @@ export class MasterItem {
   updatedAt?: Date;
 
   // relation entities
-
+  @OneToOne(() => MasterItemSelectionBase, (base) => base.masterItem)
   @Field(() => MasterItemSelectionBase, { nullable: true })
   selectionBase?: MasterItemSelectionBase;
 
