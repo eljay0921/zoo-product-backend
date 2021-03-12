@@ -20,33 +20,6 @@ mutation {
           count: 9999
           userCode: "UNX-MTM-001"
           description: "맨투맨 상의 상품 상세설명~"
-          selectionInfo: ["색상", "사이즈"]
-          selectionInfoListInput: [
-            {
-              order: 0
-              valueInfo: "[블루, 라지]"
-              price: 1000
-              count: 9999
-              userCode: "BL-LG"
-              extendInfo: "{ something }"
-            }
-            {
-              order: 1
-              valueInfo: "[블루, 미디움]"
-              price: 0
-              count: 9999
-              userCode: "BL-MD"
-              extendInfo: "{ something }"
-            }
-            {
-              order: 2
-              valueInfo: "[블루, 스몰]"
-              price: 0
-              count: 9999
-              userCode: "BL-SM"
-              extendInfo: "{ something }"
-            }
-          ]
           imagesInput: [
             {
               order: 0
@@ -64,6 +37,28 @@ mutation {
               extendInfo: "{ something }"
             }
           ]
+          selectionBaseInput: {
+            type: Combined
+            options: "['색상', '사이즈']"
+            detailsInput: [
+              {
+                order:0
+                count: 9999
+                price: 1000
+                userCode: "CODE123"
+                valueInfo: " { something }"
+                extendInfo: " { something }"
+              }
+              {
+                order:1
+                count: 9999
+                price: 1000
+                userCode: "CODE456"
+                valueInfo: " { something }"
+                extendInfo: " { something }"
+              }
+            ]
+          }
           addOptionInfoListInput: [
             {
               order: 0

@@ -30,7 +30,7 @@ registerEnumType(SelectionType, { name: 'SelectionType' });
 export class MasterItemSelectionBase {
   @PrimaryGeneratedColumn()
   @Field((type) => Number)
-  selectionId: number;
+  selectionId?: number;
 
   @OneToOne(() => MasterItem, (master) => master.selectionBase)
   @JoinColumn()
@@ -49,7 +49,7 @@ export class MasterItemSelectionBase {
   @Field(() => Date)
   createAt?: Date;
 
-  @OneToMany(() => MasterItemSelectionDetail, (detail) => detail.base)
+  @OneToMany(() => MasterItemSelectionDetail, (detail) => detail.selectionBase)
   @Field((type) => [MasterItemSelectionDetail], { nullable: true })
   details?: MasterItemSelectionDetail[];
 }

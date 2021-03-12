@@ -20,7 +20,7 @@ export class MasterItemSelectionDetail {
     primary: true,
   })
   @Field((type) => MasterItemSelectionBase)
-  base: MasterItemSelectionBase;
+  selectionBase: MasterItemSelectionBase;
 
   @Column({ type: 'mediumint' })
   @Field(() => Number)

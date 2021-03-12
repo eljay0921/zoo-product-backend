@@ -10,6 +10,7 @@ import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
 import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
 import { MasterItemImage } from './entities/master-items-image.entity';
+import { MasterItemSelectionBase } from './entities/master-items-selection-base.entity';
 import { MasterItemSelectionDetail } from './entities/master-items-selection-detail.entity';
 import { MasterItem } from './entities/master-items.entity';
 
@@ -20,8 +21,10 @@ export class MasterItemsService {
     private readonly masterItemsRepo: Repository<MasterItem>,
     @InjectRepository(MasterItemExtend)
     private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>,
+    @InjectRepository(MasterItemSelectionBase)
+    private readonly masterItemsSelectionBaseRepo: Repository<MasterItemSelectionBase>,
     @InjectRepository(MasterItemSelectionDetail)
-    private readonly masterItemsSelectionsRepo: Repository<MasterItemSelectionDetail>,
+    private readonly masterItemsSelectionDetailsRepo: Repository<MasterItemSelectionDetail>,
     @InjectRepository(MasterItemAddoption)
     private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>,
     @InjectRepository(MasterItemImage)
@@ -53,6 +56,7 @@ export class MasterItemsService {
           'addOptionInfoList',
           'extendInfoList',
           'selectionBase',
+          'selectionBase.details',
         ],
       });
 
@@ -129,26 +133,41 @@ export class MasterItemsService {
           });
 
           // 선택사항 insert
-          // const selectionPromise = new Promise((resolve, reject) => {
-          //   const selectionInfoList: MasterItemSelectionDetail[] = [];
-          //   eachItem.selectionInfoListInput?.forEach((selection) => {
-          //     const selectionInfo: MasterItemSelectionDetail = {
-          //       ...selection,
-          //       masterItem: resultMasterItem,
-          //     };
-          //     selectionInfoList.push(selectionInfo);
-          //   });
+          const selectionPromise = new Promise(async (resolve, reject) => {
 
-          //   const result = this.masterItemsSelectionsRepo.save(
-          //     this.masterItemsSelectionsRepo.create(selectionInfoList),
-          //   );
+            // 선택사항 기본 정보
+            const selectionBaseInfo: MasterItemSelectionBase = {
+              masterItem: resultMasterItem,
+              ...eachItem.selectionBaseInput,
+            };
 
-          //   if (result) {
-          //     resolve(result);
-          //   } else {
-          //     reject();
-          //   }
-          // });
+            const resultSelectionBase = await this.masterItemsSelectionBaseRepo.save(
+              this.masterItemsSelectionBaseRepo.create(selectionBaseInfo),
+            );
+
+            // 선택사항 상세 정보
+            const selectionDetailInfoList: MasterItemSelectionDetail[] = [];
+            eachItem.selectionBaseInput.detailsInput.forEach((detail) => {
+              const selectionDetailInfo: MasterItemSelectionDetail = {
+                selectionBase: resultSelectionBase,
+                ...detail,
+              };
+
+              selectionDetailInfoList.push(selectionDetailInfo);
+            });
+
+            const resultSelectionDetails = await this.masterItemsSelectionDetailsRepo.save(
+              this.masterItemsSelectionDetailsRepo.create(
+                selectionDetailInfoList,
+              ),
+            );
+
+            if (resultSelectionBase && resultSelectionDetails) {
+              resolve([resultSelectionBase, resultSelectionDetails]);
+            } else {
+              reject();
+            }
+          });
 
           // 추가구성 insert
           const addOptionPromise = new Promise((resolve, reject) => {
@@ -196,7 +215,7 @@ export class MasterItemsService {
 
           await Promise.all([
             imagePromise,
-            // selectionPromise,
+            selectionPromise,
             addOptionPromise,
             extendPromise,
           ])

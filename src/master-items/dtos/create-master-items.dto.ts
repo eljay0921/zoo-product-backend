@@ -27,7 +27,7 @@ export class ImagesInput extends OmitType(MasterItemImage, ['masterItem']) {}
 @InputType()
 export class MasterItemSelectionDetailInput extends OmitType(
   MasterItemSelectionDetail,
-  ['base', 'createdAt'],
+  ['selectionBase', 'createdAt'],
 ) {}
 
 @InputType()

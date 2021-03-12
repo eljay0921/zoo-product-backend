@@ -3,6 +3,7 @@ query	{
   {
     ok
     error
+    count
     masterItems {
       id
       name
@@ -20,15 +21,17 @@ query	{
       count
       userCode
       description
-      selectionInfo
-      selectionInfoList
-      {
-        order
-        valueInfo
-        count
-        price
-        userCode
-        extendInfo
+      selectionBase {
+        selectionId
+        details {
+          order
+          count
+          price
+          valueInfo
+          userCode
+          extendInfo
+          createdAt
+        }
       }
       addOptionInfoList
       {
