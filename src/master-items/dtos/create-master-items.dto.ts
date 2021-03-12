@@ -99,6 +99,7 @@ export class CreateMasterItemsInput {
 export class CreateMasterItemsResult {
   constructor(private readonly seq: number) {
     this.ok = false;
+    this.messages = [];
   }
 
   @Field(() => Number)
@@ -107,11 +108,17 @@ export class CreateMasterItemsResult {
   @Field(() => Boolean)
   ok: boolean;
 
-  @Field(() => String, { nullable: true })
-  message?: string;
+  @Field(() => [String], { nullable: true })
+  messages?: string[];
 }
 @ObjectType()
 export class CreateMasterItemsOutput extends CoreOutput {
+
+  constructor() {
+    super();
+    this.result = [];
+  }
+
   @Field(() => [CreateMasterItemsResult])
   result?: CreateMasterItemsResult[];
 }
