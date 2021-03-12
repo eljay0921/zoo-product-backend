@@ -167,55 +167,53 @@ export class MasterItemsService {
             }
           }
 
-          // 추가구성 insert
-          const addOptionPromise = new Promise((resolve, reject) => {
-            const addOptionInfoList: MasterItemAddoption[] = [];
-            eachItem.addOptionInfoListInput?.forEach((addOption) => {
-              const addOptionInfo: MasterItemAddoption = {
-                ...addOption,
-                masterItem: resultMasterItem,
-              };
-              addOptionInfoList.push(addOptionInfo);
-            });
-
-            const result = this.masterItemsAddOptionsRepo.save(
-              this.masterItemsAddOptionsRepo.create(addOptionInfoList),
-            );
-
-            if (result) {
-              resolve(result);
-            } else {
-              reject();
+          const addOptionAsync = async () => {
+            try {
+              const addOptionInfoList: MasterItemAddoption[] = [];
+              eachItem.addOptionInfoListInput?.forEach((addOption) => {
+                const addOptionInfo: MasterItemAddoption = {
+                  ...addOption,
+                  masterItem: resultMasterItem,
+                };
+                addOptionInfoList.push(addOptionInfo);
+              });
+  
+              await this.masterItemsAddOptionsRepo.save(
+                this.masterItemsAddOptionsRepo.create(addOptionInfoList),
+              );
+            } catch (error) {
+              console.log(error);
+              eachResult.ok = false;
+              eachResult.messages.push('추가구성 저장 실패');
             }
-          });
+          }
 
-          // 확장정보 insert
-          const extendPromise = new Promise((resolve, reject) => {
-            const extendInfoList: MasterItemExtend[] = [];
-            eachItem.extendInfoListInput?.forEach((ext) => {
-              const extendInfo: MasterItemExtend = {
-                ...ext,
-                masterItem: resultMasterItem,
-              };
-              extendInfoList.push(extendInfo);
-            });
-
-            const result = this.masterItemsExtendsRepo.save(
-              this.masterItemsExtendsRepo.create(extendInfoList),
-            );
-
-            if (result) {
-              resolve(result);
-            } else {
-              reject();
+          const extendAsync = async () => {
+            try {
+              const extendInfoList: MasterItemExtend[] = [];
+              eachItem.extendInfoListInput?.forEach((ext) => {
+                const extendInfo: MasterItemExtend = {
+                  ...ext,
+                  masterItem: resultMasterItem,
+                };
+                extendInfoList.push(extendInfo);
+              });
+  
+              await this.masterItemsExtendsRepo.save(
+                this.masterItemsExtendsRepo.create(extendInfoList),
+              );
+            } catch (error) {
+              console.log(error);
+              eachResult.ok = false;
+              eachResult.messages.push('확장정보 저장 실패');
             }
-          });
+          }
 
           await Promise.all([
             imageAsync(),
             selectionAsync(),
-            addOptionPromise,
-            extendPromise,
+            addOptionAsync(),
+            extendAsync(),
           ]);
         } catch (error) {
           console.log(error);
