@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, OmitType, PickType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemAddoption } from '../entities/master-items-addoption.entity';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
@@ -8,6 +8,7 @@ import { MasterItemSelectionDetail } from '../entities/master-items-selection-de
 import { MasterItem } from '../entities/master-items.entity';
 import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
+import { MasterItemImageExtendInfo } from '../json-types/master-items-image-extendInfo.type';
 import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingItemInfo.type';
 
 //#region  input DTO
@@ -22,7 +23,17 @@ export class AdditionalInfoInput extends MasterItemAdditionalInfo {}
 export class SellingItemInfoInput extends MasterItemSellingItemInfo {}
 
 @InputType()
-export class ImagesInput extends OmitType(MasterItemImage, ['masterItem']) {}
+export class ImagesExtendInput extends MasterItemImageExtendInfo {
+}
+
+@InputType()
+export class ImagesInput extends OmitType(MasterItemImage, [
+  'masterItem',
+  'extendInfo',
+]) {
+  @Field(() => ImagesExtendInput, { nullable: true })
+  extendInfoInput?: ImagesExtendInput;
+}
 
 @InputType()
 export class MasterItemSelectionDetailInput extends OmitType(
@@ -113,7 +124,6 @@ export class CreateMasterItemsResult {
 }
 @ObjectType()
 export class CreateMasterItemsOutput extends CoreOutput {
-
   constructor() {
     super();
     this.result = [];

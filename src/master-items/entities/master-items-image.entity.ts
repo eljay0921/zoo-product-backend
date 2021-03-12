@@ -1,5 +1,6 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { MasterItemImageExtendInfo } from '../json-types/master-items-image-extendInfo.type';
 import { MasterItem } from './master-items.entity';
 
 @InputType({ isAbstract: true })
@@ -20,7 +21,7 @@ export class MasterItemImage {
   @Field(() => String)
   url: string;
 
-  @Column()
-  @Field(() => String)
-  extendInfo: string;
+  @Column('simple-json', { nullable: true })
+  @Field(() => MasterItemImageExtendInfo)
+  extendInfo?: MasterItemImageExtendInfo;
 }

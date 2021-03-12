@@ -132,7 +132,7 @@ export class MasterItemsService {
             }
           };
 
-          // 선택사항 insert
+          // 선택사항
           const selectionAsync = async () => {
             try {
               const selectionBaseInfo: MasterItemSelectionBase = {
@@ -167,6 +167,7 @@ export class MasterItemsService {
             }
           }
 
+          // 추가구성
           const addOptionAsync = async () => {
             try {
               const addOptionInfoList: MasterItemAddoption[] = [];
@@ -188,6 +189,7 @@ export class MasterItemsService {
             }
           }
 
+          // 확장정보
           const extendAsync = async () => {
             try {
               const extendInfoList: MasterItemExtend[] = [];
