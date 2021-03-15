@@ -117,6 +117,7 @@ export class MasterItemsService {
               eachItem.imagesInput?.forEach((image) => {
                 const imageInfo: MasterItemImage = {
                   ...image,
+                  extendInfo: { ...image.extendInfoInput },
                   masterItem: resultMasterItem,
                 };
                 imageList.push(imageInfo);
@@ -139,11 +140,11 @@ export class MasterItemsService {
                 masterItem: resultMasterItem,
                 ...eachItem.selectionBaseInput,
               };
-  
+
               const resultSelectionBase = await this.masterItemsSelectionBaseRepo.save(
                 this.masterItemsSelectionBaseRepo.create(selectionBaseInfo),
               );
-  
+
               // 선택사항 상세 정보
               const selectionDetailInfoList: MasterItemSelectionDetail[] = [];
               eachItem.selectionBaseInput.detailsInput.forEach((detail) => {
@@ -151,10 +152,10 @@ export class MasterItemsService {
                   selectionBase: resultSelectionBase,
                   ...detail,
                 };
-  
+
                 selectionDetailInfoList.push(selectionDetailInfo);
               });
-  
+
               await this.masterItemsSelectionDetailsRepo.save(
                 this.masterItemsSelectionDetailsRepo.create(
                   selectionDetailInfoList,
@@ -165,7 +166,7 @@ export class MasterItemsService {
               eachResult.ok = false;
               eachResult.messages.push('선택사항 저장 실패');
             }
-          }
+          };
 
           // 추가구성
           const addOptionAsync = async () => {
@@ -178,7 +179,7 @@ export class MasterItemsService {
                 };
                 addOptionInfoList.push(addOptionInfo);
               });
-  
+
               await this.masterItemsAddOptionsRepo.save(
                 this.masterItemsAddOptionsRepo.create(addOptionInfoList),
               );
@@ -187,7 +188,7 @@ export class MasterItemsService {
               eachResult.ok = false;
               eachResult.messages.push('추가구성 저장 실패');
             }
-          }
+          };
 
           // 확장정보
           const extendAsync = async () => {
@@ -200,7 +201,7 @@ export class MasterItemsService {
                 };
                 extendInfoList.push(extendInfo);
               });
-  
+
               await this.masterItemsExtendsRepo.save(
                 this.masterItemsExtendsRepo.create(extendInfoList),
               );
@@ -209,7 +210,7 @@ export class MasterItemsService {
               eachResult.ok = false;
               eachResult.messages.push('확장정보 저장 실패');
             }
-          }
+          };
 
           await Promise.all([
             imageAsync(),

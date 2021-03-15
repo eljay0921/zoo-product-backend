@@ -11,11 +11,6 @@ import { MarketTemplatesModule } from './market-templates/market-templates.modul
 import { MarketTemplates } from './market-templates/entities/market-templates.entity';
 import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items/entities/master-items-selection-base.entity';
-import { TestUsersModule } from './test-users/test-users.module';
-import { Lesson } from './test-users/typeorm-entities/class.entity';
-import { Student } from './test-users/typeorm-entities/student.entity';
-import { ClassStudentMap } from './test-users/typeorm-entities/class-student-map.entity';
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -35,9 +30,6 @@ import { ClassStudentMap } from './test-users/typeorm-entities/class-student-map
         MasterItemSelectionDetail,
         MasterItemAddoption,
         MarketTemplates,
-        Student,
-        Lesson,
-        ClassStudentMap,
       ],
     }),
     GraphQLModule.forRoot({
@@ -46,7 +38,6 @@ import { ClassStudentMap } from './test-users/typeorm-entities/class-student-map
     MasterItemsModule,
     CommonModule,
     MarketTemplatesModule,
-    TestUsersModule,
   ],
   controllers: [],
   providers: [],

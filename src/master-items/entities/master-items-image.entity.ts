@@ -22,6 +22,6 @@ export class MasterItemImage {
   url: string;
 
   @Column('simple-json', { nullable: true })
-  @Field(() => MasterItemImageExtendInfo)
+  @Field(() => MasterItemImageExtendInfo, { nullable: true })
   extendInfo?: MasterItemImageExtendInfo;
 }
