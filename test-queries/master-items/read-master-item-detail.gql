@@ -1,5 +1,5 @@
 query	{
-  getMasterItem(id: 60)
+  getMasterItem(id: 79)
   {
     ok
     error
@@ -35,7 +35,12 @@ query	{
           order
           count
           price
-          valueInfo
+          valueInfo {
+            weight
+            weightUnit
+            capacity
+            capacityUnit
+          }
           userCode
           extendInfo
           createdAt

@@ -31,7 +31,44 @@ query	{
       selectionBase {
         selectionId
         options
+        # details {
+        #   order
+        #   count
+        #   price
+        #   valueInfo
+        #   userCode
+        #   extendInfo
+        #   createdAt
+        # }
       }
+      # addOptionInfoList
+      # {
+      #   order
+      #   name
+      #   value
+      #   price
+      #   count
+      #   extendInfo
+      # }
+      # additionalInfo
+      # {
+      #   tax
+      #   origin
+      #   brand
+      # }
+      # extendInfoList {
+      #   marketCode
+      #   marketSubCode
+      #   info
+      # }
+      # sellingItemInfo {
+      #   sendType
+      #   sendPayType
+      #   sourceMarket
+      #   sellerId	
+      #   sellingItemNo
+      #   itemLink
+      # }
       createdAt
       updatedAt
     }

@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, OmitType, PickType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItemAddoption } from '../entities/master-items-addoption.entity';
 import { MasterItemExtend } from '../entities/master-items-extend.entity';
@@ -9,9 +9,10 @@ import { MasterItem } from '../entities/master-items.entity';
 import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
 import { MasterItemImageExtendInfo } from '../json-types/master-items-image-extendInfo.type';
+import { MasterItemSelectionDetailValueInfo } from '../json-types/master-items-selection-detail-valueInfo.type';
 import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingItemInfo.type';
 
-//#region  input DTO
+//#region input DTO
 
 @InputType()
 export class CategoryInfoInput extends MasterItemCategoryInfo {}
@@ -23,8 +24,10 @@ export class AdditionalInfoInput extends MasterItemAdditionalInfo {}
 export class SellingItemInfoInput extends MasterItemSellingItemInfo {}
 
 @InputType()
-export class ImagesExtendInput extends MasterItemImageExtendInfo {
-}
+export class ImagesExtendInput extends MasterItemImageExtendInfo {}
+
+@InputType()
+export class MasterItemSelectionDetailValueInfoInput extends MasterItemSelectionDetailValueInfo {}
 
 @InputType()
 export class ImagesInput extends OmitType(MasterItemImage, [
@@ -38,8 +41,11 @@ export class ImagesInput extends OmitType(MasterItemImage, [
 @InputType()
 export class MasterItemSelectionDetailInput extends OmitType(
   MasterItemSelectionDetail,
-  ['selectionBase', 'createdAt'],
-) {}
+  ['selectionBase', 'valueInfo', 'createdAt'],
+) {
+  @Field(() => MasterItemSelectionDetailValueInfoInput, { nullable: true })
+  valueInfoInput?: MasterItemSelectionDetailValueInfoInput;
+}
 
 @InputType()
 export class MasterItemSelectionBaseInput extends OmitType(

@@ -186,6 +186,7 @@ export class MasterItemsService {
               eachItem.selectionBaseInput.detailsInput.forEach((detail) => {
                 const selectionDetailInfo: MasterItemSelectionDetail = {
                   selectionBase: resultSelectionBase,
+                  valueInfo: detail.valueInfoInput,
                   ...detail,
                 };
 

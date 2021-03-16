@@ -52,7 +52,12 @@ mutation {
                 count: 9999
                 price: 1000
                 userCode: "CODE123"
-                valueInfo: " { something }"
+                valueInfoInput: {
+                  weight: 10
+                  weightUnit: kg
+                  capacity: 10
+                  capacityUnit: l
+                }
                 extendInfo: " { something }"
               }
               {
@@ -60,7 +65,6 @@ mutation {
                 count: 9999
                 price: 1000
                 userCode: "CODE456"
-                valueInfo: " { something }"
                 extendInfo: " { something }"
               }
             ]

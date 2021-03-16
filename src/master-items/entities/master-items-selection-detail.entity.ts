@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
+import { MasterItemSelectionDetailValueInfo } from '../json-types/master-items-selection-detail-valueInfo.type';
 import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 
 @InputType({ isAbstract: true })
@@ -30,9 +31,9 @@ export class MasterItemSelectionDetail {
   @Field(() => Number)
   price: number;
 
-  @Column({ type: 'simple-json' })
-  @Field(() => String)
-  valueInfo: string;
+  @Column({ type: 'simple-json', nullable: true })
+  @Field(() => MasterItemSelectionDetailValueInfo, { nullable: true })
+  valueInfo?: MasterItemSelectionDetailValueInfo;
 
   @Column({ type: 'varchar', length: 40, nullable: true })
   @Field(() => String)

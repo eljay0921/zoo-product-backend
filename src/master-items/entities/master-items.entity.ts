@@ -20,7 +20,7 @@ import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 @Entity()
 export class MasterItem {
   @PrimaryGeneratedColumn()
-  @Field((type) => Number)
+  @Field((type) => Number, { nullable: true })
   id?: number;
 
   @Column({ length: 300 })
@@ -60,11 +60,11 @@ export class MasterItem {
   sellingItemInfo?: MasterItemSellingItemInfo;
 
   @CreateDateColumn()
-  @Field((type) => Date)
+  @Field((type) => Date, { nullable: true })
   createdAt?: Date;
 
   @CreateDateColumn()
-  @Field((type) => Date)
+  @Field((type) => Date, { nullable: true })
   updatedAt?: Date;
 
   // relation entities
