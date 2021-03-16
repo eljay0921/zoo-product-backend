@@ -17,11 +17,16 @@ export class MasterItemsResolver {
   }
 
   @Query(() => ReadMasterItemsOutput)
+  async getMasterItem(@Args('id') id: number): Promise<ReadMasterItemsOutput> {
+    return this.masterItemsService.getMasterItem(id);
+  }
+
+  @Query(() => ReadMasterItemsOutput)
   async getMasterItems(
     @Args('page') page: number,
     @Args('size') size: number,
   ): Promise<ReadMasterItemsOutput> {
-    return this.masterItemsService.getItems(page, size);
+    return this.masterItemsService.getMasterItems(page, size);
   }
 
   @Mutation(() => CreateMasterItemsOutput)

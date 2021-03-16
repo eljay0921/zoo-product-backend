@@ -15,37 +15,26 @@ export class MarketTemplatesService {
     private readonly marketTemplatesRepo: Repository<MarketTemplates>,
   ) {}
 
-  async getMarketTemplates(
-    templateId?: number,
-    marketCode?: string,
-    marketSubCode?: string,
+  async getMarketTemplate(
+    templateId: number,
   ): Promise<ReadMarketTemplatesOutput> {
     try {
-      if (templateId) {
-        const marketTemplates = await this.marketTemplatesRepo.find({
-          id: templateId,
-        });
+      const marketTemplate = await this.marketTemplatesRepo.findOne({
+        id: templateId,
+      });
+
+      if (marketTemplate) {
         return {
           ok: true,
-          marketTemplates,
+          count: 1,
+          marketTemplates: [marketTemplate],
         };
-      }
-
-      if (marketCode && marketSubCode) {
-        const marketTemplates = await this.marketTemplatesRepo.find({
-          marketCode,
-          marketSubCode,
-        });
+      } else {
         return {
-          ok: true,
-          marketTemplates,
+          ok: false,
+          count: 0,
         };
       }
-
-      return {
-        ok: false,
-        error: '올바르지 않은 요청입니다.',
-      };
     } catch (error) {
       console.log(error);
       return {
@@ -55,7 +44,38 @@ export class MarketTemplatesService {
     }
   }
 
-  async insertMarketTemplates(
+  async getMarketTemplates(
+    marketCode: string,
+    marketSubCode: string,
+  ): Promise<ReadMarketTemplatesOutput> {
+    try {
+      const marketTemplates = await this.marketTemplatesRepo.find({
+        marketCode,
+        marketSubCode,
+      });
+
+      if (marketTemplates) {
+        return {
+          ok: true,
+          count: marketTemplates.length,
+          marketTemplates,
+        };
+      } else {
+        return {
+          ok: false,
+          count: 0,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async insertMarketTemplate(
     marketTemplatesInput: MarketTemplatesInput,
   ): Promise<MarketTemplatesOutput> {
     try {
@@ -64,6 +84,7 @@ export class MarketTemplatesService {
       );
       return {
         ok: true,
+        resultTemplateId: result.id,
       };
     } catch (error) {
       console.log(error);

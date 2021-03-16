@@ -1,0 +1,24 @@
+query {
+  getMarketTemplate (id: 10) {
+    ok
+    error
+    count
+    marketTemplates {
+      id
+      marketCode
+      marketSubCode
+      smid
+      marketID
+      name
+      description
+      baseInfo
+      basicExtendInfo
+      extendInfo
+      deliveryInfo
+      addServiceInfo
+      etcInfo
+      createdAt
+      updatedAt
+    }
+  }
+}

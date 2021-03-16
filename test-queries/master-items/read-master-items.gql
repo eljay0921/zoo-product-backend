@@ -1,0 +1,39 @@
+query	{
+  getMasterItems(page:1, size:100)
+  {
+    ok
+    error
+    count
+    masterItems {
+      id
+      name
+      categoryCode
+      categoryInfo
+      {
+        fullCode
+        depth1Code
+        depth1Name
+        depth2Code
+        depth2Name
+        # ...
+      }
+      price
+      count
+      userCode
+      description
+      images {
+        order
+        url
+        extendInfo {
+          altMessage
+        }
+      }
+      selectionBase {
+        selectionId
+        options
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}

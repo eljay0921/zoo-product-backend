@@ -31,7 +31,43 @@ export class MasterItemsService {
     private readonly masterItemsImagesRepo: Repository<MasterItemImage>,
   ) {}
 
-  async getItems(page: number, size: number): Promise<ReadMasterItemsOutput> {
+  async getMasterItem(id: number): Promise<ReadMasterItemsOutput> {
+    try {
+      const masterItem = await this.masterItemsRepo.findOne({
+        where: { id },
+        relations: [
+          'images',
+          'addOptionInfoList',
+          'extendInfoList',
+          'selectionBase',
+          'selectionBase.details',
+        ],
+      });
+      if (masterItem) {
+        return {
+          ok: true,
+          count: 1,
+          masterItems: [masterItem],
+        };
+      } else {
+        return {
+          ok: false,
+          count: 0,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async getMasterItems(
+    page: number,
+    size: number,
+  ): Promise<ReadMasterItemsOutput> {
     try {
       if (page < 1) {
         return {

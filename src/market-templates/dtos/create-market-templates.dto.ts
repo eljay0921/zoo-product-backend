@@ -11,6 +11,6 @@ export class MarketTemplatesInput extends OmitType(MarketTemplates, [
 
 @ObjectType()
 export class MarketTemplatesOutput extends CoreOutput {
-  @Field(() => [MarketTemplates], { nullable: true })
-  resultTemplates?: MarketTemplates[];
+  @Field(() => Number, { nullable: true })
+  resultTemplateId?: number;
 }

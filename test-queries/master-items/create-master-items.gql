@@ -24,17 +24,23 @@ mutation {
             {
               order: 0
               url: "https://image.123.com/test.jpg"
-              extendInfo: "{ something }"
+              extendInfoInput : {
+                altMessage: "alt message !"
+              }
             }
             {
               order: 1
               url: "https://image.123.com/test.jpg"
-              extendInfo: "{ something }"
+              extendInfoInput : {
+                altMessage: "alt message !"
+              }
             }
             {
               order: 2
               url: "https://image.123.com/test.jpg"
-              extendInfo: "{ something }"
+              extendInfoInput : {
+                altMessage: "alt message !"
+              }
             }
           ]
           selectionBaseInput: {
@@ -106,7 +112,7 @@ mutation {
     error
     result {
       ok
-      message
+      messages
       masterItemId
     }
   }

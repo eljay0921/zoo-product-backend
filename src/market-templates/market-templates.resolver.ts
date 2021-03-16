@@ -14,23 +14,28 @@ export class MarketTemplatesResolver {
   ) {}
 
   @Query(() => ReadMarketTemplatesOutput)
+  async getMarketTemplate(
+    @Args('id') templateId: number,
+  ): Promise<ReadMarketTemplatesOutput> {
+    return this.marketTemplatesService.getMarketTemplate(templateId);
+  }
+
+  @Query(() => ReadMarketTemplatesOutput)
   async getMarketTemplates(
-    @Args('id', { nullable: true }) templateId?: number,
-    @Args('marketCode', { nullable: true }) marketCode?: string,
-    @Args('marketSubCode', { nullable: true }) marketSubCode?: string,
+    @Args('marketCode') marketCode: string,
+    @Args('marketSubCode') marketSubCode: string,
   ): Promise<ReadMarketTemplatesOutput> {
     return this.marketTemplatesService.getMarketTemplates(
-      templateId,
       marketCode,
       marketSubCode,
     );
   }
 
   @Mutation(() => MarketTemplatesOutput)
-  async createMarketTemplates(
+  async createMarketTemplate(
     @Args('input') createMarketTemplatesInput: MarketTemplatesInput,
   ): Promise<MarketTemplatesOutput> {
-    return this.marketTemplatesService.insertMarketTemplates(
+    return this.marketTemplatesService.insertMarketTemplate(
       createMarketTemplatesInput,
     );
   }

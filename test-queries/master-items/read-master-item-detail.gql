@@ -1,5 +1,5 @@
 query	{
-  getMasterItems(page:1, size:100)
+  getMasterItem(id: 60)
   {
     ok
     error
@@ -21,8 +21,16 @@ query	{
       count
       userCode
       description
+      images {
+        order
+        url
+        extendInfo {
+          altMessage
+        }
+      }
       selectionBase {
         selectionId
+        options
         details {
           order
           count
