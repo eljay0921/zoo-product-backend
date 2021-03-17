@@ -19,6 +19,7 @@ import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 @ObjectType()
 @Entity()
 export class MasterItem {
+  // 개별 DB로 갈 경우 INT로 충분, 통합 DB이면서 파티셔닝(또는 샤딩)할 경우 BIGINT로 고려
   @PrimaryGeneratedColumn()
   @Field((type) => Number, { nullable: true })
   id?: number;
@@ -35,11 +36,11 @@ export class MasterItem {
   @Field((type) => MasterItemCategoryInfo)
   categoryInfo: MasterItemCategoryInfo;
 
-  @Column({ type: 'int' })
+  @Column()
   @Field((type) => Number)
   price: number;
 
-  @Column({ type: 'mediumint' })
+  @Column()
   @Field((type) => Number)
   count: number;
 

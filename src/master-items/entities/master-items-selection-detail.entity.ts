@@ -23,11 +23,11 @@ export class MasterItemSelectionDetail {
   @Field(() => MasterItemSelectionBase)
   selectionBase?: MasterItemSelectionBase;
 
-  @Column({ type: 'mediumint' })
+  @Column()
   @Field(() => Number)
   count: number;
 
-  @Column({ type: 'int' })
+  @Column()
   @Field(() => Number)
   price: number;
 

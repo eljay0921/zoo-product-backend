@@ -30,11 +30,11 @@ export class MasterItemAddoption {
   @Field(() => String)
   value: string;
 
-  @Column({ type: 'mediumint' })
+  @Column()
   @Field(() => Number)
   count: number;
 
-  @Column({ type: 'int' })
+  @Column()
   @Field(() => Number)
   price: number;
 

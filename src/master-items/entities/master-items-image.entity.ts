@@ -1,5 +1,11 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { MasterItemImageExtendInfo } from '../json-types/master-items-image-extendInfo.type';
 import { MasterItem } from './master-items.entity';
 
@@ -7,7 +13,7 @@ import { MasterItem } from './master-items.entity';
 @ObjectType()
 @Entity()
 export class MasterItemImage {
-  @PrimaryColumn({ type: 'smallint' })
+  @PrimaryColumn({ type: 'tinyint' })
   @Field(() => Number)
   order: number;
 
@@ -24,4 +30,8 @@ export class MasterItemImage {
   @Column('simple-json', { nullable: true })
   @Field(() => MasterItemImageExtendInfo, { nullable: true })
   extendInfo?: MasterItemImageExtendInfo;
+
+  @CreateDateColumn()
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
 }

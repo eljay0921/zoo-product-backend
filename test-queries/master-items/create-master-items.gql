@@ -45,7 +45,7 @@ mutation {
           ]
           selectionBaseInput: {
             type: Combined
-            options: "['색상', '사이즈']"
+            options: ["색상", "사이즈"]
             detailsInput: [
               {
                 order:0
