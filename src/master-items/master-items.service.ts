@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DatabaseMiddleware } from 'src/middlewares/database-middleware';
+import { getManager, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
@@ -16,20 +18,53 @@ import { MasterItem } from './entities/master-items.entity';
 
 @Injectable()
 export class MasterItemsService {
-  constructor(
-    @InjectRepository(MasterItem)
-    private readonly masterItemsRepo: Repository<MasterItem>,
-    @InjectRepository(MasterItemExtend)
-    private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>,
-    @InjectRepository(MasterItemSelectionBase)
-    private readonly masterItemsSelectionBaseRepo: Repository<MasterItemSelectionBase>,
-    @InjectRepository(MasterItemSelectionDetail)
-    private readonly masterItemsSelectionDetailsRepo: Repository<MasterItemSelectionDetail>,
-    @InjectRepository(MasterItemAddoption)
-    private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>,
-    @InjectRepository(MasterItemImage)
-    private readonly masterItemsImagesRepo: Repository<MasterItemImage>,
-  ) {}
+  // constructor(
+  //   @InjectRepository(MasterItem)
+  //   private readonly masterItemsRepo: Repository<MasterItem>,
+  //   @InjectRepository(MasterItemExtend)
+  //   private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>,
+  //   @InjectRepository(MasterItemSelectionBase)
+  //   private readonly masterItemsSelectionBaseRepo: Repository<MasterItemSelectionBase>,
+  //   @InjectRepository(MasterItemSelectionDetail)
+  //   private readonly masterItemsSelectionDetailsRepo: Repository<MasterItemSelectionDetail>,
+  //   @InjectRepository(MasterItemAddoption)
+  //   private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>,
+  //   @InjectRepository(MasterItemImage)
+  //   private readonly masterItemsImagesRepo: Repository<MasterItemImage>,
+  // ) {}
+
+  private readonly masterItemsRepo: Repository<MasterItem>;
+  private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>;
+  private readonly masterItemsSelectionBaseRepo: Repository<MasterItemSelectionBase>;
+  private readonly masterItemsSelectionDetailsRepo: Repository<MasterItemSelectionDetail>;
+  private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>;
+  private readonly masterItemsImagesRepo: Repository<MasterItemImage>;
+
+  constructor(@Inject(REQUEST) private readonly request) {
+    this.masterItemsRepo = getManager(
+      this.request.req.headers[DatabaseMiddleware.DBName],
+    ).getRepository(MasterItem);
+
+    this.masterItemsExtendsRepo = getManager(
+      this.request.req.headers[DatabaseMiddleware.DBName],
+    ).getRepository(MasterItemExtend);
+
+    this.masterItemsSelectionBaseRepo = getManager(
+      this.request.req.headers[DatabaseMiddleware.DBName],
+    ).getRepository(MasterItemSelectionBase);
+
+    this.masterItemsSelectionDetailsRepo = getManager(
+      this.request.req.headers[DatabaseMiddleware.DBName],
+    ).getRepository(MasterItemSelectionDetail);
+
+    this.masterItemsAddOptionsRepo = getManager(
+      this.request.req.headers[DatabaseMiddleware.DBName],
+    ).getRepository(MasterItemAddoption);
+
+    this.masterItemsImagesRepo = getManager(
+      this.request.req.headers[DatabaseMiddleware.DBName],
+    ).getRepository(MasterItemImage);
+  }
 
   async getMasterItem(id: number): Promise<ReadMasterItemsOutput> {
     try {
@@ -172,9 +207,6 @@ export class MasterItemsService {
           // 선택사항
           const selectionAsync = async () => {
             try {
-
-
-              console.log(eachItem.selectionBaseInput.detailsInput);
               if (
                 eachItem.selectionBaseInput.type != 2 &&
                 eachItem.selectionBaseInput.detailsInput == null
