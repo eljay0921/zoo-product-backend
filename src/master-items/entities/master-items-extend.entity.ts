@@ -26,7 +26,7 @@ export class MasterItemExtend {
   @Field((type) => MasterItem)
   masterItem?: MasterItem;
 
-  @Column('simple-json')
+  @Column({ type: 'varchar' })
   @Field((type) => String)
   info: string;
 

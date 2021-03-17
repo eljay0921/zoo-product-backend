@@ -28,19 +28,24 @@ query	{
           altMessage
         }
       }
-      selectionBase {
-        selectionId
-        options
-        # details {
-        #   order
-        #   count
-        #   price
-        #   valueInfo
-        #   userCode
-        #   extendInfo
-        #   createdAt
-        # }
-      }
+      # selectionBase {
+      #   selectionId
+      #   options
+      #   details {
+      #     order
+      #     count
+      #     price
+      #     values
+      #     userCode
+      #     extendInfo {
+      #       weight
+      #       weightUnit
+      #       capacity
+      #       capacityUnit
+      #     }
+      #     createdAt
+      #   }
+      # }
       # addOptionInfoList
       # {
       #   order
@@ -48,7 +53,6 @@ query	{
       #   value
       #   price
       #   count
-      #   extendInfo
       # }
       # additionalInfo
       # {

@@ -52,20 +52,20 @@ mutation {
                 count: 9999
                 price: 1000
                 userCode: "CODE123"
-                valueInfoInput: {
+                values: ["블루", "스몰"]
+                extendInput: {
                   weight: 10
                   weightUnit: kg
                   capacity: 10
                   capacityUnit: l
                 }
-                extendInfo: " { something }"
               }
               {
                 order:1
                 count: 9999
                 price: 1000
                 userCode: "CODE456"
-                extendInfo: " { something }"
+                values: ["블루", "라지"]
               }
             ]
           }
@@ -76,7 +76,6 @@ mutation {
               value: "추가구성1 값"
               price: 500
               count: 9999
-              extendInfo: "{ something }"
             }
             {
               order: 1
@@ -84,7 +83,6 @@ mutation {
               value: "추가구성2 값"
               price: 500
               count: 9999
-              extendInfo: "{ something }"
             }
           ]
           additionalInfoInput: {

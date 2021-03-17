@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
-  MarketTemplatesInput,
-  MarketTemplatesOutput,
+  CreateMarketTemplatesInput,
+  CreateMarketTemplatesOutput,
 } from './dtos/create-market-templates.dto';
 import { ReadMarketTemplatesOutput } from './dtos/read-market-templates.dto';
 import { MarketTemplates } from './entities/market-templates.entity';
@@ -31,10 +31,10 @@ export class MarketTemplatesResolver {
     );
   }
 
-  @Mutation(() => MarketTemplatesOutput)
+  @Mutation(() => CreateMarketTemplatesOutput)
   async createMarketTemplate(
-    @Args('input') createMarketTemplatesInput: MarketTemplatesInput,
-  ): Promise<MarketTemplatesOutput> {
+    @Args('input') createMarketTemplatesInput: CreateMarketTemplatesInput,
+  ): Promise<CreateMarketTemplatesOutput> {
     return this.marketTemplatesService.insertMarketTemplate(
       createMarketTemplatesInput,
     );

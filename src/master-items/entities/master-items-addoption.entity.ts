@@ -19,7 +19,7 @@ export class MasterItemAddoption {
   @ManyToOne(() => MasterItem, (master) => master.addOptionInfoList, {
     primary: true,
   })
-  @Field((type) => MasterItem)
+  @Field(() => MasterItem)
   masterItem: MasterItem;
 
   @Column({ length: 100 })
@@ -37,10 +37,6 @@ export class MasterItemAddoption {
   @Column({ type: 'int' })
   @Field(() => Number)
   price: number;
-
-  @Column({ type: 'simple-json', nullable: true })
-  @Field(() => String, { nullable: true })
-  extendInfo?: string;
 
   @CreateDateColumn()
   @Field(() => Date)

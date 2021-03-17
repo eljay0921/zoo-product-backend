@@ -9,7 +9,7 @@ import { MasterItem } from '../entities/master-items.entity';
 import { MasterItemAdditionalInfo } from '../json-types/master-items-additionalInfo.type';
 import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.type';
 import { MasterItemImageExtendInfo } from '../json-types/master-items-image-extendInfo.type';
-import { MasterItemSelectionDetailValueInfo } from '../json-types/master-items-selection-detail-valueInfo.type';
+import { MasterItemSelectionDetailExtend } from '../json-types/master-items-selection-detail-valueInfo.type';
 import { MasterItemSellingItemInfo } from '../json-types/master-items-sellingItemInfo.type';
 
 //#region input DTO
@@ -27,7 +27,7 @@ export class SellingItemInfoInput extends MasterItemSellingItemInfo {}
 export class ImagesExtendInput extends MasterItemImageExtendInfo {}
 
 @InputType()
-export class MasterItemSelectionDetailValueInfoInput extends MasterItemSelectionDetailValueInfo {}
+export class MasterItemSelectionDetailExtendInput extends MasterItemSelectionDetailExtend {}
 
 @InputType()
 export class ImagesInput extends OmitType(MasterItemImage, [
@@ -41,10 +41,10 @@ export class ImagesInput extends OmitType(MasterItemImage, [
 @InputType()
 export class MasterItemSelectionDetailInput extends OmitType(
   MasterItemSelectionDetail,
-  ['selectionBase', 'valueInfo', 'createdAt'],
+  ['selectionBase', 'extendInfo', 'createdAt'],
 ) {
-  @Field(() => MasterItemSelectionDetailValueInfoInput, { nullable: true })
-  valueInfoInput?: MasterItemSelectionDetailValueInfoInput;
+  @Field(() => MasterItemSelectionDetailExtendInput, { nullable: true })
+  extendInput?: MasterItemSelectionDetailExtendInput;
 }
 
 @InputType()
@@ -52,8 +52,8 @@ export class MasterItemSelectionBaseInput extends OmitType(
   MasterItemSelectionBase,
   ['selectionId', 'masterItem', 'details', 'createAt'],
 ) {
-  @Field(() => [MasterItemSelectionDetailInput])
-  detailsInput: MasterItemSelectionDetailInput[];
+  @Field(() => [MasterItemSelectionDetailInput], { nullable: true })
+  detailsInput?: MasterItemSelectionDetailInput[];
 }
 
 @InputType()

@@ -45,7 +45,7 @@ registerEnumType(capacityUnit, { name: 'capacityUnit' });
 
 @InputType({ isAbstract: true })
 @ObjectType()
-export class MasterItemSelectionDetailValueInfo {
+export class MasterItemSelectionDetailExtend {
   @Field(() => Number, { nullable: true })
   weight?: number;
 

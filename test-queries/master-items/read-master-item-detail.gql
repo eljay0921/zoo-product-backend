@@ -1,5 +1,5 @@
 query	{
-  getMasterItem(id: 79)
+  getMasterItem(id: 100)
   {
     ok
     error
@@ -30,19 +30,20 @@ query	{
       }
       selectionBase {
         selectionId
+        type
         options
         details {
           order
           count
           price
-          valueInfo {
+          values
+          extendInfo {
             weight
             weightUnit
             capacity
             capacityUnit
           }
           userCode
-          extendInfo
           createdAt
         }
       }
@@ -53,7 +54,6 @@ query	{
         value
         price
         count
-        extendInfo
       }
       additionalInfo
       {

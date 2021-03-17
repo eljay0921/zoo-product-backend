@@ -3,14 +3,14 @@ import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MarketTemplates } from '../entities/market-templates.entity';
 
 @InputType()
-export class MarketTemplatesInput extends OmitType(MarketTemplates, [
+export class CreateMarketTemplatesInput extends OmitType(MarketTemplates, [
   'id',
   'createdAt',
   'updatedAt',
 ]) {}
 
 @ObjectType()
-export class MarketTemplatesOutput extends CoreOutput {
+export class CreateMarketTemplatesOutput extends CoreOutput {
   @Field(() => Number, { nullable: true })
   resultTemplateId?: number;
 }

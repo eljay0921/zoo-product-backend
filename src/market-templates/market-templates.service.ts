@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
-  MarketTemplatesInput,
-  MarketTemplatesOutput,
+  CreateMarketTemplatesInput,
+  CreateMarketTemplatesOutput,
 } from './dtos/create-market-templates.dto';
 import { ReadMarketTemplatesOutput } from './dtos/read-market-templates.dto';
 import { MarketTemplates } from './entities/market-templates.entity';
@@ -76,8 +76,8 @@ export class MarketTemplatesService {
   }
 
   async insertMarketTemplate(
-    marketTemplatesInput: MarketTemplatesInput,
-  ): Promise<MarketTemplatesOutput> {
+    marketTemplatesInput: CreateMarketTemplatesInput,
+  ): Promise<CreateMarketTemplatesOutput> {
     try {
       const result = await this.marketTemplatesRepo.save(
         this.marketTemplatesRepo.create(marketTemplatesInput),

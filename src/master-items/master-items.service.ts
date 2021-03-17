@@ -172,6 +172,20 @@ export class MasterItemsService {
           // 선택사항
           const selectionAsync = async () => {
             try {
+
+
+              console.log(eachItem.selectionBaseInput.detailsInput);
+              if (
+                eachItem.selectionBaseInput.type != 2 &&
+                eachItem.selectionBaseInput.detailsInput == null
+              ) {
+                eachResult.ok = false;
+                eachResult.messages.push(
+                  '선택사항 저장 실패 : 조합형 또는 독립형 선택사항인 경우 하위 옵션 정보는 필수입니다.',
+                );
+                return;
+              }
+
               const selectionBaseInfo: MasterItemSelectionBase = {
                 masterItem: resultMasterItem,
                 ...eachItem.selectionBaseInput,
@@ -183,10 +197,10 @@ export class MasterItemsService {
 
               // 선택사항 상세 정보
               const selectionDetailInfoList: MasterItemSelectionDetail[] = [];
-              eachItem.selectionBaseInput.detailsInput.forEach((detail) => {
+              eachItem.selectionBaseInput.detailsInput?.forEach((detail) => {
                 const selectionDetailInfo: MasterItemSelectionDetail = {
                   selectionBase: resultSelectionBase,
-                  valueInfo: detail.valueInfoInput,
+                  extendInfo: detail.extendInput,
                   ...detail,
                 };
 
@@ -201,7 +215,7 @@ export class MasterItemsService {
             } catch (error) {
               console.log(error);
               eachResult.ok = false;
-              eachResult.messages.push('선택사항 저장 실패');
+              eachResult.messages.push(`선택사항 저장 실패 : ${error}`);
             }
           };
 

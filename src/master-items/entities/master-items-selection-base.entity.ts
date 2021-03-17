@@ -29,7 +29,7 @@ registerEnumType(SelectionType, { name: 'SelectionType' });
 @Entity()
 export class MasterItemSelectionBase {
   @PrimaryGeneratedColumn()
-  @Field((type) => Number)
+  @Field(() => Number)
   selectionId?: number;
 
   @OneToOne(() => MasterItem, (master) => master.selectionBase)
@@ -41,15 +41,15 @@ export class MasterItemSelectionBase {
   @Field(() => SelectionType)
   type: SelectionType;
 
-  @Column()
-  @Field(() => String)
-  options: string;
+  @Column('simple-array')
+  @Field(() => [String])
+  options: string[];
 
   @CreateDateColumn()
   @Field(() => Date)
   createAt?: Date;
 
   @OneToMany(() => MasterItemSelectionDetail, (detail) => detail.selectionBase)
-  @Field((type) => [MasterItemSelectionDetail], { nullable: true })
+  @Field(() => [MasterItemSelectionDetail], { nullable: true })
   details?: MasterItemSelectionDetail[];
 }
