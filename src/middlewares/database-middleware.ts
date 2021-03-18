@@ -14,8 +14,8 @@ export class DatabaseMiddleware implements NestMiddleware {
       password: 'mmaria',
       database: databaseName,
       name: databaseName,
-      synchronize: true,
-      logging: true,
+      synchronize: false,
+      logging: false,
       entities: [
         'dist/**/entities/*.entity{.ts,.js}',
         'src/**/entities/*.entity{.ts}',

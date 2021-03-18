@@ -23,7 +23,7 @@ export class MasterItemImage {
   @Field((type) => MasterItem)
   masterItem: MasterItem;
 
-  @Column()
+  @Column({ type: 'varchar', length: 1000 })
   @Field(() => String)
   url: string;
 
