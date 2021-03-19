@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
@@ -32,7 +32,9 @@ export class MasterItemsResolver {
   @Mutation(() => CreateMasterItemsOutput)
   async createMasterItems(
     @Args('input') createMasterItemsInput: CreateMasterItemsInput,
+    @Context() ctx,
   ): Promise<CreateMasterItemsOutput> {
+    // console.log('Resolver : ', ctx.req.dbname);
     return this.masterItemsService.insertItems(createMasterItemsInput);
   }
 }

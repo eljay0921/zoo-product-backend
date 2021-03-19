@@ -41,28 +41,30 @@ export class MasterItemsService {
   private readonly masterItemsImagesRepo: Repository<MasterItemImage>;
 
   constructor(@Inject(REQUEST) private readonly request) {
-    this.masterItemsRepo = getManager(
-      this.request.req.headers[DatabaseMiddleware.DBName],
-    ).getRepository(MasterItem);
+    // console.log('Service : ', request.req.dbname);
+
+    this.masterItemsRepo = getManager(this.request.req.dbname).getRepository(
+      MasterItem,
+    );
 
     this.masterItemsExtendsRepo = getManager(
-      this.request.req.headers[DatabaseMiddleware.DBName],
+      this.request.req.dbname,
     ).getRepository(MasterItemExtend);
 
     this.masterItemsSelectionBaseRepo = getManager(
-      this.request.req.headers[DatabaseMiddleware.DBName],
+      this.request.req.dbname,
     ).getRepository(MasterItemSelectionBase);
 
     this.masterItemsSelectionDetailsRepo = getManager(
-      this.request.req.headers[DatabaseMiddleware.DBName],
+      this.request.req.dbname,
     ).getRepository(MasterItemSelectionDetail);
 
     this.masterItemsAddOptionsRepo = getManager(
-      this.request.req.headers[DatabaseMiddleware.DBName],
+      this.request.req.dbname,
     ).getRepository(MasterItemAddoption);
 
     this.masterItemsImagesRepo = getManager(
-      this.request.req.headers[DatabaseMiddleware.DBName],
+      this.request.req.dbname,
     ).getRepository(MasterItemImage);
   }
 

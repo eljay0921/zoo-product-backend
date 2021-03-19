@@ -3,9 +3,8 @@ import { getConnection, createConnection, ConnectionOptions } from 'typeorm';
 
 @Injectable()
 export class DatabaseMiddleware implements NestMiddleware {
-  public static DBName = 'zooprdnm';
   async use(req: any, res: any, next: () => void) {
-    const databaseName = req.headers[DatabaseMiddleware.DBName];
+    const databaseName = `ProductManage_${req.headers['user-id']}`;
     const connection: ConnectionOptions = {
       type: 'mysql',
       host: 'localhost',
@@ -23,6 +22,9 @@ export class DatabaseMiddleware implements NestMiddleware {
     };
 
     try {
+      // set graphql context 'dbname'
+      req.dbname = databaseName;
+      // console.log('Middleware : ', req.dbname);
       getConnection(connection.name);
     } catch (error) {
       await createConnection(connection);
