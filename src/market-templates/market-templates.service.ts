@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { getManager, Repository } from 'typeorm';
 import {
   CreateMarketTemplatesInput,
   CreateMarketTemplatesOutput,
@@ -10,10 +10,17 @@ import { MarketTemplates } from './entities/market-templates.entity';
 
 @Injectable()
 export class MarketTemplatesService {
-  constructor(
-    @InjectRepository(MarketTemplates)
-    private readonly marketTemplatesRepo: Repository<MarketTemplates>,
-  ) {}
+  // constructor(
+  //   @InjectRepository(MarketTemplates)
+  //   private readonly marketTemplatesRepo: Repository<MarketTemplates>,
+  // ) {}
+
+  private readonly marketTemplatesRepo: Repository<MarketTemplates>;
+  constructor(@Inject(REQUEST) private readonly request) {
+    this.marketTemplatesRepo = getManager(
+      this.request.req.dbname,
+    ).getRepository(MarketTemplates);
+  }
 
   async getMarketTemplate(
     templateId: number,

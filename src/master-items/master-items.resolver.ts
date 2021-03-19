@@ -32,7 +32,7 @@ export class MasterItemsResolver {
   @Mutation(() => CreateMasterItemsOutput)
   async createMasterItems(
     @Args('input') createMasterItemsInput: CreateMasterItemsInput,
-    @Context() ctx,
+    // @Context() ctx,
   ): Promise<CreateMasterItemsOutput> {
     // console.log('Resolver : ', ctx.req.dbname);
     return this.masterItemsService.insertItems(createMasterItemsInput);

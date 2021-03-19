@@ -1,7 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DatabaseMiddleware } from 'src/middlewares/database-middleware';
 import { getManager, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
