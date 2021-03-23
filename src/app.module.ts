@@ -16,7 +16,7 @@ import { MasterItemAddoption } from './master-items/entities/master-items-addopt
 import { MarketTemplates } from './market-templates/entities/market-templates.entity';
 import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items/entities/master-items-selection-base.entity';
-import { DatabaseMiddleware } from './middlewares/database-middleware';
+import { DatabaseMiddleware } from './middlewares/database.middleware';
 
 @Module({
   imports: [
@@ -49,11 +49,13 @@ import { DatabaseMiddleware } from './middlewares/database-middleware';
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(DatabaseMiddleware).forRoutes(
-      { path: 'graphql', method: RequestMethod.ALL },
-      // { path: '', method: RequestMethod.GET },
-    );
-  }
-}
+export class AppModule {}
+
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(DatabaseMiddleware).forRoutes(
+//       { path: 'graphql', method: RequestMethod.ALL },
+//       // { path: '', method: RequestMethod.GET },
+//     );
+//   }
+// }

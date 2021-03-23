@@ -70,7 +70,6 @@ export class MasterItemExtendInput extends OmitType(MasterItemExtend, [
 
 @InputType()
 export class MasterItemsBaseInput extends OmitType(MasterItem, [
-  'id',
   'categoryInfo',
   'images',
   'selectionBase',
