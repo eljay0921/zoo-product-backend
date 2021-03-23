@@ -13,15 +13,15 @@ import { MasterItem } from './master-items.entity';
 @ObjectType()
 @Entity()
 export class MasterItemImage {
-  @PrimaryColumn({ type: 'tinyint' })
-  @Field(() => Number)
-  order: number;
-
   @ManyToOne(() => MasterItem, (master) => master.images, {
     primary: true,
   })
-  @Field((type) => MasterItem)
+  @Field(() => MasterItem)
   masterItem: MasterItem;
+
+  @PrimaryColumn({ type: 'tinyint' })
+  @Field(() => Number)
+  order: number;
 
   @Column({ type: 'varchar', length: 1000 })
   @Field(() => String)

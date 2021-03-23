@@ -12,16 +12,16 @@ import { MasterItem } from './master-items.entity';
 @ObjectType()
 @Entity()
 export class MasterItemAddoption {
-  @PrimaryColumn({ type: 'smallint' })
-  @Field(() => Number)
-  order: number;
-
   @ManyToOne(() => MasterItem, (master) => master.addOptionInfoList, {
     primary: true,
   })
   @Field(() => MasterItem)
   masterItem: MasterItem;
 
+  @PrimaryColumn({ type: 'smallint' })
+  @Field(() => Number)
+  order: number;
+  
   @Column({ length: 100 })
   @Field(() => String)
   name: string;

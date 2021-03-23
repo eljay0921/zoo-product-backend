@@ -51,8 +51,9 @@ import { DatabaseMiddleware } from './middlewares/database-middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(DatabaseMiddleware)
-      .forRoutes({ path: 'graphql', method: RequestMethod.POST });
+    consumer.apply(DatabaseMiddleware).forRoutes(
+      { path: 'graphql', method: RequestMethod.ALL },
+      // { path: '', method: RequestMethod.GET },
+    );
   }
 }

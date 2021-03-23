@@ -20,52 +20,52 @@ import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 @Entity()
 export class MasterItem {
   // 개별 DB로 갈 경우 INT로 충분, 통합 DB이면서 파티셔닝(또는 샤딩)할 경우 BIGINT로 고려
-  @PrimaryGeneratedColumn()
-  @Field((type) => Number, { nullable: true })
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  @Field(() => Number, { nullable: true })
   id?: number;
 
   @Column({ length: 300 })
-  @Field((type) => String)
+  @Field(() => String)
   name: string;
 
   @Column({ length: 12 })
-  @Field((type) => String)
+  @Field(() => String)
   categoryCode: string;
 
   @Column('simple-json')
-  @Field((type) => MasterItemCategoryInfo)
+  @Field(() => MasterItemCategoryInfo)
   categoryInfo: MasterItemCategoryInfo;
 
   @Column()
-  @Field((type) => Number)
+  @Field(() => Number)
   price: number;
 
   @Column()
-  @Field((type) => Number)
+  @Field(() => Number)
   count: number;
 
   @Column({ length: 40, nullable: true })
-  @Field((type) => String, { nullable: true })
+  @Field(() => String, { nullable: true })
   userCode?: string;
 
   @Column({ type: 'text', nullable: true })
-  @Field((type) => String, { nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Column('simple-json', { nullable: true })
-  @Field((type) => MasterItemAdditionalInfo, { nullable: true })
+  @Field(() => MasterItemAdditionalInfo, { nullable: true })
   additionalInfo?: MasterItemAdditionalInfo;
 
   @Column('simple-json', { nullable: true })
-  @Field((type) => MasterItemSellingItemInfo, { nullable: true })
+  @Field(() => MasterItemSellingItemInfo, { nullable: true })
   sellingItemInfo?: MasterItemSellingItemInfo;
 
   @CreateDateColumn()
-  @Field((type) => Date, { nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @CreateDateColumn()
-  @Field((type) => Date, { nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
   // relation entities
@@ -74,14 +74,14 @@ export class MasterItem {
   selectionBase?: MasterItemSelectionBase;
 
   @OneToMany(() => MasterItemImage, (image) => image.masterItem)
-  @Field((type) => [MasterItemImage], { nullable: true })
+  @Field(() => [MasterItemImage], { nullable: true })
   images?: MasterItemImage[];
 
   @OneToMany(() => MasterItemAddoption, (addOption) => addOption.masterItem)
-  @Field((type) => [MasterItemAddoption], { nullable: true })
+  @Field(() => [MasterItemAddoption], { nullable: true })
   addOptionInfoList?: MasterItemAddoption[];
 
   @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
-  @Field((type) => [MasterItemExtend], { nullable: true })
+  @Field(() => [MasterItemExtend], { nullable: true })
   extendInfoList?: MasterItemExtend[];
 }

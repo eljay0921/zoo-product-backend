@@ -28,7 +28,7 @@ registerEnumType(SelectionType, { name: 'SelectionType' });
 @ObjectType()
 @Entity()
 export class MasterItemSelectionBase {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   @Field(() => Number)
   selectionId?: number;
 

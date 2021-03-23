@@ -12,25 +12,25 @@ import { MasterItem } from './master-items.entity';
 @ObjectType()
 @Entity()
 export class MasterItemExtend {
-  @PrimaryColumn({ type: 'char', length: 1 })
-  @Field((type) => String)
-  marketCode: string;
-
-  @PrimaryColumn({ type: 'char', length: 4 })
-  @Field((type) => String)
-  marketSubCode: string;
-
   @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
     primary: true,
   })
-  @Field((type) => MasterItem)
+  @Field(() => MasterItem)
   masterItem?: MasterItem;
 
+  @PrimaryColumn({ type: 'char', length: 1 })
+  @Field(() => String)
+  marketCode: string;
+
+  @PrimaryColumn({ type: 'char', length: 4 })
+  @Field(() => String)
+  marketSubCode: string;
+
   @Column({ type: 'varchar' })
-  @Field((type) => String)
+  @Field(() => String)
   info: string;
 
   @CreateDateColumn()
-  @Field((type) => Date)
+  @Field(() => Date)
   createdAt?: Date;
 }
