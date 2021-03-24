@@ -3,6 +3,7 @@ mutation {
     input: {
       masterItems: [
         {
+        	id: 22
           name: "상품명 123"
           categoryCode: "100100100100"
           categoryInfoInput: {
@@ -45,7 +46,112 @@ mutation {
           ]
           selectionBaseInput: {
             type: Combined
-            options: ["색상", "사이즈"]
+            options: "['색상', '사이즈']"
+            detailsInput: [
+              {
+                order:0
+                count: 9999
+                price: 1000
+                userCode: "CODE123"
+                values: ["블루", "스몰"]
+                extendInput: {
+                  weight: 10
+                  weightUnit: kg
+                  capacity: 10
+                  capacityUnit: l
+                }
+              }
+              {
+                order:1
+                count: 9999
+                price: 1000
+                userCode: "CODE456"
+                values: ["블루", "라지"]
+              }
+            ]
+          }
+          addOptionInfoListInput: [
+            {
+              order: 0
+              name: "추가구성1"
+              value: "추가구성1 값"
+              price: 500
+              count: 9999
+            }
+            {
+              order: 1
+              name: "추가구성2"
+              value: "추가구성2 값"
+              price: 500
+              count: 9999
+            }
+          ]
+          additionalInfoInput: {
+            tax: TaxFree
+            origin: "원산지가 어디"
+            brand: "삼성물산"
+          }
+          sellingItemInfoInput: {
+            # ...
+          }
+          extendInfoListInput: [
+            {
+              marketCode: "V"
+              marketSubCode: "V001"
+              info: " { some market extendInfo }"
+            }
+            {
+              marketCode: "V"
+              marketSubCode: "V003"
+              info: " { some market extendInfo }"
+            }
+          ]
+        },
+        {
+        	# id: 23
+          name: "상품명 123"
+          categoryCode: "100100100100"
+          categoryInfoInput: {
+            fullCode: "100100100100"
+            depth1Code: "100000000000"
+            depth1Name: "패션의류"
+            depth2Code: "100100000000"
+            depth2Name: "유니섹스/공용"
+            depth3Code: "100100100000"
+            depth3Name: "상의"
+            depth4Code: "100100100100"
+            depth4Name: "맨투맨"
+          }
+          price: 34000
+          count: 9999
+          userCode: "UNX-MTM-001"
+          description: "맨투맨 상의 상품 상세설명~"
+          imagesInput: [
+            {
+              order: 0
+              url: "https://image.123.com/test.jpg"
+              extendInfoInput : {
+                altMessage: "alt message !"
+              }
+            }
+            {
+              order: 1
+              url: "https://image.123.com/test.jpg"
+              extendInfoInput : {
+                altMessage: "alt message !"
+              }
+            }
+            {
+              order: 2
+              url: "https://image.123.com/test.jpg"
+              extendInfoInput : {
+                altMessage: "alt message !"
+              }
+            }
+          ]
+          selectionBaseInput: {
+            type: Combined
+            options: "['색상', '사이즈']"
             detailsInput: [
               {
                 order:0

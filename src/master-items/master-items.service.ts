@@ -166,6 +166,18 @@ export class MasterItemsService {
         const eachResult = new CreateMasterItemsResult(index);
         try {
           const eachItem = createMasterItemsInput.masterItems[index];
+
+          // 원본상품 중복 체크
+          const existItem = await this.masterItemsRepo.findOne({
+            id: eachItem.id,
+          });
+
+          if (existItem) {
+            eachResult.ok = false;
+            eachResult.messages.push('중복된 원본상품 번호입니다.');
+            continue;
+          }
+
           const masterItem: MasterItem = {
             ...eachItem,
             categoryInfo: eachItem.categoryInfoInput,

@@ -118,8 +118,8 @@ export class CreateMasterItemsResult {
     this.messages = [];
   }
 
-  @Field(() => Number)
-  masterItemId: number;
+  @Field(() => Number, { nullable: true })
+  masterItemId?: number;
 
   @Field(() => Boolean)
   ok: boolean;
