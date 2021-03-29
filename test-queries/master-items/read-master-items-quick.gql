@@ -21,6 +21,20 @@ query	{
       count
       userCode
       description
+      additionalInfo
+      {
+        tax
+        origin
+        brand
+      }
+      sellingItemInfo {
+        sendType
+        sendPayType
+        sourceMarket
+        sellerId	
+        sellingItemNo
+        itemLink
+      }
       createdAt
       updatedAt
     }

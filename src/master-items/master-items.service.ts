@@ -59,7 +59,7 @@ export class MasterItemsService {
   async getMasterItemsWithRelations(
     ids: number[],
   ): Promise<ReadMasterItemsOutput> {
-    try {     
+    try {
       const masterItems = await this.masterItemsRepo.find({
         where: {
           id: In([ids]),
