@@ -1,0 +1,28 @@
+query	{
+  getMasterItemsQuick(page:1, size:1000)
+  {
+    ok
+    error
+    count
+    masterItems {
+      id
+      name
+      categoryCode
+      categoryInfo
+      {
+        fullCode
+        depth1Code
+        depth1Name
+        depth2Code
+        depth2Name
+        # ...
+      }
+      price
+      count
+      userCode
+      description
+      createdAt
+      updatedAt
+    }
+  }
+}

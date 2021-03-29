@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { getManager, Repository } from 'typeorm';
+import { getManager, In, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
@@ -56,10 +56,14 @@ export class MasterItemsService {
     // ).getRepository(MasterItemImage);
   }
 
-  async getMasterItem(id: number): Promise<ReadMasterItemsOutput> {
-    try {
-      const masterItem = await this.masterItemsRepo.findOne({
-        where: { id },
+  async getMasterItemsWithRelations(
+    ids: number[],
+  ): Promise<ReadMasterItemsOutput> {
+    try {     
+      const masterItems = await this.masterItemsRepo.find({
+        where: {
+          id: In([ids]),
+        },
         relations: [
           'images',
           'addOptionInfoList',
@@ -68,11 +72,12 @@ export class MasterItemsService {
           'selectionBase.details',
         ],
       });
-      if (masterItem) {
+
+      if (masterItems) {
         return {
           ok: true,
-          count: 1,
-          masterItems: [masterItem],
+          count: masterItems.length,
+          masterItems,
         };
       } else {
         return {
@@ -89,7 +94,7 @@ export class MasterItemsService {
     }
   }
 
-  async getMasterItems(
+  async getMasterItemsNoRelations(
     page: number,
     size: number,
   ): Promise<ReadMasterItemsOutput> {
@@ -112,13 +117,6 @@ export class MasterItemsService {
         skip: size * (page - 1),
         take: size,
         order: { id: 'ASC' },
-        relations: [
-          'images',
-          'addOptionInfoList',
-          'extendInfoList',
-          'selectionBase',
-          'selectionBase.details',
-        ],
       });
 
       return {

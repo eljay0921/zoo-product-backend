@@ -7,7 +7,10 @@ import {
   DeleteMasterItemsInput,
   DeleteMasterItemsOutput,
 } from './dtos/delete-master-items.dto';
-import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
+import {
+  ReadMasterItemsInput,
+  ReadMasterItemsOutput,
+} from './dtos/read-master-items.dto';
 import { MasterItem } from './entities/master-items.entity';
 import { MasterItemsService } from './master-items.service';
 
@@ -21,16 +24,20 @@ export class MasterItemsResolver {
   }
 
   @Query(() => ReadMasterItemsOutput)
-  async getMasterItem(@Args('id') id: number): Promise<ReadMasterItemsOutput> {
-    return this.masterItemsService.getMasterItem(id);
+  async getMasterItems(
+    @Args('input') readMasterItemsInput: ReadMasterItemsInput,
+  ): Promise<ReadMasterItemsOutput> {
+    return this.masterItemsService.getMasterItemsWithRelations(
+      readMasterItemsInput.ids,
+    );
   }
 
   @Query(() => ReadMasterItemsOutput)
-  async getMasterItems(
+  async getMasterItemsQuick(
     @Args('page') page: number,
     @Args('size') size: number,
   ): Promise<ReadMasterItemsOutput> {
-    return this.masterItemsService.getMasterItems(page, size);
+    return this.masterItemsService.getMasterItemsNoRelations(page, size);
   }
 
   @Mutation(() => CreateMasterItemsOutput)

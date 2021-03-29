@@ -1,0 +1,9 @@
+mutation {
+  deleteMasterItems(input: {
+    ids: [2, 3]
+  })
+  {
+    ok
+    error
+  }
+}

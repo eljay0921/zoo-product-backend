@@ -1,5 +1,5 @@
 mutation {
-  createMasterItems(
+  createMasterItemsBulk(
     input: {
       masterItems: [
         {
@@ -30,7 +30,7 @@ mutation {
             }
             {
               order: 1
-              url: "https://image.123.com/test.jpg"
+              url: "https://image.125.com/test.jpg"
               extendInfoInput : {
                 altMessage: "alt message !"
               }
@@ -217,10 +217,5 @@ mutation {
   {
     ok
     error
-    result {
-      ok
-      messages
-      masterItemId
-    }
   }
 }

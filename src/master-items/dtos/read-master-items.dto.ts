@@ -1,6 +1,12 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/common/dtos/output.dto';
 import { MasterItem } from '../entities/master-items.entity';
+
+@InputType()
+export class ReadMasterItemsInput {
+  @Field(() => [Number])
+  ids: number[];
+}
 
 @ObjectType()
 export class ReadMasterItemsOutput extends CoreOutput {
