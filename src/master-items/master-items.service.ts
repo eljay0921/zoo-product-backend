@@ -270,7 +270,7 @@ export class MasterItemsService {
           const errMsg = error.message.substring(0, 100);
           eachResult.messages.push(`원본상품 생성 실패 - ${errMsg}...`);
         } finally {
-          totalResult.push(eachResult);
+          await totalResult.push(eachResult);
         }
       }
 
@@ -307,13 +307,12 @@ export class MasterItemsService {
         try {
           const eachItem = createMasterItemsInput.masterItems[index];
           const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-
           await totalInserItem.push(masterItem);
         } catch (error) {
-          console.log(1, error);
+          console.log('Entity 객체 생성 중 실패 : ', error);
           return {
             ok: false,
-            error: `원본상품 생성 실패 - ${error.message.substring(0, 100)}...`,
+            error: `원본상품 생성 실패 - ${error.message.substring(0, 200)}...`,
           };
         }
       }
@@ -326,10 +325,10 @@ export class MasterItemsService {
         ok: true,
       };
     } catch (error) {
-      console.log(2, error);
-      return {
+      console.log('원본상품 정보 입력 중 실패 : ', error);
+      return await {
         ok: false,
-        error,
+        error: `원본상품 저장 실패 - ${error.message.substring(0, 200)}...`,
       };
     }
   }
