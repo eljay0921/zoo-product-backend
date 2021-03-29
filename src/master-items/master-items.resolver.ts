@@ -3,7 +3,10 @@ import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
 } from './dtos/create-master-items.dto';
-import { DeleteMasterItemsInput, DeleteMasterItemsOutput } from './dtos/delete-master-items.dto';
+import {
+  DeleteMasterItemsInput,
+  DeleteMasterItemsOutput,
+} from './dtos/delete-master-items.dto';
 import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
 import { MasterItem } from './entities/master-items.entity';
 import { MasterItemsService } from './master-items.service';
