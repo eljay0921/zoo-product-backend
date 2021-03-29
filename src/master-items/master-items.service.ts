@@ -1,11 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { getManager, Repository } from 'typeorm';
+import { removeTempField } from '@nestjs/graphql/dist/utils';
+import { getManager, In, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
   CreateMasterItemsResult,
 } from './dtos/create-master-items.dto';
+import {
+  DeleteMasterItemsInput,
+  DeleteMasterItemsOutput,
+} from './dtos/delete-master-items.dto';
 import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
 import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
@@ -178,11 +183,70 @@ export class MasterItemsService {
             continue;
           }
 
+          // 이미지
+          const images: MasterItemImage[] = [];
+          const createImageEntityAsync = async () => {
+            eachItem.imagesInput.forEach((image) => {
+              const masterItemImage: MasterItemImage = { ...image };
+              masterItemImage.extendInfo = image.extendInfoInput || undefined;
+  
+              images.push(masterItemImage);
+            });
+          };
+
+          // 선택사항
+          const selectionBase: MasterItemSelectionBase = {
+            ...eachItem.selectionBaseInput,
+            details: [],
+          };
+          const createSelectionEntityAsync = async () => {
+            eachItem.selectionBaseInput.detailsInput.forEach(
+              (selectionDetail) => {
+                const masterItemSelectionDetail: MasterItemSelectionDetail = {
+                  ...selectionDetail,
+                  extendInfo: selectionDetail.extendInput || undefined,
+                };
+                selectionBase.details.push(masterItemSelectionDetail);
+              },
+            );
+          }
+
+          // 추가구성
+          const addOptionInfoList: MasterItemAddoption[] = [];
+          const createAddOptionEntityAsync = async () => {
+            eachItem.addOptionInfoListInput.forEach((addOption) => {
+              const masterItemAddOption: MasterItemAddoption = { ...addOption };
+              addOptionInfoList.push(masterItemAddOption);
+            });
+          };
+
+          // 확장정보
+          const extendInfoList: MasterItemExtend[] = [];
+          const createExtendEntityAsync = async () => {
+            eachItem.extendInfoListInput?.forEach((ext) => {
+              const extendInfo: MasterItemExtend = { ...ext };
+              extendInfoList.push(extendInfo);
+            });
+
+            return extendInfoList;
+          };
+
+          Promise.all([
+            createImageEntityAsync(),
+            createSelectionEntityAsync(),
+            createAddOptionEntityAsync(),
+            createExtendEntityAsync(),
+          ]);
+
           const masterItem: MasterItem = {
             ...eachItem,
             categoryInfo: eachItem.categoryInfoInput,
-            additionalInfo: eachItem.additionalInfoInput,
-            sellingItemInfo: eachItem.sellingItemInfoInput,
+            additionalInfo: eachItem.additionalInfoInput || undefined,
+            sellingItemInfo: eachItem.sellingItemInfoInput || undefined,
+            images,
+            selectionBase,
+            addOptionInfoList,
+            extendInfoList,
           };
 
           // 원본상품 insert
@@ -193,126 +257,6 @@ export class MasterItemsService {
           eachResult.masterItemId = resultMasterItem.id;
           eachResult.ok = true;
 
-          // 이미지
-          const imageAsync = async () => {
-            try {
-              const imageList: MasterItemImage[] = [];
-              eachItem.imagesInput?.forEach((image) => {
-                const imageInfo: MasterItemImage = {
-                  ...image,
-                  extendInfo: { ...image.extendInfoInput },
-                  masterItem: resultMasterItem,
-                };
-                imageList.push(imageInfo);
-              });
-
-              await this.masterItemsImagesRepo.save(
-                this.masterItemsImagesRepo.create(imageList),
-              );
-            } catch (error) {
-              console.log(error);
-              eachResult.ok = false;
-              eachResult.messages.push('이미지 저장 실패');
-            }
-          };
-
-          // 선택사항
-          const selectionAsync = async () => {
-            try {
-              if (
-                eachItem.selectionBaseInput.type != 2 &&
-                eachItem.selectionBaseInput.detailsInput == null
-              ) {
-                eachResult.ok = false;
-                eachResult.messages.push(
-                  '선택사항 저장 실패 : 조합형 또는 독립형 선택사항인 경우 하위 옵션 정보는 필수입니다.',
-                );
-                return;
-              }
-
-              const selectionBaseInfo: MasterItemSelectionBase = {
-                masterItem: resultMasterItem,
-                ...eachItem.selectionBaseInput,
-              };
-
-              const resultSelectionBase = await this.masterItemsSelectionBaseRepo.save(
-                this.masterItemsSelectionBaseRepo.create(selectionBaseInfo),
-              );
-
-              // 선택사항 상세 정보
-              const selectionDetailInfoList: MasterItemSelectionDetail[] = [];
-              eachItem.selectionBaseInput.detailsInput?.forEach((detail) => {
-                const selectionDetailInfo: MasterItemSelectionDetail = {
-                  selectionBase: resultSelectionBase,
-                  extendInfo: detail.extendInput,
-                  ...detail,
-                };
-
-                selectionDetailInfoList.push(selectionDetailInfo);
-              });
-
-              await this.masterItemsSelectionDetailsRepo.save(
-                this.masterItemsSelectionDetailsRepo.create(
-                  selectionDetailInfoList,
-                ),
-              );
-            } catch (error) {
-              console.log(error);
-              eachResult.ok = false;
-              eachResult.messages.push(`선택사항 저장 실패 : ${error}`);
-            }
-          };
-
-          // 추가구성
-          const addOptionAsync = async () => {
-            try {
-              const addOptionInfoList: MasterItemAddoption[] = [];
-              eachItem.addOptionInfoListInput?.forEach((addOption) => {
-                const addOptionInfo: MasterItemAddoption = {
-                  ...addOption,
-                  masterItem: resultMasterItem,
-                };
-                addOptionInfoList.push(addOptionInfo);
-              });
-
-              await this.masterItemsAddOptionsRepo.save(
-                this.masterItemsAddOptionsRepo.create(addOptionInfoList),
-              );
-            } catch (error) {
-              console.log(error);
-              eachResult.ok = false;
-              eachResult.messages.push('추가구성 저장 실패');
-            }
-          };
-
-          // 확장정보
-          const extendAsync = async () => {
-            try {
-              const extendInfoList: MasterItemExtend[] = [];
-              eachItem.extendInfoListInput?.forEach((ext) => {
-                const extendInfo: MasterItemExtend = {
-                  ...ext,
-                  masterItem: resultMasterItem,
-                };
-                extendInfoList.push(extendInfo);
-              });
-
-              await this.masterItemsExtendsRepo.save(
-                this.masterItemsExtendsRepo.create(extendInfoList),
-              );
-            } catch (error) {
-              console.log(error);
-              eachResult.ok = false;
-              eachResult.messages.push('확장정보 저장 실패');
-            }
-          };
-
-          await Promise.all([
-            imageAsync(),
-            selectionAsync(),
-            addOptionAsync(),
-            extendAsync(),
-          ]);
         } catch (error) {
           console.log(error);
           eachResult.masterItemId = -1;
@@ -325,6 +269,33 @@ export class MasterItemsService {
       return {
         ok: true,
         result: totalResult,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async deleteItems(
+    deleteMasterItemsInput: DeleteMasterItemsInput,
+  ): Promise<DeleteMasterItemsOutput> {
+    try {
+      const result = await this.masterItemsRepo.delete(
+        deleteMasterItemsInput.ids,
+      );
+
+      if (deleteMasterItemsInput.ids.length > result.affected) {
+        return {
+          ok: true,
+          error: '일부 원본상품이 삭제되지 않았습니다.',
+        };
+      }
+
+      return {
+        ok: true,
       };
     } catch (error) {
       console.log(error);

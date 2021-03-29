@@ -14,9 +14,10 @@ import { MasterItem } from './master-items.entity';
 export class MasterItemAddoption {
   @ManyToOne(() => MasterItem, (master) => master.addOptionInfoList, {
     primary: true,
+    onDelete: 'CASCADE',
   })
   @Field(() => MasterItem)
-  masterItem: MasterItem;
+  masterItem?: MasterItem;
 
   @PrimaryColumn({ type: 'smallint' })
   @Field(() => Number)

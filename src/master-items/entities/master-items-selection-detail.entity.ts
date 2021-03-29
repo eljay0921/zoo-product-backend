@@ -19,6 +19,7 @@ export class MasterItemSelectionDetail {
 
   @ManyToOne(() => MasterItemSelectionBase, (base) => base.details, {
     primary: true,
+    onDelete: 'CASCADE',
   })
   @Field(() => MasterItemSelectionBase)
   selectionBase?: MasterItemSelectionBase;

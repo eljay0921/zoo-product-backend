@@ -14,6 +14,7 @@ import { MasterItem } from './master-items.entity';
 export class MasterItemExtend {
   @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
     primary: true,
+    onDelete: 'CASCADE',
   })
   @Field(() => MasterItem)
   masterItem?: MasterItem;

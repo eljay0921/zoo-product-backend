@@ -69,19 +69,27 @@ export class MasterItem {
   updatedAt?: Date;
 
   // relation entities
-  @OneToOne(() => MasterItemSelectionBase, (base) => base.masterItem)
+  @OneToOne(() => MasterItemSelectionBase, (base) => base.masterItem, {
+    cascade: true,
+  })
   @Field(() => MasterItemSelectionBase, { nullable: true })
   selectionBase?: MasterItemSelectionBase;
 
-  @OneToMany(() => MasterItemImage, (image) => image.masterItem)
+  @OneToMany(() => MasterItemImage, (image) => image.masterItem, {
+    cascade: true,
+  })
   @Field(() => [MasterItemImage], { nullable: true })
   images?: MasterItemImage[];
 
-  @OneToMany(() => MasterItemAddoption, (addOption) => addOption.masterItem)
+  @OneToMany(() => MasterItemAddoption, (addOption) => addOption.masterItem, {
+    cascade: true,
+  })
   @Field(() => [MasterItemAddoption], { nullable: true })
   addOptionInfoList?: MasterItemAddoption[];
 
-  @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem)
+  @OneToMany(() => MasterItemExtend, (ext) => ext.masterItem, {
+    cascade: true,
+  })
   @Field(() => [MasterItemExtend], { nullable: true })
   extendInfoList?: MasterItemExtend[];
 }

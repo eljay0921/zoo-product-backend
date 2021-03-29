@@ -32,7 +32,9 @@ export class MasterItemSelectionBase {
   @Field(() => Number)
   selectionId?: number;
 
-  @OneToOne(() => MasterItem, (master) => master.selectionBase)
+  @OneToOne(() => MasterItem, (master) => master.selectionBase, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   @Field(() => MasterItem, { nullable: true })
   masterItem?: MasterItem;
@@ -49,7 +51,11 @@ export class MasterItemSelectionBase {
   @Field(() => Date)
   createAt?: Date;
 
-  @OneToMany(() => MasterItemSelectionDetail, (detail) => detail.selectionBase)
+  @OneToMany(
+    () => MasterItemSelectionDetail,
+    (detail) => detail.selectionBase,
+    { cascade: true },
+  )
   @Field(() => [MasterItemSelectionDetail], { nullable: true })
   details?: MasterItemSelectionDetail[];
 }

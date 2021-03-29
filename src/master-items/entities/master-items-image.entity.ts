@@ -15,9 +15,10 @@ import { MasterItem } from './master-items.entity';
 export class MasterItemImage {
   @ManyToOne(() => MasterItem, (master) => master.images, {
     primary: true,
+    onDelete: 'CASCADE',
   })
   @Field(() => MasterItem)
-  masterItem: MasterItem;
+  masterItem?: MasterItem;
 
   @PrimaryColumn({ type: 'tinyint' })
   @Field(() => Number)
@@ -29,7 +30,7 @@ export class MasterItemImage {
 
   @Column('simple-json', { nullable: true })
   @Field(() => MasterItemImageExtendInfo, { nullable: true })
-  extendInfo?: MasterItemImageExtendInfo;
+  extendInfo?: MasterItemImageExtendInfo = {};
 
   @CreateDateColumn()
   @Field(() => Date, { nullable: true })
