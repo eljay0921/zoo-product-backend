@@ -6,6 +6,7 @@ import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
   CreateMasterItemsResult,
+  MasterItemsBaseInput,
 } from './dtos/create-master-items.dto';
 import {
   DeleteMasterItemsInput,
@@ -150,6 +151,78 @@ export class MasterItemsService {
     }
   }
 
+  private createMasterItemEntity(
+    masterItemBase: MasterItemsBaseInput,
+  ): MasterItem {
+    // 이미지
+    const images: MasterItemImage[] = [];
+    const createImageEntityAsync = async () => {
+      masterItemBase.imagesInput.forEach((image) => {
+        const masterItemImage: MasterItemImage = { ...image };
+        masterItemImage.extendInfo = image.extendInfoInput || undefined;
+
+        images.push(masterItemImage);
+      });
+    };
+
+    // 선택사항
+    const selectionBase: MasterItemSelectionBase = {
+      ...masterItemBase.selectionBaseInput,
+      details: [],
+    };
+    const createSelectionEntityAsync = async () => {
+      masterItemBase.selectionBaseInput.detailsInput.forEach(
+        (selectionDetail) => {
+          const masterItemSelectionDetail: MasterItemSelectionDetail = {
+            ...selectionDetail,
+            extendInfo: selectionDetail.extendInput || undefined,
+          };
+          selectionBase.details.push(masterItemSelectionDetail);
+        },
+      );
+    };
+
+    // 추가구성
+    const addOptionInfoList: MasterItemAddoption[] = [];
+    const createAddOptionEntityAsync = async () => {
+      masterItemBase.addOptionInfoListInput.forEach((addOption) => {
+        const masterItemAddOption: MasterItemAddoption = { ...addOption };
+        addOptionInfoList.push(masterItemAddOption);
+      });
+    };
+
+    // 확장정보
+    const extendInfoList: MasterItemExtend[] = [];
+    const createExtendEntityAsync = async () => {
+      masterItemBase.extendInfoListInput?.forEach((ext) => {
+        const extendInfo: MasterItemExtend = { ...ext };
+        extendInfoList.push(extendInfo);
+      });
+
+      return extendInfoList;
+    };
+
+    Promise.all([
+      createImageEntityAsync(),
+      createSelectionEntityAsync(),
+      createAddOptionEntityAsync(),
+      createExtendEntityAsync(),
+    ]);
+
+    const masterItem: MasterItem = {
+      ...masterItemBase,
+      categoryInfo: masterItemBase.categoryInfoInput,
+      additionalInfo: masterItemBase.additionalInfoInput || undefined,
+      sellingItemInfo: masterItemBase.sellingItemInfoInput || undefined,
+      images,
+      selectionBase,
+      addOptionInfoList,
+      extendInfoList,
+    };
+
+    return masterItem;
+  }
+
   async insertItems(
     createMasterItemsInput: CreateMasterItemsInput,
   ): Promise<CreateMasterItemsOutput> {
@@ -182,72 +255,7 @@ export class MasterItemsService {
             eachResult.messages.push('중복된 원본상품 번호입니다.');
             continue;
           }
-
-          // 이미지
-          const images: MasterItemImage[] = [];
-          const createImageEntityAsync = async () => {
-            eachItem.imagesInput.forEach((image) => {
-              const masterItemImage: MasterItemImage = { ...image };
-              masterItemImage.extendInfo = image.extendInfoInput || undefined;
-  
-              images.push(masterItemImage);
-            });
-          };
-
-          // 선택사항
-          const selectionBase: MasterItemSelectionBase = {
-            ...eachItem.selectionBaseInput,
-            details: [],
-          };
-          const createSelectionEntityAsync = async () => {
-            eachItem.selectionBaseInput.detailsInput.forEach(
-              (selectionDetail) => {
-                const masterItemSelectionDetail: MasterItemSelectionDetail = {
-                  ...selectionDetail,
-                  extendInfo: selectionDetail.extendInput || undefined,
-                };
-                selectionBase.details.push(masterItemSelectionDetail);
-              },
-            );
-          }
-
-          // 추가구성
-          const addOptionInfoList: MasterItemAddoption[] = [];
-          const createAddOptionEntityAsync = async () => {
-            eachItem.addOptionInfoListInput.forEach((addOption) => {
-              const masterItemAddOption: MasterItemAddoption = { ...addOption };
-              addOptionInfoList.push(masterItemAddOption);
-            });
-          };
-
-          // 확장정보
-          const extendInfoList: MasterItemExtend[] = [];
-          const createExtendEntityAsync = async () => {
-            eachItem.extendInfoListInput?.forEach((ext) => {
-              const extendInfo: MasterItemExtend = { ...ext };
-              extendInfoList.push(extendInfo);
-            });
-
-            return extendInfoList;
-          };
-
-          Promise.all([
-            createImageEntityAsync(),
-            createSelectionEntityAsync(),
-            createAddOptionEntityAsync(),
-            createExtendEntityAsync(),
-          ]);
-
-          const masterItem: MasterItem = {
-            ...eachItem,
-            categoryInfo: eachItem.categoryInfoInput,
-            additionalInfo: eachItem.additionalInfoInput || undefined,
-            sellingItemInfo: eachItem.sellingItemInfoInput || undefined,
-            images,
-            selectionBase,
-            addOptionInfoList,
-            extendInfoList,
-          };
+          const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
 
           // 원본상품 insert
           const resultMasterItem = await this.masterItemsRepo.save(
@@ -256,11 +264,11 @@ export class MasterItemsService {
 
           eachResult.masterItemId = resultMasterItem.id;
           eachResult.ok = true;
-
         } catch (error) {
           console.log(error);
           eachResult.masterItemId = -1;
-          eachResult.messages.push('원본상품 생성 실패');
+          const errMsg = error.message.substring(0, 100);
+          eachResult.messages.push(`원본상품 생성 실패 - ${errMsg}...`);
         } finally {
           totalResult.push(eachResult);
         }
@@ -272,6 +280,53 @@ export class MasterItemsService {
       };
     } catch (error) {
       console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async insertItemsBulk(
+    createMasterItemsInput: CreateMasterItemsInput,
+  ): Promise<CreateMasterItemsOutput> {
+    try {
+      if (createMasterItemsInput.masterItems.length > 100) {
+        return {
+          ok: false,
+          error: '원본상품은 한번에 최대 100개까지 한번에 등록 가능합니다.',
+        };
+      }
+
+      const totalInserItem: MasterItem[] = [];
+      for (
+        let index = 0;
+        index < createMasterItemsInput.masterItems.length;
+        index++
+      ) {
+        try {
+          const eachItem = createMasterItemsInput.masterItems[index];
+          const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
+
+          await totalInserItem.push(masterItem);
+        } catch (error) {
+          console.log(1, error);
+          return {
+            ok: false,
+            error: `원본상품 생성 실패 - ${error.message.substring(0, 100)}...`,
+          };
+        }
+      }
+
+      await this.masterItemsRepo.save(
+        this.masterItemsRepo.create(totalInserItem),
+      );
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log(2, error);
       return {
         ok: false,
         error,
