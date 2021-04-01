@@ -1,6 +1,6 @@
 import { UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { TimeoutMarketTemplateInterceptor } from 'src/interceptors/timeout-market-template-interceptor';
+import { TimeoutMarketTemplateInterceptor } from 'src/common/interceptors/timeout-market-template-interceptor';
 import {
   CreateMarketTemplatesInput,
   CreateMarketTemplatesOutput,

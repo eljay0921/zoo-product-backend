@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DatabaseGuard } from './guards/database.guard';
-import { TimeoutGlobalInterceptor } from './interceptors/timeout-global-interceptor';
-import { DatabaseMiddleware } from './middlewares/database.middleware';
+import { DatabaseGuard } from './common/guards/database.guard';
+import { TimeoutGlobalInterceptor } from './common/interceptors/timeout-global-interceptor';
+import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

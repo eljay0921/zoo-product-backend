@@ -16,7 +16,7 @@ import { MasterItemAddoption } from './master-items/entities/master-items-addopt
 import { MarketTemplates } from './market-templates/entities/market-templates.entity';
 import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items/entities/master-items-selection-base.entity';
-import { DatabaseMiddleware } from './middlewares/database.middleware';
+import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 
 @Module({
   imports: [

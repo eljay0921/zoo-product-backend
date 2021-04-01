@@ -1,6 +1,6 @@
 import { UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { TimeoutMasterItemInterceptor } from 'src/interceptors/timeout-master-item-interceptor';
+import { TimeoutMasterItemInterceptor } from 'src/common/interceptors/timeout-master-item-interceptor';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
