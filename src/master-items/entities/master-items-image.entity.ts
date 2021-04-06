@@ -11,7 +11,7 @@ import { MasterItem } from './master-items.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity('master_image')
 export class MasterItemImage {
   @ManyToOne(() => MasterItem, (master) => master.images, {
     primary: true,

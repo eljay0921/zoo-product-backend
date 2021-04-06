@@ -10,7 +10,7 @@ import { MasterItem } from './master-items.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity('master_extend')
 export class MasterItemExtend {
   @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
     primary: true,

@@ -1,5 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { getConnection, createConnection, ConnectionOptions } from 'typeorm';
+import { CustomNamingStrategy } from '../typeorm/custom-naming-strategy';
 
 @Injectable()
 export class DatabaseMiddleware implements NestMiddleware {
@@ -18,6 +19,7 @@ export class DatabaseMiddleware implements NestMiddleware {
         name: databaseName,
         synchronize: true,
         logging: false,
+        namingStrategy: new CustomNamingStrategy(),
         entities: [
           'dist/**/entities/*.entity{.ts,.js}',
           'src/**/entities/*.entity{.ts}',

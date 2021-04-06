@@ -1,5 +1,5 @@
 query	{
-  getMasterItems(input: { ids: [800, 801, 802]})
+  getMasterItems(input: { ids: [1, 2, 3, 4, 5, 101, 101, 102, 103, 104, 105]})
   {
     ok
     error

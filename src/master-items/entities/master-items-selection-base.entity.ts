@@ -26,7 +26,7 @@ registerEnumType(SelectionType, { name: 'SelectionType' });
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity('master_selection')
 export class MasterItemSelectionBase {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   @Field(() => Number)

@@ -10,7 +10,7 @@ import { MasterItem } from './master-items.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity('master_addoption')
 export class MasterItemAddoption {
   @ManyToOne(() => MasterItem, (master) => master.addOptionInfoList, {
     primary: true,

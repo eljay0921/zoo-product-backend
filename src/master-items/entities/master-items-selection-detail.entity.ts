@@ -11,7 +11,7 @@ import { MasterItemSelectionBase } from './master-items-selection-base.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity('selection_detail')
 export class MasterItemSelectionDetail {
   @PrimaryColumn({ type: 'smallint' })
   @Field(() => Number)

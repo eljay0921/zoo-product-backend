@@ -17,6 +17,7 @@ import { MarketTemplates } from './market-templates/entities/market-templates.en
 import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items/entities/master-items-selection-base.entity';
 import { DatabaseMiddleware } from './common/middlewares/database.middleware';
+import { CustomNamingStrategy } from './common/typeorm/custom-naming-strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { DatabaseMiddleware } from './common/middlewares/database.middleware';
       database: 'ProductManage_admin',
       synchronize: true,
       logging: true,
+      namingStrategy: new CustomNamingStrategy(),
       entities: [
         MasterItem,
         MasterItemExtend,
