@@ -22,38 +22,12 @@ import { MasterItem } from './entities/master-items.entity';
 @Injectable()
 export class MasterItemsService {
   private readonly masterItemsRepo: Repository<MasterItem>;
-  // private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>;
-  // private readonly masterItemsSelectionBaseRepo: Repository<MasterItemSelectionBase>;
-  // private readonly masterItemsSelectionDetailsRepo: Repository<MasterItemSelectionDetail>;
-  // private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>;
-  // private readonly masterItemsImagesRepo: Repository<MasterItemImage>;
 
   constructor(@Inject(REQUEST) private readonly request) {
     // console.log('Service : ', request.req.dbname);
-
     this.masterItemsRepo = getManager(this.request.req.dbname).getRepository(
       MasterItem,
     );
-
-    // this.masterItemsExtendsRepo = getManager(
-    //   this.request.req.dbname,
-    // ).getRepository(MasterItemExtend);
-
-    // this.masterItemsSelectionBaseRepo = getManager(
-    //   this.request.req.dbname,
-    // ).getRepository(MasterItemSelectionBase);
-
-    // this.masterItemsSelectionDetailsRepo = getManager(
-    //   this.request.req.dbname,
-    // ).getRepository(MasterItemSelectionDetail);
-
-    // this.masterItemsAddOptionsRepo = getManager(
-    //   this.request.req.dbname,
-    // ).getRepository(MasterItemAddoption);
-
-    // this.masterItemsImagesRepo = getManager(
-    //   this.request.req.dbname,
-    // ).getRepository(MasterItemImage);
   }
 
   async getMasterItemsWithRelations(
