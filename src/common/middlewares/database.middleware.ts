@@ -11,7 +11,7 @@ export class DatabaseMiddleware implements NestMiddleware {
       const databaseName = `ProductManage_${req.headers['user-id']}`;
       const connection: ConnectionOptions = {
         type: 'mysql',
-        host: 'localhost',
+        host: '121.78.195.41',
         port: 3306,
         username: 'root',
         password: 'mmaria',

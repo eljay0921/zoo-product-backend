@@ -1,8 +1,5 @@
 import {
-  MiddlewareConsumer,
   Module,
-  NestModule,
-  RequestMethod,
 } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from './common/common.module';
@@ -16,14 +13,13 @@ import { MasterItemAddoption } from './master-items/entities/master-items-addopt
 import { MarketTemplates } from './market-templates/entities/market-templates.entity';
 import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items/entities/master-items-selection-base.entity';
-import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 import { CustomNamingStrategy } from './common/typeorm/custom-naming-strategy';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '121.78.195.41',
       port: 3306,
       username: 'root',
       password: 'mmaria',
