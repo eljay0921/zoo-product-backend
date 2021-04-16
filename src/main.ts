@@ -7,8 +7,8 @@ import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(new DatabaseMiddleware().use);
-  app.useGlobalGuards(new DatabaseGuard());
+  //app.use(new DatabaseMiddleware().use);
+  // app.useGlobalGuards(new DatabaseGuard());
   app.useGlobalInterceptors(new TimeoutGlobalInterceptor());
 
   await app.listen(3000);

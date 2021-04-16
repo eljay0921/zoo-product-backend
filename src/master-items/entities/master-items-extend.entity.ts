@@ -1,37 +1,30 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryColumn,
-  CreateDateColumn,
-} from 'typeorm';
 import { MasterItem } from './master-items.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity('master_extend')
+// @Entity('master_extend')
 export class MasterItemExtend {
-  @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
-    primary: true,
-    onDelete: 'CASCADE',
-  })
+  // @ManyToOne(() => MasterItem, (master) => master.extendInfoList, {
+  //   primary: true,
+  //   onDelete: 'CASCADE',
+  // })
   @Field(() => MasterItem)
   masterItem?: MasterItem;
 
-  @PrimaryColumn({ type: 'char', length: 1 })
+  // @PrimaryColumn({ type: 'char', length: 1 })
   @Field(() => String)
   marketCode: string;
 
-  @PrimaryColumn({ type: 'char', length: 4 })
+  // @PrimaryColumn({ type: 'char', length: 4 })
   @Field(() => String)
   marketSubCode: string;
 
-  @Column({ type: 'varchar' })
+  // @Column({ type: 'varchar' })
   @Field(() => String)
   info: string;
 
-  @CreateDateColumn()
+  // @CreateDateColumn()
   @Field(() => Date)
   createdAt?: Date;
 }

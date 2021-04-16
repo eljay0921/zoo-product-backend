@@ -4,15 +4,6 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
 import { MasterItemSelectionDetail } from './master-items-selection-detail.entity';
 import { MasterItem } from './master-items.entity';
 
@@ -26,36 +17,36 @@ registerEnumType(SelectionType, { name: 'SelectionType' });
 
 @InputType({ isAbstract: true })
 @ObjectType()
-@Entity('master_selection')
+// @Entity('master_selection')
 export class MasterItemSelectionBase {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  // @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   @Field(() => Number)
   selectionId?: number;
 
-  @OneToOne(() => MasterItem, (master) => master.selectionBase, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
+  // @OneToOne(() => MasterItem, (master) => master.selectionBase, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn()
   @Field(() => MasterItem, { nullable: true })
   masterItem?: MasterItem;
 
-  @Column()
+  // @Column()
   @Field(() => SelectionType)
   type: SelectionType;
 
-  @Column('simple-array')
+  // @Column('simple-array')
   @Field(() => [String])
   options: string[];
 
-  @CreateDateColumn()
+  // @CreateDateColumn()
   @Field(() => Date)
   createAt?: Date;
 
-  @OneToMany(
-    () => MasterItemSelectionDetail,
-    (detail) => detail.selectionBase,
-    { cascade: true },
-  )
+  // @OneToMany(
+  //   () => MasterItemSelectionDetail,
+  //   (detail) => detail.selectionBase,
+  //   { cascade: true },
+  // )
   @Field(() => [MasterItemSelectionDetail], { nullable: true })
   details?: MasterItemSelectionDetail[];
 }

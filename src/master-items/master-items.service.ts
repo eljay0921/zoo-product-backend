@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { getManager, In, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
@@ -21,44 +20,23 @@ import { MasterItem } from './entities/master-items.entity';
 
 @Injectable()
 export class MasterItemsService {
-  private readonly masterItemsRepo: Repository<MasterItem>;
 
   constructor(@Inject(REQUEST) private readonly request) {
-    // console.log('Service : ', request.req.dbname);
-    this.masterItemsRepo = getManager(this.request.req.dbname).getRepository(
-      MasterItem,
-    );
+    console.log('# pm2 id : ', process.env.pm_id);
   }
 
   async getMasterItemsWithRelations(
     ids: number[],
   ): Promise<ReadMasterItemsOutput> {
-    try {
-      const masterItems = await this.masterItemsRepo.find({
-        where: {
-          id: In([ids]),
-        },
-        relations: [
-          'images',
-          'addOptionInfoList',
-          'extendInfoList',
-          'selectionBase',
-          'selectionBase.details',
-        ],
-      });
 
-      if (masterItems) {
-        return {
-          ok: true,
-          count: masterItems.length,
-          masterItems,
-        };
-      } else {
+    console.log('getMasterItemsWithRelations');
+
+    try {
+      
         return {
           ok: false,
           count: 0,
         };
-      }
     } catch (error) {
       console.log(error);
       return {
@@ -72,6 +50,8 @@ export class MasterItemsService {
     page: number,
     size: number,
   ): Promise<ReadMasterItemsOutput> {
+
+    console.log('getMasterItemsNoRelations');
     try {
       if (page < 1) {
         return {
@@ -87,16 +67,9 @@ export class MasterItemsService {
         };
       }
 
-      const masterItems = await this.masterItemsRepo.find({
-        skip: size * (page - 1),
-        take: size,
-        order: { id: 'ASC' },
-      });
-
       return {
         ok: true,
-        count: masterItems?.length,
-        masterItems,
+        count: 0,
       };
     } catch (error) {
       console.log(error);
@@ -182,6 +155,8 @@ export class MasterItemsService {
   async insertItems(
     createMasterItemsInput: CreateMasterItemsInput,
   ): Promise<CreateMasterItemsOutput> {
+
+    console.log('insertItems');
     try {
       if (createMasterItemsInput.masterItems.length > 100) {
         return {
@@ -191,45 +166,6 @@ export class MasterItemsService {
       }
 
       const totalResult: CreateMasterItemsResult[] = [];
-
-      for (
-        let index = 0;
-        index < createMasterItemsInput.masterItems.length;
-        index++
-      ) {
-        const eachResult = new CreateMasterItemsResult(index);
-        try {
-          const eachItem = createMasterItemsInput.masterItems[index];
-
-          // 원본상품 중복 체크
-          const existItem = await this.masterItemsRepo.findOne({
-            id: eachItem.id,
-          });
-
-          if (existItem) {
-            eachResult.ok = false;
-            eachResult.messages.push('중복된 원본상품 번호입니다.');
-            continue;
-          }
-          const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-
-          // 원본상품 insert
-          const resultMasterItem = await this.masterItemsRepo.save(
-            this.masterItemsRepo.create(masterItem),
-          );
-
-          eachResult.masterItemId = resultMasterItem.id;
-          eachResult.ok = true;
-        } catch (error) {
-          console.log(error);
-          eachResult.masterItemId = -1;
-          const errMsg = error.message.substring(0, 100);
-          eachResult.messages.push(`원본상품 생성 실패 - ${errMsg}...`);
-        } finally {
-          totalResult.push(eachResult);
-        }
-      }
-
       return {
         ok: true,
         result: totalResult,
@@ -246,6 +182,8 @@ export class MasterItemsService {
   async insertItemsBulk(
     createMasterItemsInput: CreateMasterItemsInput,
   ): Promise<CreateMasterItemsOutput> {
+
+    console.log('insertItemsBulk');
     try {
       if (createMasterItemsInput.masterItems.length > 100) {
         return {
@@ -253,29 +191,6 @@ export class MasterItemsService {
           error: '원본상품은 한번에 최대 100개까지 한번에 등록 가능합니다.',
         };
       }
-
-      const totalInserItem: MasterItem[] = [];
-      for (
-        let index = 0;
-        index < createMasterItemsInput.masterItems.length;
-        index++
-      ) {
-        try {
-          const eachItem = createMasterItemsInput.masterItems[index];
-          const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-          await totalInserItem.push(masterItem);
-        } catch (error) {
-          console.log('Entity 객체 생성 중 실패 : ', error);
-          return {
-            ok: false,
-            error: `원본상품 생성 실패 - ${error.message.substring(0, 200)}...`,
-          };
-        }
-      }
-
-      await this.masterItemsRepo.save(
-        this.masterItemsRepo.create(totalInserItem),
-      );
 
       return {
         ok: true,
@@ -293,8 +208,6 @@ export class MasterItemsService {
     deleteMasterItemsInput: DeleteMasterItemsInput,
   ): Promise<DeleteMasterItemsOutput> {
     try {
-      await this.masterItemsRepo.delete(deleteMasterItemsInput.ids);
-
       return {
         ok: true,
       };
