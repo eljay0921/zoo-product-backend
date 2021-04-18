@@ -1,6 +1,4 @@
-import {
-  Module,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from './common/common.module';
 import { MasterItemsModule } from './master-items/master-items.module';
@@ -14,15 +12,21 @@ import { MarketTemplates } from './market-templates/entities/market-templates.en
 import { MasterItemImage } from './master-items/entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items/entities/master-items-selection-base.entity';
 import { CustomNamingStrategy } from './common/typeorm/custom-naming-strategy';
+import {
+  DB_HOST,
+  DB_PORT,
+  DB_PSWD,
+  DB_USER,
+} from './common/database/db-constants';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '121.78.195.41',
-      port: 3306,
-      username: 'root',
-      password: 'mmaria',
+      host: DB_HOST,
+      port: DB_PORT,
+      username: DB_USER,
+      password: DB_PSWD,
       database: 'ProductManage_admin',
       synchronize: true,
       logging: true,
