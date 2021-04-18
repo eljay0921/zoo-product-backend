@@ -50,15 +50,6 @@ export class MasterItemsResolver {
     return this.masterItemsService.insertItems(createMasterItemsInput);
   }
 
-  @Mutation(() => CreateMasterItemsOutput)
-  async createMasterItemsBulk(
-    @Args('input') createMasterItemsInput: CreateMasterItemsInput,
-    // @Context() ctx,
-  ): Promise<CreateMasterItemsOutput> {
-    // console.log('Resolver : ', ctx.req.dbname);
-    return this.masterItemsService.insertItemsBulk(createMasterItemsInput);
-  }
-
   @Mutation(() => DeleteMasterItemsOutput)
   async deleteMasterItems(
     @Args('input') deleteMasterItemsInput: DeleteMasterItemsInput,
