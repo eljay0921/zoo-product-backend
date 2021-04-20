@@ -3,7 +3,7 @@ mutation {
     input: {
       masterItems: [
         {
-          name: "상품명 123"
+          name: "상품명 1"
           categoryCode: "100100100100"
           categoryInfoInput: {
             fullCode: "100100100100"
@@ -23,17 +23,17 @@ mutation {
           imagesInput: [
             {
               order: 0
-              url: "https://image.123.com/test.jpg"
+              url: "https://image.1.com/test.jpg"
               extendInfoInput: { altMessage: "alt message !" }
             }
             {
               order: 1
-              url: "https://image.125.com/test.jpg"
+              url: "https://image.1.com/test.jpg"
               extendInfoInput: { altMessage: "alt message !" }
             }
             {
               order: 2
-              url: "https://image.123.com/test.jpg"
+              url: "https://image.1.com/test.jpg"
               extendInfoInput: { altMessage: "alt message !" }
             }
           ]
@@ -45,7 +45,7 @@ mutation {
                 order: 0
                 count: 9999
                 price: 1000
-                userCode: "CODE123"
+                userCode: "CODE1"
                 values: ["블루", "스몰"]
                 extendInput: {
                   weight: 10
@@ -58,7 +58,7 @@ mutation {
                 order: 1
                 count: 9999
                 price: 1000
-                userCode: "CODE456"
+                userCode: "CODE1"
                 values: ["블루", "라지"]
               }
             ]
@@ -73,8 +73,8 @@ mutation {
             }
             {
               order: 1
-              name: "추가구성2"
-              value: "추가구성2 값"
+              name: "추가구성11"
+              value: "추가구성11 값"
               price: 500
               count: 9999
             }
@@ -88,17 +88,17 @@ mutation {
             {
               marketCode: "V"
               marketSubCode: "V001"
-              info: " { some market extendInfo }"
+              info: " { some market extendInfo1 }"
             }
             {
               marketCode: "V"
               marketSubCode: "V003"
-              info: " { some market extendInfo }"
+              info: " { some market extendInfo1 }"
             }
           ]
         }
         {
-          name: "상품명 123"
+          name: "상품명 2"
           categoryCode: "100100100100"
           categoryInfoInput: {
             fullCode: "100100100100"
@@ -118,17 +118,17 @@ mutation {
           imagesInput: [
             {
               order: 0
-              url: "https://image.123.com/test.jpg"
+              url: "https://image.2.com/test.jpg"
               extendInfoInput: { altMessage: "alt message !" }
             }
             {
               order: 1
-              url: "https://image.123.com/test.jpg"
+              url: "https://image.2.com/test.jpg"
               extendInfoInput: { altMessage: "alt message !" }
             }
             {
               order: 2
-              url: "https://image.123.com/test.jpg"
+              url: "https://image.2.com/test.jpg"
               extendInfoInput: { altMessage: "alt message !" }
             }
           ]
@@ -140,7 +140,7 @@ mutation {
                 order: 0
                 count: 9999
                 price: 1000
-                userCode: "CODE123"
+                userCode: "CODE2"
                 values: ["블루", "스몰"]
                 extendInput: {
                   weight: 10
@@ -153,7 +153,7 @@ mutation {
                 order: 1
                 count: 9999
                 price: 1000
-                userCode: "CODE456"
+                userCode: "CODE2"
                 values: ["블루", "라지"]
               }
             ]
@@ -161,15 +161,15 @@ mutation {
           addOptionInfoListInput: [
             {
               order: 0
-              name: "추가구성1"
-              value: "추가구성1 값"
+              name: "추가구성2"
+              value: "추가구성2 값"
               price: 500
               count: 9999
             }
             {
               order: 1
-              name: "추가구성2"
-              value: "추가구성2 값"
+              name: "추가구성22"
+              value: "추가구성22 값"
               price: 500
               count: 9999
             }
@@ -184,12 +184,12 @@ mutation {
             {
               marketCode: "V"
               marketSubCode: "V001"
-              info: " { some market extendInfo }"
+              info: " { some market extendInfo2 }"
             }
             {
               marketCode: "V"
               marketSubCode: "V003"
-              info: " { some market extendInfo }"
+              info: " { some market extendInfo2 }"
             }
           ]
         }
