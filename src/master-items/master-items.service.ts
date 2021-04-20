@@ -191,6 +191,7 @@ export class MasterItemsService {
       }
 
       const totalResult: CreateMasterItemsResult[] = [];
+
       for (
         let index = 0;
         index < createMasterItemsInput.masterItems.length;
@@ -213,100 +214,16 @@ export class MasterItemsService {
           const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
 
           // 원본상품 insert
-          let insertedMasterItemId = 0;
-          await this.masterItemsRepo
-            .createQueryBuilder()
-            .insert()
-            .into(MasterItem)
-            .values(masterItem)
-            .execute()
-            .then((result) => {
-              insertedMasterItemId = result.raw.insertId;
-              masterItem.selectionBase.masterItem = result.raw.insertId;
-              masterItem.extendInfoList.forEach(
-                (item) => (item.masterItem = result.raw.insertId),
-              );
-              masterItem.images.forEach(
-                (item) => (item.masterItem = result.raw.insertId),
-              );
-              masterItem.addOptionInfoList.forEach(
-                (item) => (item.masterItem = result.raw.insertId),
-              );
-            });
+          const resultMasterItem = await this.masterItemsRepo.save(
+            this.masterItemsRepo.create(masterItem),
+          );
 
-          // 선택사항 insert
-          const insertSelectionInfoPromise = new Promise((resolve, reject) => {
-            this.masterItemsRepo
-              .createQueryBuilder()
-              .insert()
-              .into(MasterItemSelectionBase)
-              .values({
-                ...masterItem.selectionBase,
-              })
-              .execute()
-              .then((result) => {
-                masterItem.selectionBase.details.forEach(
-                  (item) => (item.selectionBase = result.raw.insertId),
-                );
-
-                this.masterItemsRepo
-                  .createQueryBuilder()
-                  .insert()
-                  .into(MasterItemSelectionDetail)
-                  .values(masterItem.selectionBase.details)
-                  .execute()
-                  .then()
-                  .catch((err) => reject(err));
-              })
-              .catch((err) => reject(err));
-
-            resolve;
-          });
-
-          // 그 외 insert
-          const insertAdditionalInfoPromise = new Promise((resolve, reject) => {
-            this.masterItemsRepo
-              .createQueryBuilder()
-              .insert()
-              .into(MasterItemImage)
-              .values(masterItem.images)
-              .execute()
-              .catch((err) => reject(err));
-
-            this.masterItemsRepo
-              .createQueryBuilder()
-              .insert()
-              .into(MasterItemExtend)
-              .values(masterItem.extendInfoList)
-              .execute()
-              .catch((err) => reject(err));
-
-            this.masterItemsRepo
-              .createQueryBuilder()
-              .insert()
-              .into(MasterItemAddoption)
-              .values(masterItem.addOptionInfoList)
-              .execute()
-              .catch((err) => reject(err));
-
-            resolve;
-          });
-
-          Promise.all([
-            insertSelectionInfoPromise,
-            insertAdditionalInfoPromise,
-          ]).catch((err) => {
-            console.log(err);
-            eachResult.ok = false;
-            eachResult.messages = err.message;
-          });
-
-          eachResult.masterItemId = insertedMasterItemId;
+          eachResult.masterItemId = resultMasterItem.id;
           eachResult.ok = true;
         } catch (error) {
           console.log(error);
           eachResult.masterItemId = -1;
-          const errMsg = error.message.substring(0, 200);
+          const errMsg = error.message.substring(0, 100);
           eachResult.messages.push(`원본상품 생성 실패 - ${errMsg}...`);
         } finally {
           totalResult.push(eachResult);
@@ -321,10 +238,53 @@ export class MasterItemsService {
       console.log(error);
       return await {
         ok: false,
-        error: `원본상품 생성 작업중 문제 발생 - ${error.message.substring(
-          0,
-          200,
-        )}...`,
+        error: `원본상품 생성 작업중 문제 발생 - ${error.message.substring(0, 200)}...`,
+      };
+    }
+  }
+
+  async insertItemsBulk(
+    createMasterItemsInput: CreateMasterItemsInput,
+  ): Promise<CreateMasterItemsOutput> {
+    try {
+      if (createMasterItemsInput.masterItems.length > 100) {
+        return {
+          ok: false,
+          error: '원본상품은 한번에 최대 100개까지 한번에 등록 가능합니다.',
+        };
+      }
+
+      const totalInserItem: MasterItem[] = [];
+      for (
+        let index = 0;
+        index < createMasterItemsInput.masterItems.length;
+        index++
+      ) {
+        try {
+          const eachItem = createMasterItemsInput.masterItems[index];
+          const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
+          await totalInserItem.push(masterItem);
+        } catch (error) {
+          console.log('Entity 객체 생성 중 실패 : ', error);
+          return {
+            ok: false,
+            error: `원본상품 생성 실패 - ${error.message.substring(0, 200)}...`,
+          };
+        }
+      }
+
+      await this.masterItemsRepo.save(
+        this.masterItemsRepo.create(totalInserItem),
+      );
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log('원본상품 정보 입력 중 실패 : ', error);
+      return await {
+        ok: false,
+        error: `원본상품 저장 실패 - ${error.message.substring(0, 200)}...`,
       };
     }
   }
