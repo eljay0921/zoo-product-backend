@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { getManager, In, InsertResult, Repository } from 'typeorm';
+import { getManager, In, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
   CreateMasterItemsOutput,
@@ -298,7 +298,8 @@ export class MasterItemsService {
         };
       }
 
-      const totalInserItem: MasterItem[] = [];
+      const toInsertPromises: Promise<any>[] = [];
+      const toInsertItemsTuple : [number, string, MasterItem][] = [];
       for (
         let index = 0;
         index < createMasterItemsInput.masterItems.length;
@@ -307,7 +308,9 @@ export class MasterItemsService {
         try {
           const eachItem = createMasterItemsInput.masterItems[index];
           const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-          await totalInserItem.push(masterItem);
+
+          const insertPromise = this.masterItemsRepo.insert(masterItem).then(result => toInsertItemsTuple.push([index, result.raw.insertId, masterItem]));
+          toInsertPromises.push(insertPromise);
         } catch (error) {
           console.log('Entity 객체 생성 중 실패 : ', error);
           return {
@@ -317,13 +320,17 @@ export class MasterItemsService {
         }
       }
 
+      await Promise.all(toInsertPromises);
+
       // 너무 느림.
       // await this.masterItemsRepo.save(
       //   this.masterItemsRepo.create(totalInserItem),
       // );
 
       // main table - 원본상품
-      const result_masterItemInsert = await this.masterItemsRepo.insert(totalInserItem);
+      // console.log(totalInserItem);
+      // const result_masterItemInsert = await this.masterItemsRepo.insert(totalInserItem);
+      // console.log(result_masterItemInsert);
 
       // relation tables - 확장정보, 이미지, 추가구성, 선택사항(선택사항 상세)
       const insertProcess = async () => {
@@ -333,16 +340,24 @@ export class MasterItemsService {
           const addoptions: MasterItemAddoption[] = [];
           const selectionBases: MasterItemSelectionBase[] = [];
 
-          totalInserItem.forEach((item, idx) => { 
-            const masterItemId = result_masterItemInsert.identifiers[idx].id;
+          toInsertItemsTuple.forEach((item) => { 
+            const masterItemId = item[1];
+            item[2].extendInfoList.forEach(item => {
+              item.masterItem = <any>masterItemId;
+              extendList.push(item);
+            });
             
-            item.extendInfoList.forEach(item => item.masterItem = masterItemId);
-            extendList.push(...item.extendInfoList);
-            item.images.forEach(item => item.masterItem = masterItemId);
-            images.push(...item.images);
-            item.addOptionInfoList.forEach(item => item.masterItem = masterItemId);
-            addoptions.push(...item.addOptionInfoList);
-            selectionBases.push({masterItem: masterItemId, ...item.selectionBase});
+            item[2].images.forEach(item => {
+              item.masterItem = <any>masterItemId;
+              images.push(item);
+            });
+            
+            item[2].addOptionInfoList.forEach(item => {
+              item.masterItem = <any>masterItemId;
+              addoptions.push(item);
+            });
+
+            selectionBases.push({masterItem: <any>masterItemId, ...item[2].selectionBase});
           });
 
           const insertExtendResult = this.masterItemsExtendsRepo.insert(extendList);
@@ -350,10 +365,12 @@ export class MasterItemsService {
           const insertAddoptionResult = this.masterItemsAddOptionsRepo.insert(addoptions);
           const insertSelectionResult = this.masterItemsSelectionBaseRepo.insert(selectionBases).then(result => {
             const selectionDetails: MasterItemSelectionDetail[] = [];
-            totalInserItem.forEach((item, idx) => {
+            toInsertItemsTuple.forEach((item, idx) => {
               const selectionBaseId = result.identifiers[idx].selectionId;
-              item.selectionBase.details.forEach(item => item.selectionBase = selectionBaseId);
-              selectionDetails.push(...item.selectionBase.details);
+              item[2].selectionBase.details.forEach(item => {
+                item.selectionBase = selectionBaseId;
+                selectionDetails.push(item);
+              });
             });
     
             return this.masterItemsSelectionDetailsRepo.insert(selectionDetails);
@@ -362,13 +379,13 @@ export class MasterItemsService {
           return await Promise.all([insertExtendResult, insertImageResult, insertAddoptionResult, insertSelectionResult]);
         } catch (error) {
           console.log(error);
-          throw new Error(error);
         }
       }
 
       return insertProcess().then(results => {
         return {
           ok: true,
+          count: toInsertItemsTuple?.length,
         };
       })
       .catch((err) => {

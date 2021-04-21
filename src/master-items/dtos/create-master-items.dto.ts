@@ -134,6 +134,9 @@ export class CreateMasterItemsOutput extends CoreOutput {
     this.result = [];
   }
 
+  @Field(() => Number)
+  count?: number = 0;
+
   @Field(() => [CreateMasterItemsResult])
   result?: CreateMasterItemsResult[];
 }
