@@ -17,7 +17,7 @@ import {
   DB_PORT,
   DB_PSWD,
   DB_USER,
-} from './common/database/db-constants';
+} from './common/database/mariadb-constants';
 
 @Module({
   imports: [
