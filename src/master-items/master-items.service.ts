@@ -238,32 +238,54 @@ export class MasterItemsService {
           }
           const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
 
-          // 너무 느림
-          // const resultMasterItem = await this.masterItemsRepo.save(
-          //   this.masterItemsRepo.create(masterItem),
-          // );
+          const resultMasterItem = await this.masterItemsRepo.insert(
+            masterItem,
+          );
 
-          const resultMasterItem = await this.masterItemsRepo.insert(masterItem);
+          masterItem.extendInfoList.forEach(
+            (item) => (item.masterItem = resultMasterItem.raw.insertId),
+          );
+          const extendInsert = this.masterItemsExtendsRepo.insert(
+            masterItem.extendInfoList,
+          );
 
-          masterItem.extendInfoList.forEach(item => item.masterItem = resultMasterItem.raw.insertId);
-          const extendInsert = this.masterItemsExtendsRepo.insert(masterItem.extendInfoList);
+          masterItem.images.forEach(
+            (item) => (item.masterItem = resultMasterItem.raw.insertId),
+          );
+          const imageInsert = this.masterItemsImagesRepo.insert(
+            masterItem.images,
+          );
 
-          masterItem.images.forEach(item => item.masterItem = resultMasterItem.raw.insertId)
-          const imageInsert = this.masterItemsImagesRepo.insert(masterItem.images);
+          masterItem.addOptionInfoList.forEach(
+            (item) => (item.masterItem = resultMasterItem.raw.insertId),
+          );
+          const addoptionInsert = this.masterItemsAddOptionsRepo.insert(
+            masterItem.addOptionInfoList,
+          );
 
-          masterItem.addOptionInfoList.forEach(item => item.masterItem = resultMasterItem.raw.insertId);
-          const addoptionInsert = this.masterItemsAddOptionsRepo.insert(masterItem.addOptionInfoList);
+          const selectionInsert = this.masterItemsSelectionBaseRepo
+            .insert({
+              masterItem: resultMasterItem.raw.insertId,
+              ...masterItem.selectionBase,
+            })
+            .then((result) => {
+              masterItem.selectionBase.details.forEach(
+                (item) => (item.selectionBase = result.raw.insertId),
+              );
+              return this.masterItemsSelectionDetailsRepo.insert(
+                masterItem.selectionBase.details,
+              );
+            });
 
-          const selectionInsert = this.masterItemsSelectionBaseRepo.insert({ masterItem: resultMasterItem.raw.insertId, ...masterItem.selectionBase}).then(result => {
-            masterItem.selectionBase.details.forEach(item => item.selectionBase = result.raw.insertId)
-            return this.masterItemsSelectionDetailsRepo.insert(masterItem.selectionBase.details);
-          });
-
-          await Promise.all([extendInsert, imageInsert, addoptionInsert, selectionInsert]).then(results => {
+          await Promise.all([
+            extendInsert,
+            imageInsert,
+            addoptionInsert,
+            selectionInsert,
+          ]).then((results) => {
             eachResult.masterItemId = resultMasterItem.raw.insertId;
             eachResult.ok = true;
           });
-          
         } catch (error) {
           console.log(error);
           eachResult.masterItemId = -1;
@@ -282,7 +304,10 @@ export class MasterItemsService {
       console.log(error);
       return {
         ok: false,
-        error: `원본상품 생성 작업중 문제 발생 - ${error.message.substring(0, 200)}...`,
+        error: `원본상품 생성 작업중 문제 발생 - ${error.message.substring(
+          0,
+          200,
+        )}...`,
       };
     }
   }
@@ -299,7 +324,7 @@ export class MasterItemsService {
       }
 
       const toInsertPromises: Promise<any>[] = [];
-      const toInsertItemsTuple : [number, string, MasterItem][] = [];
+      const toInsertItemsTuple: [string, MasterItem][] = [];
       for (
         let index = 0;
         index < createMasterItemsInput.masterItems.length;
@@ -309,7 +334,11 @@ export class MasterItemsService {
           const eachItem = createMasterItemsInput.masterItems[index];
           const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
 
-          const insertPromise = this.masterItemsRepo.insert(masterItem).then(result => toInsertItemsTuple.push([index, result.raw.insertId, masterItem]));
+          const insertPromise = this.masterItemsRepo
+            .insert(masterItem)
+            .then((result) =>
+              toInsertItemsTuple.push([result.raw.insertId, masterItem]),
+            );
           toInsertPromises.push(insertPromise);
         } catch (error) {
           console.log('Entity 객체 생성 중 실패 : ', error);
@@ -322,17 +351,6 @@ export class MasterItemsService {
 
       await Promise.all(toInsertPromises);
 
-      // 너무 느림.
-      // await this.masterItemsRepo.save(
-      //   this.masterItemsRepo.create(totalInserItem),
-      // );
-
-      // main table - 원본상품
-      // console.log(totalInserItem);
-      // const result_masterItemInsert = await this.masterItemsRepo.insert(totalInserItem);
-      // console.log(result_masterItemInsert);
-
-      // relation tables - 확장정보, 이미지, 추가구성, 선택사항(선택사항 상세)
       const insertProcess = async () => {
         try {
           const extendList: MasterItemExtend[] = [];
@@ -340,61 +358,77 @@ export class MasterItemsService {
           const addoptions: MasterItemAddoption[] = [];
           const selectionBases: MasterItemSelectionBase[] = [];
 
-          toInsertItemsTuple.forEach((item) => { 
-            const masterItemId = item[1];
-            item[2].extendInfoList.forEach(item => {
+          toInsertItemsTuple.forEach((item) => {
+            const masterItemId = item[0];
+            item[1].extendInfoList.forEach((item) => {
               item.masterItem = <any>masterItemId;
               extendList.push(item);
             });
-            
-            item[2].images.forEach(item => {
+
+            item[1].images.forEach((item) => {
               item.masterItem = <any>masterItemId;
               images.push(item);
             });
-            
-            item[2].addOptionInfoList.forEach(item => {
+
+            item[1].addOptionInfoList.forEach((item) => {
               item.masterItem = <any>masterItemId;
               addoptions.push(item);
             });
 
-            selectionBases.push({masterItem: <any>masterItemId, ...item[2].selectionBase});
-          });
-
-          const insertExtendResult = this.masterItemsExtendsRepo.insert(extendList);
-          const insertImageResult = this.masterItemsImagesRepo.insert(images);
-          const insertAddoptionResult = this.masterItemsAddOptionsRepo.insert(addoptions);
-          const insertSelectionResult = this.masterItemsSelectionBaseRepo.insert(selectionBases).then(result => {
-            const selectionDetails: MasterItemSelectionDetail[] = [];
-            toInsertItemsTuple.forEach((item, idx) => {
-              const selectionBaseId = result.identifiers[idx].selectionId;
-              item[2].selectionBase.details.forEach(item => {
-                item.selectionBase = selectionBaseId;
-                selectionDetails.push(item);
-              });
+            selectionBases.push({
+              masterItem: <any>masterItemId,
+              ...item[1].selectionBase,
             });
-    
-            return this.masterItemsSelectionDetailsRepo.insert(selectionDetails);
           });
 
-          return await Promise.all([insertExtendResult, insertImageResult, insertAddoptionResult, insertSelectionResult]);
+          const insertExtendResult = this.masterItemsExtendsRepo.insert(
+            extendList,
+          );
+          const insertImageResult = this.masterItemsImagesRepo.insert(images);
+          const insertAddoptionResult = this.masterItemsAddOptionsRepo.insert(
+            addoptions,
+          );
+          const insertSelectionResult = this.masterItemsSelectionBaseRepo
+            .insert(selectionBases)
+            .then((result) => {
+              const selectionDetails: MasterItemSelectionDetail[] = [];
+              toInsertItemsTuple.forEach((item, idx) => {
+                const selectionBaseId = result.identifiers[idx].selectionId;
+                item[1].selectionBase.details.forEach((item) => {
+                  item.selectionBase = selectionBaseId;
+                  selectionDetails.push(item);
+                });
+              });
+
+              return this.masterItemsSelectionDetailsRepo.insert(
+                selectionDetails,
+              );
+            });
+
+          return await Promise.all([
+            insertExtendResult,
+            insertImageResult,
+            insertAddoptionResult,
+            insertSelectionResult,
+          ]);
         } catch (error) {
           console.log(error);
         }
-      }
+      };
 
-      return insertProcess().then(results => {
-        return {
-          ok: true,
-          count: toInsertItemsTuple?.length,
-        };
-      })
-      .catch((err) => {
-        return {
-          ok: false,
-          error: err.message
-        };
-      });
-
+      return insertProcess()
+        .then((results) => {
+          return {
+            ok: true,
+            count: toInsertItemsTuple?.length,
+          };
+        })
+        .catch((err) => {
+          return {
+            ok: false,
+            error: err.message,
+          };
+        });
     } catch (error) {
       console.log('원본상품 정보 입력 중 실패 : ', error);
       return {
