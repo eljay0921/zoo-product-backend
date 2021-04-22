@@ -1,5 +1,6 @@
-import { UseInterceptors } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { DatabaseGuard } from 'src/common/guards/database.guard';
 import { TimeoutMarketTemplateInterceptor } from 'src/common/interceptors/timeout-market-template-interceptor';
 import {
   CreateMarketTemplatesInput,
@@ -9,6 +10,7 @@ import { ReadMarketTemplatesOutput } from './dtos/read-market-templates.dto';
 import { MarketTemplates } from './entities/market-templates.entity';
 import { MarketTemplatesService } from './market-templates.service';
 
+@UseGuards(DatabaseGuard)
 @UseInterceptors(TimeoutMarketTemplateInterceptor)
 @Resolver((of) => MarketTemplates)
 export class MarketTemplatesResolver {

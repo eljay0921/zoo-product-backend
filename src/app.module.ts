@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from './common/common.module';
 import { MasterItemsModule } from './master-items/master-items.module';
@@ -18,6 +18,7 @@ import {
   DB_PSWD,
   DB_USER,
 } from './common/database/mariadb-constants';
+import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 
 @Module({
   imports: [
@@ -51,13 +52,12 @@ import {
   controllers: [],
   providers: [],
 })
-export class AppModule {}
 
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(DatabaseMiddleware).forRoutes(
-//       { path: 'graphql', method: RequestMethod.ALL },
-//       // { path: '', method: RequestMethod.GET },
-//     );
-//   }
-// }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DatabaseMiddleware).forRoutes(
+      { path: 'graphql', method: RequestMethod.ALL },
+      // { path: '', method: RequestMethod.GET },
+    );
+  }
+}
