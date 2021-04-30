@@ -10,15 +10,15 @@ export class CommonService {
     }
 
     async createUserDatabase(id: string): Promise<boolean> {
+        const conn = await mariadb.createConnection({
+            host: DB_HOST, 
+            user: DB_USER, 
+            password: DB_PSWD,
+            multipleStatements: true,
+        });
         try {
-            const conn = await mariadb.createConnection({
-                host: DB_HOST, 
-                user: DB_USER, 
-                password: DB_PSWD,
-                multipleStatements: true,
-            });
-
             const userDBName = `ProductManage_${id}`;
+            const dbEngineAndOptions = 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 KEY_BLOCK_SIZE=8';
 
             await conn.query(`CREATE DATABASE ${userDBName};`).then(results => {
                 console.log('# CREATE DB : ', results);
@@ -42,7 +42,7 @@ export class CommonService {
                 \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6)\,
                 \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6)\,
                 PRIMARY KEY (\`id\`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ) ${dbEngineAndOptions};
 
             CREATE TABLE ${userDBName}.\`master_item\` (
                 \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -58,7 +58,7 @@ export class CommonService {
                 \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
                 \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
                 PRIMARY KEY (\`id\`)
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+              ) ${dbEngineAndOptions};
 
             CREATE TABLE ${userDBName}.\`master_addoption\` (
                 \`order\` smallint(6) NOT NULL,
@@ -71,7 +71,7 @@ export class CommonService {
                 PRIMARY KEY (\`order\`,\`masterItemId\`),
                 KEY \`master_addoption_ibfk_id\` (\`masterItemId\`),
                 CONSTRAINT \`master_addoption_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+              ) ${dbEngineAndOptions};
               
               
             CREATE TABLE ${userDBName}.\`master_extend\` (
@@ -83,7 +83,7 @@ export class CommonService {
                 PRIMARY KEY (\`marketCode\`,\`marketSubCode\`,\`masterItemId\`),
                 KEY \`master_extend_ibfk_id\` (\`masterItemId\`),
                 CONSTRAINT \`master_extend_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+              ) ${dbEngineAndOptions};
               
               
             CREATE TABLE ${userDBName}.\`master_image\` (
@@ -95,7 +95,7 @@ export class CommonService {
                 PRIMARY KEY (\`order\`,\`masterItemId\`),
                 KEY \`master_image_ibfk_id\` (\`masterItemId\`),
                 CONSTRAINT \`master_image_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+              ) ${dbEngineAndOptions};
               
               
             CREATE TABLE ${userDBName}.\`master_selection\` (
@@ -107,7 +107,7 @@ export class CommonService {
                 PRIMARY KEY (\`selectionId\`),
                 UNIQUE KEY \`REL_3c665db984c5a94e12bc4781b0\` (\`masterItemId\`),
                 CONSTRAINT \`master_selection_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+              ) ${dbEngineAndOptions};
               
               
             CREATE TABLE ${userDBName}.\`selection_detail\` (
@@ -122,28 +122,29 @@ export class CommonService {
                 PRIMARY KEY (\`order\`,\`selectionBaseSelectionId\`),
                 KEY \`selection_detail_ibfk_selectionId\` (\`selectionBaseSelectionId\`),
                 CONSTRAINT \`selection_detail_ibfk_selectionId\` FOREIGN KEY (\`selectionBaseSelectionId\`) REFERENCES \`master_selection\` (\`selectionId\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+              ) ${dbEngineAndOptions};
               
-            `).then(results => {
-                console.log(`# CREATE TABLES : `, results);
-            });
+            `);
+            
           return true;
         } catch (err) {
           console.log(err);
           return false;
-        } 
+        } finally {
+            if(conn) {
+                conn.close();
+            }
+        }
     }
 
     async truncateUserDatabase(id: string): Promise<boolean> {
+        const conn = await mariadb.createConnection({
+            host: DB_HOST, 
+            user: DB_USER, 
+            password: DB_PSWD,
+            multipleStatements: true,
+        });
         try {
-
-            const conn = await mariadb.createConnection({
-                host: DB_HOST, 
-                user: DB_USER, 
-                password: DB_PSWD,
-                multipleStatements: true,
-            });
-
             const userDBName = `ProductManage_${id}`;
 
             await conn.query(`
@@ -166,6 +167,10 @@ export class CommonService {
         } catch (err) {
             console.log(err);
             return false;
+        } finally {
+            if (conn) {
+                conn.close();
+            }
         }
     }
 }

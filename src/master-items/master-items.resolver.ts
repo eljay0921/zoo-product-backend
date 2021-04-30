@@ -1,5 +1,5 @@
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { DatabaseGuard } from 'src/common/guards/database.guard';
 import { TimeoutMasterItemInterceptor } from 'src/common/interceptors/timeout-master-item-interceptor';
 import {
@@ -19,7 +19,7 @@ import { MasterItemsService } from './master-items.service';
 
 @UseGuards(DatabaseGuard)
 @UseInterceptors(TimeoutMasterItemInterceptor)
-@Resolver((of) => MasterItem)
+@Resolver(() => MasterItem)
 export class MasterItemsResolver {
   constructor(private readonly masterItemsService: MasterItemsService) {}
 
