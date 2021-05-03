@@ -19,6 +19,7 @@ import {
   DB_USER,
 } from './common/database/mariadb-constants';
 import { DatabaseMiddleware } from './common/middlewares/database.middleware';
+import { UserFolderModule } from './user-folder/user-folder.module';
 
 @Module({
   imports: [
@@ -33,13 +34,8 @@ import { DatabaseMiddleware } from './common/middlewares/database.middleware';
       logging: true,
       namingStrategy: new CustomNamingStrategy(),
       entities: [
-        MasterItem,
-        MasterItemExtend,
-        MasterItemImage,
-        MasterItemSelectionBase,
-        MasterItemSelectionDetail,
-        MasterItemAddoption,
-        MarketTemplates,
+        'dist/**/entities/*.entity{.ts,.js}',
+        'src/**/entities/*.entity{.ts}',
       ],
     }),
     GraphQLModule.forRoot({
@@ -48,6 +44,7 @@ import { DatabaseMiddleware } from './common/middlewares/database.middleware';
     MasterItemsModule,
     CommonModule,
     MarketTemplatesModule,
+    UserFolderModule,
   ],
   controllers: [],
   providers: [],

@@ -25,7 +25,7 @@ export class CustomNamingStrategy
     //     }
     // );
 
-    const name = `${tableOrName}_ibfk_${referencedColumnNames.join('_')}`;
+    const name = `${tableOrName}_ibfk_${columnNames.join('_')}`;
     // console.log('#5', name);
 
     return name;

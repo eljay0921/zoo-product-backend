@@ -14,6 +14,7 @@ import { MasterItemCategoryInfo } from '../json-types/master-items-categoryInfo.
 import { MasterItemAddoption } from './master-items-addoption.entity';
 import { MasterItemImage } from './master-items-image.entity';
 import { MasterItemSelectionBase } from './master-items-selection-base.entity';
+import { UserFolderMasterItem } from 'src/user-folder/entities/user-folder-master-item.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -92,4 +93,10 @@ export class MasterItem {
   })
   @Field(() => [MasterItemExtend], { nullable: true })
   extendInfoList?: MasterItemExtend[];
+
+  @OneToMany(() => UserFolderMasterItem, (userFolderMasterItem) => userFolderMasterItem.masterItem, {
+    cascade: true,
+  })
+  // @Field(() => [UserFolderMasterItem], { nullable: true })
+  userFolderMasterItems?: UserFolderMasterItem[];
 }
