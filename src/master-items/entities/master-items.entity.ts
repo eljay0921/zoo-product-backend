@@ -33,9 +33,9 @@ export class MasterItem {
   @Field(() => String)
   categoryCode: string;
 
-  @Column('simple-json')
-  @Field(() => MasterItemCategoryInfo)
-  categoryInfo: MasterItemCategoryInfo;
+  @Column('simple-json', { nullable: true })
+  @Field(() => MasterItemCategoryInfo, { nullable: true })
+  categoryInfo?: MasterItemCategoryInfo;
 
   @Column()
   @Field(() => Number)

@@ -15,15 +15,21 @@ export class CommonController {
         return true;
     }
 
+    @Get('db')
+    async getDatabaseExistCheck(@Req() req): Promise<boolean> {
+        const id = req.headers['user-id'];
+        return this.commonService.checkUserDatabase(id);
+    }
+
     @Post('db')
     async createDatabaseProcess(@Req() req): Promise<boolean> {
         const id = req.headers['user-id'];
-        return await this.commonService.createUserDatabase(id);
+        return this.commonService.createUserDatabase(id);
     }
 
     @Delete('db')
     async truncateDatabaseProcess(@Req() req): Promise<boolean> {
         const id = req.headers['user-id'];
-        return await this.commonService.truncateUserDatabase(id);
+        return this.commonService.truncateUserDatabase(id);
     }
 }

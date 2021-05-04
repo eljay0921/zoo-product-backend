@@ -55,9 +55,9 @@ export class MasterItemsResolver {
   @Mutation(() => CreateMasterItemsOutput)
   async createMasterItemsBulk(
     @Args('input') createMasterItemsInput: CreateMasterItemsInput,
-    // @Context() ctx,
+    @Context() ctx,
   ): Promise<CreateMasterItemsOutput> {
-    // console.log('Resolver : ', ctx.req.dbname);
+    console.log('Resolver : ', ctx.req.dbname);
     return this.masterItemsService.insertItemsBulk(createMasterItemsInput);
   }
 

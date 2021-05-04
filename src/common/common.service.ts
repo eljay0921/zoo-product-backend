@@ -6,7 +6,21 @@ const mariadb = require('mariadb');
 @Injectable()
 export class CommonService {
     async checkUser(id:string, pw:string): Promise<boolean> {
+        // TODO : chekc user id & password
         return true;
+    }
+
+    async checkUserDatabase(id: string): Promise<boolean> {
+        const conn = await mariadb.createConnection({
+            host: DB_HOST, 
+            user: DB_USER, 
+            password: DB_PSWD,
+        });
+
+        const userDBName = `ProductManage_${id}`;
+        const result = await conn.query(`SHOW DATABASES LIKE '${userDBName}'`);
+        const resultJson = JSON.parse(JSON.stringify(result));
+        return resultJson.length > 0;
     }
 
     async createUserDatabase(id: string): Promise<boolean> {
@@ -48,7 +62,7 @@ export class CommonService {
                 \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 \`name\` varchar(300) NOT NULL,
                 \`categoryCode\` varchar(12) NOT NULL,
-                \`categoryInfo\` text NOT NULL,
+                \`categoryInfo\` text DEFAULT NULL,
                 \`price\` int(11) NOT NULL,
                 \`count\` int(11) NOT NULL,
                 \`userCode\` varchar(40) DEFAULT NULL,
