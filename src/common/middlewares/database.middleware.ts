@@ -1,6 +1,11 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { getConnection, createConnection, ConnectionOptions } from 'typeorm';
-import { DB_HOST, DB_PORT, DB_PSWD, DB_USER } from '../database/mariadb-constants';
+import {
+  DB_HOST,
+  DB_PORT,
+  DB_PSWD,
+  DB_USER,
+} from '../database/constants/mariadb.constants';
 import { CustomNamingStrategy } from '../typeorm/custom-naming-strategy';
 
 @Injectable()

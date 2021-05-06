@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from './common/common.module';
 import { MasterItemsModule } from './master-items/master-items.module';
@@ -17,7 +22,7 @@ import {
   DB_PORT,
   DB_PSWD,
   DB_USER,
-} from './common/database/mariadb-constants';
+} from './common/database/constants/mariadb.constants';
 import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 import { UserFolderModule } from './user-folder/user-folder.module';
 
@@ -49,7 +54,6 @@ import { UserFolderModule } from './user-folder/user-folder.module';
   controllers: [],
   providers: [],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(DatabaseMiddleware).forRoutes(

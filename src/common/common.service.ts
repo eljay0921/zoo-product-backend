@@ -1,53 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { DB_HOST, DB_PSWD, DB_USER } from './database/mariadb-constants';
-
-const mariadb = require('mariadb');
-
+import {
+  getDatabaseName,
+  sendQuery,
+} from './database/connection/mariadb.adapter';
 @Injectable()
 export class CommonService {
-    async checkUser(id:string, pw:string): Promise<boolean> {
-        // TODO : chekc user id & password
-        return true;
-    }
+  async checkUser(id: string, pw: string): Promise<boolean> {
+    // TODO : chekc user id & password
+    return true;
+  }
 
-    async checkUserDatabase(id: string): Promise<boolean> {
-        const conn = await mariadb.createConnection({
-            host: DB_HOST, 
-            user: DB_USER, 
-            password: DB_PSWD,
-        });
+  async checkUserDatabase(id: string): Promise<boolean> {
+    const dbName = getDatabaseName(id);
+    const query = `SHOW DATABASES LIKE '${dbName}'`;
+    const result = await sendQuery(query);
+    return result.length > 0;
+  }
 
-        try {
-            const userDBName = `ProductManage_${id}`;
-            const result = await conn.query(`SHOW DATABASES LIKE '${userDBName}'`);
-            const resultJson = JSON.parse(JSON.stringify(result));
-            return resultJson.length > 0;
-        } catch (error) {
-            console.log(error);
-            return false;
-        } finally {
-            if(conn) {
-                conn.close();
-            }
-        }        
-    }
+  async createUserDatabase(id: string): Promise<boolean> {
+    const userDBName = `ProductManage_${id}`;
 
-    async createUserDatabase(id: string): Promise<boolean> {
-        const conn = await mariadb.createConnection({
-            host: DB_HOST, 
-            user: DB_USER, 
-            password: DB_PSWD,
-            multipleStatements: true,
-        });
-        try {
-            const userDBName = `ProductManage_${id}`;
-            const dbEngineAndOptions = 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 KEY_BLOCK_SIZE=8';
+    const createDBQuery = `CREATE DATABASE ${userDBName};`;
+    await sendQuery(createDBQuery).then(() =>
+      console.log('# CREATE DB : ', userDBName),
+    );
 
-            await conn.query(`CREATE DATABASE ${userDBName};`).then(results => {
-                console.log('# CREATE DB : ', results);
-            });
-
-            await conn.query(`
+    const dbEngineAndOptions =
+      'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 KEY_BLOCK_SIZE=8';
+    const createTablesQuery = `
             CREATE TABLE ${userDBName}.\`market_templates\` (
                 \`id\` int(11) NOT NULL AUTO_INCREMENT\,
                 \`marketCode\` varchar(1) NOT NULL\,
@@ -145,55 +125,30 @@ export class CommonService {
                 PRIMARY KEY (\`order\`,\`selectionBaseSelectionId\`),
                 KEY \`selection_detail_ibfk_selectionId\` (\`selectionBaseSelectionId\`),
                 CONSTRAINT \`selection_detail_ibfk_selectionId\` FOREIGN KEY (\`selectionBaseSelectionId\`) REFERENCES \`master_selection\` (\`selectionId\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions};
-              
-            `);
-            
-          return true;
-        } catch (err) {
-          console.log(err);
-          return false;
-        } finally {
-            if(conn) {
-                conn.close();
-            }
-        }
-    }
+              ) ${dbEngineAndOptions}; 
+            `;
 
-    async truncateUserDatabase(id: string): Promise<boolean> {
-        const conn = await mariadb.createConnection({
-            host: DB_HOST, 
-            user: DB_USER, 
-            password: DB_PSWD,
-            multipleStatements: true,
-        });
-        try {
-            const userDBName = `ProductManage_${id}`;
+    await sendQuery(createTablesQuery);
+    return true;
+  }
 
-            await conn.query(`
-                set FOREIGN_KEY_CHECKS = 0;
+  async truncateUserDatabase(id: string): Promise<boolean> {
+    const userDBName = getDatabaseName(id);
+    const query = `
+        set FOREIGN_KEY_CHECKS = 0;
+        TRUNCATE TABLE ${userDBName}.selection_detail;
+        TRUNCATE TABLE ${userDBName}.master_selection;
+        TRUNCATE TABLE ${userDBName}.master_addoption;
+        TRUNCATE TABLE ${userDBName}.master_extend;
+        TRUNCATE TABLE ${userDBName}.master_image;
+        TRUNCATE TABLE ${userDBName}.master_item;
+        TRUNCATE TABLE ${userDBName}.market_templates;
+        set FOREIGN_KEY_CHECKS = 1;`;
 
-                TRUNCATE TABLE ${userDBName}.selection_detail;
-                TRUNCATE TABLE ${userDBName}.master_selection;
-                TRUNCATE TABLE ${userDBName}.master_addoption;
-                TRUNCATE TABLE ${userDBName}.master_extend;
-                TRUNCATE TABLE ${userDBName}.master_image;
-                TRUNCATE TABLE ${userDBName}.master_item;
-                TRUNCATE TABLE ${userDBName}.market_templates;
+    await sendQuery(query).then(() =>
+      console.log('# TRUNCATE TABLES : ', userDBName),
+    );
 
-                set FOREIGN_KEY_CHECKS = 1;
-            `).then(result => {
-                console.log('# TRUNCATE TABLES : ', result);
-            })
-
-            return true;
-        } catch (err) {
-            console.log(err);
-            return false;
-        } finally {
-            if (conn) {
-                conn.close();
-            }
-        }
-    }
+    return true;
+  }
 }
