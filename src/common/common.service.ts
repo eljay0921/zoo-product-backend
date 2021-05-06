@@ -3,6 +3,7 @@ import {
   getDatabaseName,
   sendQuery,
 } from './database/connection/mariadb.adapter';
+import { CommonOutput } from './dtos/output.dto';
 @Injectable()
 export class CommonService {
   async checkUser(id: string, pw: string): Promise<boolean> {
@@ -10,20 +11,34 @@ export class CommonService {
     return true;
   }
 
-  async checkUserDatabase(id: string): Promise<boolean> {
+  async checkUserDatabase(id: string): Promise<CommonOutput> {
     const dbName = getDatabaseName(id);
     const query = `SHOW DATABASES LIKE '${dbName}'`;
     const result = await sendQuery(query);
-    return result.length > 0;
+    if (result.ok && result.result.length > 0) {
+      return {
+        ok: true,
+        message: `Database ${dbName} exists.`,
+      };
+    } else {
+      return {
+        ok: false,
+        message: `Database ${dbName} not exists.`,
+      };
+    }
   }
 
-  async createUserDatabase(id: string): Promise<boolean> {
+  async createUserDatabase(id: string): Promise<CommonOutput> {
     const userDBName = `ProductManage_${id}`;
 
     const createDBQuery = `CREATE DATABASE ${userDBName};`;
-    await sendQuery(createDBQuery).then(() =>
-      console.log('# CREATE DB : ', userDBName),
-    );
+    const createResult = await sendQuery(createDBQuery);
+    if (!createResult.ok) {
+      return {
+        ok: false,
+        error: createResult.error,
+      };
+    }
 
     const dbEngineAndOptions =
       'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 KEY_BLOCK_SIZE=8';
@@ -128,11 +143,15 @@ export class CommonService {
               ) ${dbEngineAndOptions}; 
             `;
 
-    await sendQuery(createTablesQuery);
-    return true;
+    const createTableResult = await sendQuery(createTablesQuery);
+    return {
+      ok: createTableResult.ok,
+      message: `# CREATE TABLES : ${userDBName}`,
+      error: createResult.error,
+    };
   }
 
-  async truncateUserDatabase(id: string): Promise<boolean> {
+  async truncateUserDatabase(id: string): Promise<CommonOutput> {
     const userDBName = getDatabaseName(id);
     const query = `
         set FOREIGN_KEY_CHECKS = 0;
@@ -145,10 +164,11 @@ export class CommonService {
         TRUNCATE TABLE ${userDBName}.market_templates;
         set FOREIGN_KEY_CHECKS = 1;`;
 
-    await sendQuery(query).then(() =>
-      console.log('# TRUNCATE TABLES : ', userDBName),
-    );
-
-    return true;
+    const truncateResult = await sendQuery(query);
+    return {
+      ok: truncateResult.ok,
+      message: `# TRUNCATE TABLES : ${userDBName}`,
+      error: truncateResult.error,
+    };
   }
 }

@@ -8,3 +8,11 @@ export class CoreOutput {
   @Field((type) => Boolean)
   ok: boolean;
 }
+
+export class DBOutput extends CoreOutput {
+  result?: any;
+}
+
+export class CommonOutput extends CoreOutput {
+  message?: string;
+}
