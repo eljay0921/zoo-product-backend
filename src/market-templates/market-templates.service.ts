@@ -45,7 +45,7 @@ export class MarketTemplatesService {
     return await sendQuery(query);
   }
 
-  async insertMarketTemplate2(marketTemplate: any): Promise<any> {
+  async insertMarketTemplate2(marketTemplate: MarketTemplates): Promise<any> {
     const query = `INSERT INTO ProductManage_admin.market_templates
     (marketCode, marketSubCode, smid, marketID, name, description, baseInfo, basicExtendInfo, extendInfo, deliveryInfo, addServiceInfo, etcInfo, createdAt, updatedAt)
     VALUES('${marketTemplate.marketCode}', 
