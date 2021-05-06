@@ -17,10 +17,19 @@ export class CommonService {
             password: DB_PSWD,
         });
 
-        const userDBName = `ProductManage_${id}`;
-        const result = await conn.query(`SHOW DATABASES LIKE '${userDBName}'`);
-        const resultJson = JSON.parse(JSON.stringify(result));
-        return resultJson.length > 0;
+        try {
+            const userDBName = `ProductManage_${id}`;
+            const result = await conn.query(`SHOW DATABASES LIKE '${userDBName}'`);
+            const resultJson = JSON.parse(JSON.stringify(result));
+            return resultJson.length > 0;
+        } catch (error) {
+            console.log(error);
+            return false;
+        } finally {
+            if(conn) {
+                conn.close();
+            }
+        }        
     }
 
     async createUserDatabase(id: string): Promise<boolean> {
