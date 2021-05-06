@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { sendQuery } from 'src/common/database/connection/mariadb.adapter';
 import { getManager, Repository } from 'typeorm';
 import {
   CreateMarketTemplatesInput,
@@ -17,9 +18,51 @@ export class MarketTemplatesService {
 
   private readonly marketTemplatesRepo: Repository<MarketTemplates>;
   constructor(@Inject(REQUEST) private readonly request) {
-    this.marketTemplatesRepo = getManager(
-      this.request.req.dbname,
-    ).getRepository(MarketTemplates);
+    // this.marketTemplatesRepo = getManager(
+    //   this.request.req.dbname,
+    // ).getRepository(MarketTemplates);
+  }
+
+  async selectMarketTemplate(id: number): Promise<any> {
+    const query = `SELECT 
+      *
+    FROM ProductManage_admin.market_templates
+    WHERE id = ${id}`;
+
+    return await sendQuery(query);
+  }
+
+  async selectMarketTemplateList(
+    marketCode: string,
+    marketSubCode: string,
+  ): Promise<any> {
+    const query = `SELECT 
+      *
+    FROM ProductManage_admin.market_templates
+    WHERE marketCode = '${marketCode}'
+    and marketSubCode = '${marketSubCode}'`;
+
+    return await sendQuery(query);
+  }
+
+  async insertMarketTemplate2(marketTemplate: any): Promise<any> {
+    const query = `INSERT INTO ProductManage_admin.market_templates
+    (marketCode, marketSubCode, smid, marketID, name, description, baseInfo, basicExtendInfo, extendInfo, deliveryInfo, addServiceInfo, etcInfo, createdAt, updatedAt)
+    VALUES('${marketTemplate.marketCode}', 
+    '${marketTemplate.marketSubCode}', 
+    ${marketTemplate.smid}, 
+    '${marketTemplate.marketID}', 
+    '${marketTemplate.name}', 
+    '${marketTemplate.description}', 
+    ${marketTemplate.baseInfo}, 
+    ${marketTemplate.basicExtendInfo}, 
+    ${marketTemplate.extendInfo}, 
+    ${marketTemplate.deliveryInfo}, 
+    ${marketTemplate.addServiceInfo}, 
+    ${marketTemplate.etcInfo}, 
+    current_timestamp(6), current_timestamp(6));`;
+
+    return await sendQuery(query);
   }
 
   async getMarketTemplate(
