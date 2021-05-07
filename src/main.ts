@@ -5,6 +5,7 @@ import { urlencoded, json } from 'express';
 import * as morgan from 'morgan';
 import { DatabaseGuard } from './common/guards/database.guard';
 import { DatabaseMiddleware } from './common/middlewares/database.middleware';
+import { ValidationPipe } from '@nestjs/common';
 
 const fs = require('fs');
 
@@ -21,9 +22,11 @@ async function bootstrap() {
     stream: fs.createWriteStream('./failed.log', {flags: 'a'})
   }));
 
+  app.useGlobalPipes(new ValidationPipe());
+
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
-  
+
   app.useGlobalInterceptors(new TimeoutGlobalInterceptor());
 
   await app.listen(3000);

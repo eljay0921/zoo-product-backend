@@ -1,46 +1,69 @@
-import { IsDate, IsInt, IsJSON, IsString, Max } from "class-validator";
+import { IsOptional, Length } from 'class-validator';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-export class MarketTemplate {
-  @IsInt()
-  smid: number;
-  @IsString()
-  @Max(40)
-  marketID: string;
-  @IsString()
-  @Max(100)
-  name: string;
-  @IsString()
-  @Max(100)
-  description: string;
+@Entity()
+export class MarketTemplates {
+  @IsOptional()
+  @PrimaryGeneratedColumn()
+  id?: number;
 
-  @IsString()
-  baseInfo: string;
-  @IsString()
-  basicExtendInfo?: string;
-  @IsString()
-  extendInfo?: string;
-  @IsString()
-  deliveryInfo?: string;
-  @IsString()
-  addServiceInfo?: string;
-  @IsString()
-  etcInfo?: string;
-}
-
-export class CreateMarketTemplate extends MarketTemplate {
-  @IsString()
-  @Max(1)
+  @Column({ length: 1 })
   marketCode: string;
 
-  @IsString()
-  @Max(4)
-  marketSubCode: string;
-}
+  @IsOptional()
+  @Length(4, 4)
+  @Column({ length: 4, nullable: true })
+  marketSubCode?: string;
 
-export class UpdateMarketTemplate extends MarketTemplate {
-  @IsInt()
-  id?: number;
-  
-  @IsDate()
+  @Column()
+  smid: number;
+
+  @Length(1, 40)
+  @Column({ length: 40 })
+  marketID: string;
+
+  @Length(1, 100)
+  @Column({ length: 100 })
+  name: string;
+
+  @Length(1, 100)
+  @Column({ length: 100 })
+  description: string;
+
+  // TODO : JSON 타입으로 변경 => 구조는 상관 CSetInfoBase 참고
+  @Column('simple-json')
+  baseInfo: string;
+
+  @IsOptional()
+  @Column('simple-json', { nullable: true })
+  basicExtendInfo?: string;
+
+  @IsOptional()
+  @Column('simple-json', { nullable: true })
+  extendInfo?: string;
+
+  @IsOptional()
+  @Column('simple-json', { nullable: true })
+  deliveryInfo?: string;
+
+  @IsOptional()
+  @Column('simple-json', { nullable: true })
+  addServiceInfo?: string;
+
+  @IsOptional()
+  @Column('simple-json', { nullable: true })
+  etcInfo?: string;
+
+  @IsOptional()
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @IsOptional()
+  @CreateDateColumn()
   updatedAt?: Date;
 }

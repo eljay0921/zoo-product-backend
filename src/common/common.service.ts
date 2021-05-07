@@ -46,7 +46,7 @@ export class CommonService {
             CREATE TABLE ${userDBName}.\`market_templates\` (
                 \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT\,
                 \`marketCode\` varchar(1) NOT NULL\,
-                \`marketSubCode\` varchar(4) NOT NULL\,
+                \`marketSubCode\` varchar(4) DEFAULT NULL,
                 \`smid\` int(10) unsigned NOT NULL\,
                 \`marketID\` varchar(40) NOT NULL\,
                 \`name\` varchar(100) NOT NULL\,

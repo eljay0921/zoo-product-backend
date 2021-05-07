@@ -7,9 +7,11 @@ import {
 import { MarketTemplatesService } from './market-templates.service';
 import { MarketTemplatesController } from './market-templates.controller';
 import { DatabaseMiddleware } from 'src/common/middlewares/database.middleware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MarketTemplates } from './entities/market-templates.entity';
 
 @Module({
-  imports: [],
+  imports: [TypeOrmModule.forFeature([MarketTemplates])],
   providers: [MarketTemplatesService],
   controllers: [MarketTemplatesController],
 })

@@ -1,73 +1,98 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { sendQuery } from 'src/common/database/connection/mariadb.adapter';
 import { CommonOutput } from 'src/common/dtos/output.dto';
-import { CreateMarketTemplate } from './entities/market-templates.entity';
+import { getManager, Repository } from 'typeorm';
+import { MarketTemplates } from './entities/market-templates.entity';
 
 @Injectable()
 export class MarketTemplatesService {
-  private readonly DBName: string;
+
+  private readonly marketTemplatesRepo: Repository<MarketTemplates>;
   constructor(@Inject(REQUEST) private readonly request) {
-    this.DBName = this.request?.dbname;
+    this.marketTemplatesRepo = getManager(
+      this.request.dbname,
+    ).getRepository(MarketTemplates);
   }
 
-  async selectMarketTemplate(id: number): Promise<CommonOutput> {
-    const query = `SELECT 
-      *
-    FROM ${this.DBName}.market_templates
-    WHERE id = ${id}`;
-
-    const { ok, error, result } = await sendQuery(query);
-    return {
-      ok,
-      error,
-      data: result,
-    }
-  }
-
-  async selectMarketTemplateList(
-    marketCode: string,
-    marketSubCode: string,
+  async getMarketTemplate(
+    templateId: number,
   ): Promise<CommonOutput> {
-    const query = `SELECT 
-      *
-    FROM ${this.DBName}.market_templates
-    WHERE marketCode = '${marketCode}'
-    and marketSubCode = '${marketSubCode}'`;
+    try {
 
-    const { ok, error, result } = await sendQuery(query);
-    return {
-      ok,
-      error,
-      count: result.length,
-      data: result,
+      const marketTemplate = await this.marketTemplatesRepo.findOne({
+        id: templateId,
+      });
+
+      if (marketTemplate) {
+        return {
+          ok: true,
+          data: marketTemplate,
+        };
+      } else {
+        return {
+          ok: false
+        };
+      }
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
     }
   }
 
-  async insertMarketTemplate(marketTemplate: CreateMarketTemplate): Promise<CommonOutput> {
-    const query = `INSERT INTO ${this.DBName}.market_templates
-    (marketCode, marketSubCode, smid, marketID, name, description, baseInfo, basicExtendInfo, extendInfo, deliveryInfo, addServiceInfo, etcInfo, createdAt, updatedAt)
-    VALUES('${marketTemplate.marketCode}', 
-    '${marketTemplate.marketSubCode}', 
-    ${marketTemplate.smid}, 
-    '${marketTemplate.marketID}', 
-    '${marketTemplate.name}', 
-    '${marketTemplate.description}', 
-    ${marketTemplate.baseInfo}, 
-    ${marketTemplate.basicExtendInfo}, 
-    ${marketTemplate.extendInfo}, 
-    ${marketTemplate.deliveryInfo}, 
-    ${marketTemplate.addServiceInfo}, 
-    ${marketTemplate.etcInfo}, 
-    current_timestamp(6), current_timestamp(6));`;
+  async getMarketTemplates(
+    marketCode: string,
+    marketSubCode?: string,
+  ): Promise<CommonOutput> {
+    try {
 
-    const { ok, error, result } = await sendQuery(query);
-    return {
-      ok,
-      error,
-      data: {
-        templateId: result.insertId
-      },
+      let marketTemplates;
+      if(marketSubCode) {
+        marketTemplates = await this.marketTemplatesRepo.find({marketCode, marketSubCode});
+      } else {
+        marketTemplates = await this.marketTemplatesRepo.find({marketCode});
+      }
+
+      if (marketTemplates) {
+        return {
+          ok: true,
+          count: marketTemplates.length,
+          data: marketTemplates,
+        };
+      } else {
+        return {
+          ok: false
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async insertMarketTemplate(
+    marketTemplatesInput: MarketTemplates,
+  ): Promise<CommonOutput> {
+    try {
+      const result = await this.marketTemplatesRepo.insert(
+        this.marketTemplatesRepo.create(marketTemplatesInput),
+      );
+      return {
+        ok: true,
+        data:{
+          templateId: result.raw.insertId,
+        }
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
     }
   }
 }
