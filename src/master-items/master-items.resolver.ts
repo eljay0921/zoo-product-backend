@@ -45,12 +45,12 @@ export class MasterItemsResolver {
     return this.masterItemsService.getMasterItemsNoRelations(page, size);
   }
 
-  @Mutation(() => CreateMasterItemsOutput)
-  async createMasterItems(
-    @Args('input') createMasterItemsInput: CreateMasterItemsInput,
-  ): Promise<CreateMasterItemsOutput> {
-    return this.masterItemsService.insertItems(createMasterItemsInput);
-  }
+  // @Mutation(() => CreateMasterItemsOutput)
+  // async createMasterItems(
+  //   @Args('input') createMasterItemsInput: CreateMasterItemsInput,
+  // ): Promise<CreateMasterItemsOutput> {
+  //   return this.masterItemsService.insertItems(createMasterItemsInput);
+  // }
 
   @Mutation(() => CreateMasterItemsOutput)
   async createMasterItemsBulk(

@@ -29,7 +29,7 @@ import { UserFolderModule } from './user-folder/user-folder.module';
       password: DB_PSWD,
       database: 'ProductManage_admin',
       synchronize: true,
-      logging: true,
+      logging: false,
       namingStrategy: new CustomNamingStrategy(),
       entities: [
         'dist/**/entities/*.entity{.ts,.js}',

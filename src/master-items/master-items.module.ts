@@ -8,6 +8,7 @@ import { MasterItemSelectionDetail } from './entities/master-items-selection-det
 import { MasterItem } from './entities/master-items.entity';
 import { MasterItemsResolver } from './master-items.resolver';
 import { MasterItemsService } from './master-items.service';
+import { MasterItemsController } from './master-items.controller';
 
 @Module({
   imports: [
@@ -21,5 +22,6 @@ import { MasterItemsService } from './master-items.service';
     ]),
   ],
   providers: [MasterItemsResolver, MasterItemsService],
+  controllers: [MasterItemsController],
 })
 export class MasterItemsModule {}

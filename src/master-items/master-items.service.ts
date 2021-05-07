@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { CommonOutput } from 'src/common/dtos/output.dto';
 import { getManager, In, Repository } from 'typeorm';
 import {
   CreateMasterItemsInput,
@@ -30,29 +31,65 @@ export class MasterItemsService {
 
   constructor(@Inject(REQUEST) private readonly request) {
     // console.log('Service : ', request.req.dbname);
-    this.masterItemsRepo = getManager(this.request.req.dbname).getRepository(
+    this.masterItemsRepo = getManager(this.request.dbname).getRepository(
       MasterItem,
     );
 
     this.masterItemsExtendsRepo = getManager(
-      this.request.req.dbname,
+      this.request.dbname,
     ).getRepository(MasterItemExtend);
 
     this.masterItemsSelectionBaseRepo = getManager(
-      this.request.req.dbname,
+      this.request.dbname,
     ).getRepository(MasterItemSelectionBase);
 
     this.masterItemsSelectionDetailsRepo = getManager(
-      this.request.req.dbname,
+      this.request.dbname,
     ).getRepository(MasterItemSelectionDetail);
 
     this.masterItemsAddOptionsRepo = getManager(
-      this.request.req.dbname,
+      this.request.dbname,
     ).getRepository(MasterItemAddoption);
 
     this.masterItemsImagesRepo = getManager(
-      this.request.req.dbname,
+      this.request.dbname,
     ).getRepository(MasterItemImage);
+  }
+
+  async getMasterItemWithRelations(
+    id: number,
+  ): Promise<CommonOutput> {
+    try {
+      const masterItem = await this.masterItemsRepo.find({
+        where: {
+          id,
+        },
+        relations: [
+          'images',
+          'addOptionInfoList',
+          'extendInfoList',
+          'selectionBase',
+          'selectionBase.details',
+        ],
+      });
+
+      if (masterItem) {
+        return {
+          ok: true,
+          data: masterItem,
+        };
+      } else {
+        return {
+          ok: false,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
   }
 
   async getMasterItemsWithRelations(
@@ -205,10 +242,10 @@ export class MasterItemsService {
   }
 
   async insertItems(
-    createMasterItemsInput: CreateMasterItemsInput,
-  ): Promise<CreateMasterItemsOutput> {
+    masterItemList: MasterItem[],
+  ): Promise<CommonOutput> {
     try {
-      if (createMasterItemsInput.masterItems.length > 100) {
+      if (masterItemList.length > 100) {
         return {
           ok: false,
           error: '원본상품은 한번에 최대 100개까지 한번에 등록 가능합니다.',
@@ -219,12 +256,12 @@ export class MasterItemsService {
 
       for (
         let index = 0;
-        index < createMasterItemsInput.masterItems.length;
+        index < masterItemList.length;
         index++
       ) {
         const eachResult = new CreateMasterItemsResult(index);
         try {
-          const eachItem = createMasterItemsInput.masterItems[index];
+          const eachItem = masterItemList[index];
 
           // 원본상품 중복 체크
           const existItem = await this.masterItemsRepo.findOne({
@@ -236,27 +273,26 @@ export class MasterItemsService {
             eachResult.messages.push('중복된 원본상품 번호입니다.');
             continue;
           }
-          const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
+          // const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
+          const masterItem: MasterItem = eachItem;
+          const resultMasterItem = await this.masterItemsRepo.insert(masterItem);
+          eachResult.masterItemId = resultMasterItem.raw.insertId;
 
-          const resultMasterItem = await this.masterItemsRepo.insert(
-            masterItem,
-          );
-
-          masterItem.extendInfoList.forEach(
+          masterItem.extendInfoList?.forEach(
             (item) => (item.masterItem = resultMasterItem.raw.insertId),
           );
           const extendInsert = this.masterItemsExtendsRepo.insert(
             masterItem.extendInfoList,
           );
 
-          masterItem.images.forEach(
+          masterItem.images?.forEach(
             (item) => (item.masterItem = resultMasterItem.raw.insertId),
           );
           const imageInsert = this.masterItemsImagesRepo.insert(
             masterItem.images,
           );
 
-          masterItem.addOptionInfoList.forEach(
+          masterItem.addOptionInfoList?.forEach(
             (item) => (item.masterItem = resultMasterItem.raw.insertId),
           );
           const addoptionInsert = this.masterItemsAddOptionsRepo.insert(
@@ -283,8 +319,10 @@ export class MasterItemsService {
             addoptionInsert,
             selectionInsert,
           ]).then((results) => {
-            eachResult.masterItemId = resultMasterItem.raw.insertId;
             eachResult.ok = true;
+          }).catch(err => {
+            eachResult.ok = false;
+            eachResult.messages.push(`원본상품 ${eachResult.masterItemId} : 개별 정보 입력 실패`, err);
           });
         } catch (error) {
           console.log(error);
@@ -298,7 +336,7 @@ export class MasterItemsService {
 
       return {
         ok: true,
-        result: totalResult,
+        data: totalResult,
       };
     } catch (error) {
       console.log(error);

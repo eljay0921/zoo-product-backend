@@ -29,18 +29,11 @@ export class DatabaseMiddleware implements NestMiddleware {
           'dist/**/entities/*.entity{.ts,.js}',
           'src/**/entities/*.entity{.ts}',
         ],
-        // extra: {
-        //   min: 10,
-        //   max: 100,
-        //   connectionTimeoutMillis: 5000,
-        //   connectionLimit: 100,
-        // },
       };
 
       try {
-        // set graphql context 'dbname'
+        // set context 'dbname'
         req.dbname = databaseName;
-        // console.log('Middleware : ', req.dbname);
         getConnection(connection.name);
       } catch (error) {
         await createConnection(connection);

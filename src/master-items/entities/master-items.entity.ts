@@ -51,7 +51,7 @@ export class MasterItem {
 
   @Column({ type: 'text', nullable: true })
   @Field(() => String, { nullable: true })
-  description?: string;
+  describe?: string;
 
   @Column('simple-json', { nullable: true })
   @Field(() => MasterItemAdditionalInfo, { nullable: true })
