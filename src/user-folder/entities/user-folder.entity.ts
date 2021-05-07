@@ -1,32 +1,32 @@
-import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserFolderMasterItem } from "./user-folder-master-item.entity";
 
-@InputType({ isAbstract: true })
-@ObjectType()
 @Entity('user_folder')
 export class UserFolder {
+    @IsOptional()
+    @IsNumber()
     @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-    @Field(() => Number, { nullable: true })
     id?: number;
 
+    @IsOptional()
+    @IsNumber()
     @Column({ type: 'int', unsigned: true, nullable: true })
-    @Field(() => Number, { nullable: true })
     parentId?: number;
 
+    @IsString()
     @Column({ length: 40 })
-    @Field(() => String)
     name: string;
   
+    @IsOptional()
     @CreateDateColumn()
-    @Field(() => Date, { nullable: true })
     createdAt?: Date;
   
+    @IsOptional()
     @CreateDateColumn()
-    @Field(() => Date, { nullable: true })
     updatedAt?: Date;
 
-    // relationship
+    @IsOptional()
     @OneToMany(() => UserFolderMasterItem, (userFolderMasterItem) => userFolderMasterItem.userFolder, {
         cascade: true,
       })

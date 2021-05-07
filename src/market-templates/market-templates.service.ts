@@ -95,4 +95,19 @@ export class MarketTemplatesService {
       };
     }
   }
+
+  async deleteMarketTemplate(id: number): Promise<CommonOutput> {
+    try {
+      await this.marketTemplatesRepo.delete({id});
+      return {
+        ok: true
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
 }

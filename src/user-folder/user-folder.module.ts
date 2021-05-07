@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UserFolderResolver } from './user-folder.resolver';
 import { UserFolderService } from './user-folder.service';
+import { UserFolderController } from './user-folder.controller';
 
 @Module({
-  providers: [UserFolderResolver, UserFolderService]
+  providers: [UserFolderService],
+  controllers: [UserFolderController]
 })
 export class UserFolderModule {}

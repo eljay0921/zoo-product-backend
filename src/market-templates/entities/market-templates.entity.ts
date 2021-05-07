@@ -1,4 +1,4 @@
-import { IsOptional, Length } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -9,28 +9,35 @@ import {
 @Entity()
 export class MarketTemplates {
   @IsOptional()
+  @IsNumber()
   @PrimaryGeneratedColumn()
   id?: number;
 
+  @IsString()
   @Column({ length: 1 })
   marketCode: string;
 
   @IsOptional()
+  @IsString()
   @Length(4, 4)
   @Column({ length: 4, nullable: true })
   marketSubCode?: string;
 
+  @IsNumber()
   @Column()
   smid: number;
 
+  @IsString()
   @Length(1, 40)
   @Column({ length: 40 })
   marketID: string;
 
+  @IsString()
   @Length(1, 100)
   @Column({ length: 100 })
   name: string;
 
+  @IsString()
   @Length(1, 100)
   @Column({ length: 100 })
   description: string;

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -18,7 +19,7 @@ import { MarketTemplatesService } from './market-templates.service';
 export class MarketTemplatesController {
   constructor(private readonly service: MarketTemplatesService) {}
 
-  @Get('list')
+  @Get()
   async getMarketTemplateList(
     @Query('marketCode') marketCode: string,
     @Query('marketSubCode') marketSubCode?: string,
@@ -28,7 +29,6 @@ export class MarketTemplatesController {
 
   @Get(':id')
   async getMarketTemplate(@Param('id') id: number): Promise<CommonOutput> {
-    console.log(id);
     return this.service.getMarketTemplate(id);
   }
 
@@ -37,5 +37,10 @@ export class MarketTemplatesController {
     @Body() createMarketTemplateDto: MarketTemplates,
   ): Promise<CommonOutput> {
     return this.service.insertMarketTemplate(createMarketTemplateDto);
+  }
+
+  @Delete(':id')
+  async deleteMarketTemplate(@Param('id') id: number): Promise<CommonOutput> {
+    return this.service.deleteMarketTemplate(id);
   }
 }

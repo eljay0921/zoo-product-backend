@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { CommonOutput } from 'src/common/dtos/output.dto';
 import { getManager, Repository } from 'typeorm';
-import { CreateUserFolderInputs, CreateUserFolderOutput } from './dtos/create-user-folder.dto';
-import { DeleteUserFolderInput, DeleteUserFolderOutput } from './dtos/delete-user-folder.dto';
-import { ReadUserFolderOutput } from './dtos/read-user-folder.dto';
 import { UserFolder } from './entities/user-folder.entity';
 
 @Injectable()
@@ -11,16 +9,16 @@ export class UserFolderService {
 
     private readonly userFolderRepo: Repository<UserFolder>;
     constructor(@Inject(REQUEST) private readonly request) {
-        this.userFolderRepo = getManager(this.request.req.dbname).getRepository(UserFolder);
+        this.userFolderRepo = getManager(this.request.dbname).getRepository(UserFolder);
     }
 
-    async getUserFolders() : Promise<ReadUserFolderOutput> {
+    async getUserFolders() : Promise<CommonOutput> {
         try {
             const userFolders = await this.userFolderRepo.find();
             return {
                 ok: true,
-                userFolders,
                 count : userFolders?.length,
+                data: userFolders,
             }
         } catch (error) {
             console.log(error);
@@ -31,11 +29,14 @@ export class UserFolderService {
         }
     }
 
-    async createUserFolder(createUserFolderInput: CreateUserFolderInputs) : Promise<CreateUserFolderOutput> {
+    async createUserFolder(createUserFolderInput: UserFolder) : Promise<CommonOutput> {
         try {
-            await this.userFolderRepo.insert(this.userFolderRepo.create(createUserFolderInput.folders));
+            const result = await this.userFolderRepo.insert(this.userFolderRepo.create(createUserFolderInput));
             return {
                 ok: true,
+                data:{
+                    folderId: result.raw.insertId,
+                  }
             }
         } catch (error) {
             return {
@@ -45,9 +46,9 @@ export class UserFolderService {
         }
     }
 
-    async deleteUserFolder(deleteUserFolderInputs: DeleteUserFolderInput) : Promise<DeleteUserFolderOutput> {
+    async deleteUserFolder(id: number) : Promise<CommonOutput> {
         try {
-            await this.userFolderRepo.delete(deleteUserFolderInputs.folderIds);
+            await this.userFolderRepo.delete({id});
             return {
                 ok: true
             }
