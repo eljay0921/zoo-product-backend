@@ -6,14 +6,13 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MarketTemplates } from './entities/market-templates.entity';
-import { MarketTemplatesResolver } from './market-templates.resolver';
 import { MarketTemplatesService } from './market-templates.service';
 import { MarketTemplatesController } from './market-templates.controller';
 import { DatabaseMiddleware } from 'src/common/middlewares/database.middleware';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MarketTemplates])],
-  providers: [MarketTemplatesResolver, MarketTemplatesService],
+  providers: [MarketTemplatesService],
   controllers: [MarketTemplatesController],
 })
 export class MarketTemplatesModule implements NestModule {

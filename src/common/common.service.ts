@@ -91,7 +91,6 @@ export class CommonService {
                 CONSTRAINT \`master_addoption_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
               ) ${dbEngineAndOptions};
               
-              
             CREATE TABLE ${userDBName}.\`master_extend\` (
                 \`marketCode\` char(1) NOT NULL,
                 \`marketSubCode\` char(4) NOT NULL,
@@ -102,7 +101,6 @@ export class CommonService {
                 KEY \`master_extend_ibfk_id\` (\`masterItemId\`),
                 CONSTRAINT \`master_extend_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
               ) ${dbEngineAndOptions};
-              
               
             CREATE TABLE ${userDBName}.\`master_image\` (
                 \`order\` tinyint(4) NOT NULL,
@@ -115,7 +113,6 @@ export class CommonService {
                 CONSTRAINT \`master_image_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
               ) ${dbEngineAndOptions};
               
-              
             CREATE TABLE ${userDBName}.\`master_selection\` (
                 \`selectionId\` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 \`type\` int(11) NOT NULL,
@@ -126,7 +123,6 @@ export class CommonService {
                 UNIQUE KEY \`REL_3c665db984c5a94e12bc4781b0\` (\`masterItemId\`),
                 CONSTRAINT \`master_selection_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
               ) ${dbEngineAndOptions};
-              
               
             CREATE TABLE ${userDBName}.\`selection_detail\` (
                 \`order\` smallint(6) NOT NULL,
@@ -141,6 +137,26 @@ export class CommonService {
                 KEY \`selection_detail_ibfk_selectionId\` (\`selectionBaseSelectionId\`),
                 CONSTRAINT \`selection_detail_ibfk_selectionId\` FOREIGN KEY (\`selectionBaseSelectionId\`) REFERENCES \`master_selection\` (\`selectionId\`) ON DELETE CASCADE ON UPDATE NO ACTION
               ) ${dbEngineAndOptions}; 
+
+            CREATE TABLE ${userDBName}.\`user_folder\` (
+                \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                \`parentId\` int(10) unsigned DEFAULT NULL,
+                \`name\` varchar(40) NOT NULL,
+                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+                \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+                PRIMARY KEY (\`id\`)
+              ) ${dbEngineAndOptions};
+              
+            CREATE TABLE ${userDBName}.\`user_folder_master_item\` (
+                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+                \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+                \`userFolderId\` int(10) unsigned NOT NULL,
+                \`masterItemId\` int(10) unsigned NOT NULL,
+                PRIMARY KEY (\`userFolderId\`,\`masterItemId\`),
+                KEY \`user_folder_master_item_ibfk_masterItemId\` (\`masterItemId\`),
+                CONSTRAINT \`user_folder_master_item_ibfk_masterItemId\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                CONSTRAINT \`user_folder_master_item_ibfk_userFolderId\` FOREIGN KEY (\`userFolderId\`) REFERENCES \`user_folder\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+              ) ${dbEngineAndOptions};
             `;
 
     const createTableResult = await sendQuery(createTablesQuery);
@@ -155,6 +171,8 @@ export class CommonService {
     const userDBName = getDatabaseName(id);
     const query = `
         set FOREIGN_KEY_CHECKS = 0;
+        TRUNCATE TABLE ${userDBName}.user_folder_master_item;
+        TRUNCATE TABLE ${userDBName}.user_folder;
         TRUNCATE TABLE ${userDBName}.selection_detail;
         TRUNCATE TABLE ${userDBName}.master_selection;
         TRUNCATE TABLE ${userDBName}.master_addoption;
