@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { sendQuery } from 'src/common/database/connection/mariadb.adapter';
-import { MarketTemplates } from './entities/market-templates.entity';
+import { CommonOutput } from 'src/common/dtos/output.dto';
+import { CreateMarketTemplate } from './entities/market-templates.entity';
 
 @Injectable()
 export class MarketTemplatesService {
@@ -10,29 +11,40 @@ export class MarketTemplatesService {
     this.DBName = this.request?.dbname;
   }
 
-  async selectMarketTemplate(id: number): Promise<any> {
+  async selectMarketTemplate(id: number): Promise<CommonOutput> {
     const query = `SELECT 
       *
     FROM ${this.DBName}.market_templates
     WHERE id = ${id}`;
 
-    return await sendQuery(query);
+    const { ok, error, result } = await sendQuery(query);
+    return {
+      ok,
+      error,
+      data: result,
+    }
   }
 
   async selectMarketTemplateList(
     marketCode: string,
     marketSubCode: string,
-  ): Promise<any> {
+  ): Promise<CommonOutput> {
     const query = `SELECT 
       *
     FROM ${this.DBName}.market_templates
     WHERE marketCode = '${marketCode}'
     and marketSubCode = '${marketSubCode}'`;
 
-    return await sendQuery(query);
+    const { ok, error, result } = await sendQuery(query);
+    return {
+      ok,
+      error,
+      count: result.length,
+      data: result,
+    }
   }
 
-  async insertMarketTemplate2(marketTemplate: MarketTemplates): Promise<any> {
+  async insertMarketTemplate(marketTemplate: CreateMarketTemplate): Promise<CommonOutput> {
     const query = `INSERT INTO ${this.DBName}.market_templates
     (marketCode, marketSubCode, smid, marketID, name, description, baseInfo, basicExtendInfo, extendInfo, deliveryInfo, addServiceInfo, etcInfo, createdAt, updatedAt)
     VALUES('${marketTemplate.marketCode}', 
@@ -49,6 +61,13 @@ export class MarketTemplatesService {
     ${marketTemplate.etcInfo}, 
     current_timestamp(6), current_timestamp(6));`;
 
-    return await sendQuery(query);
+    const { ok, error, result } = await sendQuery(query);
+    return {
+      ok,
+      error,
+      data: {
+        templateId: result.insertId
+      },
+    }
   }
 }

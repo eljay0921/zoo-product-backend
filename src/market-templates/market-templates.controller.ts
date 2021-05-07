@@ -7,8 +7,9 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { CommonOutput } from 'src/common/dtos/output.dto';
 import { DatabaseGuard } from 'src/common/guards/database.guard';
-import { MarketTemplates } from './entities/market-templates.entity';
+import { CreateMarketTemplate } from './entities/market-templates.entity';
 import { MarketTemplatesService } from './market-templates.service';
 
 @UseGuards(DatabaseGuard)
@@ -20,19 +21,19 @@ export class MarketTemplatesController {
   async getMarketTemplateList(
     @Query('marketCode') marketCode: string,
     @Query('marketSubCode') marketSubCode: string,
-  ): Promise<any> {
+  ): Promise<CommonOutput> {
     return this.service.selectMarketTemplateList(marketCode, marketSubCode);
   }
 
   @Get(':id')
-  async getMarketTemplate(@Param('id') id: number): Promise<any> {
+  async getMarketTemplate(@Param('id') id: number): Promise<CommonOutput> {
     return this.service.selectMarketTemplate(id);
   }
 
   @Post()
   async createMarketTemplate(
-    @Body() createMarketTemplateDto: MarketTemplates,
-  ): Promise<any> {
-    return this.service.insertMarketTemplate2(createMarketTemplateDto);
+    @Body() createMarketTemplateDto: CreateMarketTemplate,
+  ): Promise<CommonOutput> {
+    return this.service.insertMarketTemplate(createMarketTemplateDto);
   }
 }

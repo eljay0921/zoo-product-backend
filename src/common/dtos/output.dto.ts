@@ -15,4 +15,6 @@ export class DBOutput extends CoreOutput {
 
 export class CommonOutput extends CoreOutput {
   message?: string;
+  count?: number;
+  data?: any;
 }

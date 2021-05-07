@@ -4,14 +4,12 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MarketTemplates } from './entities/market-templates.entity';
 import { MarketTemplatesService } from './market-templates.service';
 import { MarketTemplatesController } from './market-templates.controller';
 import { DatabaseMiddleware } from 'src/common/middlewares/database.middleware';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MarketTemplates])],
+  imports: [],
   providers: [MarketTemplatesService],
   controllers: [MarketTemplatesController],
 })

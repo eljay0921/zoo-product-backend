@@ -44,10 +44,10 @@ export class CommonService {
       'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 KEY_BLOCK_SIZE=8';
     const createTablesQuery = `
             CREATE TABLE ${userDBName}.\`market_templates\` (
-                \`id\` int(11) NOT NULL AUTO_INCREMENT\,
+                \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT\,
                 \`marketCode\` varchar(1) NOT NULL\,
                 \`marketSubCode\` varchar(4) NOT NULL\,
-                \`smid\` int(11) NOT NULL\,
+                \`smid\` int(10) unsigned NOT NULL\,
                 \`marketID\` varchar(40) NOT NULL\,
                 \`name\` varchar(100) NOT NULL\,
                 \`description\` varchar(100) NOT NULL\,
@@ -79,7 +79,7 @@ export class CommonService {
               ) ${dbEngineAndOptions};
 
             CREATE TABLE ${userDBName}.\`master_addoption\` (
-                \`order\` smallint(6) NOT NULL,
+                \`order\` smallint(5) unsigned NOT NULL,
                 \`name\` varchar(100) NOT NULL,
                 \`value\` varchar(100) NOT NULL,
                 \`count\` int(11) NOT NULL,
@@ -103,7 +103,7 @@ export class CommonService {
               ) ${dbEngineAndOptions};
               
             CREATE TABLE ${userDBName}.\`master_image\` (
-                \`order\` tinyint(4) NOT NULL,
+                \`order\` tinyint(3) unsigned NOT NULL,
                 \`url\` varchar(1000) NOT NULL,
                 \`extendInfo\` text DEFAULT NULL,
                 \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
@@ -125,7 +125,7 @@ export class CommonService {
               ) ${dbEngineAndOptions};
               
             CREATE TABLE ${userDBName}.\`selection_detail\` (
-                \`order\` smallint(6) NOT NULL,
+                \`order\` smallint(5) unsigned NOT NULL,
                 \`count\` int(11) NOT NULL,
                 \`price\` int(11) NOT NULL,
                 \`values\` text DEFAULT NULL,

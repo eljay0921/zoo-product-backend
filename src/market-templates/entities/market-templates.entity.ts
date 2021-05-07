@@ -1,73 +1,46 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { IsDate, IsInt, IsJSON, IsString, Max } from "class-validator";
 
-@InputType({ isAbstract: true })
-@ObjectType()
-@Entity()
-export class MarketTemplates {
-  @PrimaryGeneratedColumn()
-  @Field((type) => Number)
-  id?: number;
-
-  @Column({ length: 1 })
-  @Field((type) => String)
-  marketCode: string;
-
-  @Column({ length: 4 })
-  @Field((type) => String)
-  marketSubCode: string;
-
-  @Column()
-  @Field((type) => Number)
+export class MarketTemplate {
+  @IsInt()
   smid: number;
-
-  @Column({ length: 40 })
-  @Field((type) => String)
+  @IsString()
+  @Max(40)
   marketID: string;
-
-  @Column({ length: 100 })
-  @Field((type) => String)
+  @IsString()
+  @Max(100)
   name: string;
-
-  @Column({ length: 100 })
-  @Field((type) => String)
+  @IsString()
+  @Max(100)
   description: string;
 
-  // TODO : JSON 타입으로 변경 => 구조는 상관 CSetInfoBase 참고
-  @Column('simple-json')
-  @Field((type) => String)
+  @IsString()
   baseInfo: string;
-
-  @Column('simple-json', { nullable: true })
-  @Field((type) => String, { nullable: true })
+  @IsString()
   basicExtendInfo?: string;
-
-  @Column('simple-json', { nullable: true })
-  @Field((type) => String, { nullable: true })
+  @IsString()
   extendInfo?: string;
-
-  @Column('simple-json', { nullable: true })
-  @Field((type) => String, { nullable: true })
+  @IsString()
   deliveryInfo?: string;
-
-  @Column('simple-json', { nullable: true })
-  @Field((type) => String, { nullable: true })
+  @IsString()
   addServiceInfo?: string;
-
-  @Column('simple-json', { nullable: true })
-  @Field((type) => String, { nullable: true })
+  @IsString()
   etcInfo?: string;
+}
 
-  @CreateDateColumn()
-  @Field((type) => Date)
-  createdAt?: Date;
+export class CreateMarketTemplate extends MarketTemplate {
+  @IsString()
+  @Max(1)
+  marketCode: string;
 
-  @CreateDateColumn()
-  @Field((type) => Date)
+  @IsString()
+  @Max(4)
+  marketSubCode: string;
+}
+
+export class UpdateMarketTemplate extends MarketTemplate {
+  @IsInt()
+  id?: number;
+  
+  @IsDate()
   updatedAt?: Date;
 }
