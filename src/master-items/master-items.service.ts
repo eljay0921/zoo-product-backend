@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { CommonOutput } from 'src/common/dtos/output.dto';
 import { getManager, In, InsertResult, Repository } from 'typeorm';
-import { CreateMasterItemsResult } from './dtos/create-master-items.dto';
+import { CreateMasterItemEachResult } from './dtos/create-master-items.dto';
 import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
 import { MasterItemImage } from './entities/master-items-image.entity';
@@ -163,10 +163,10 @@ export class MasterItemsService {
         };
       }
 
-      const totalResult: CreateMasterItemsResult[] = [];
+      const totalResult: CreateMasterItemEachResult[] = [];
 
       for (let index = 0; index < masterItemList.length; index++) {
-        const eachResult = new CreateMasterItemsResult(index);
+        const eachResult = new CreateMasterItemEachResult(index);
         try {
           const eachItem = masterItemList[index];
 
