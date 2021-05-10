@@ -4,7 +4,6 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from './common/common.module';
 import { MasterItemsModule } from './master-items/master-items.module';
 import { MarketTemplatesModule } from './market-templates/market-templates.module';
@@ -35,9 +34,6 @@ import { UserFolderModule } from './user-folder/user-folder.module';
         'dist/**/entities/*.entity{.ts,.js}',
         'src/**/entities/*.entity{.ts}',
       ],
-    }),
-    GraphQLModule.forRoot({
-      autoSchemaFile: true,
     }),
     MasterItemsModule,
     CommonModule,

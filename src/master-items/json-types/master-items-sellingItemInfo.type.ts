@@ -1,10 +1,3 @@
-import {
-  Field,
-  InputType,
-  ObjectType,
-  registerEnumType,
-} from '@nestjs/graphql';
-
 enum SendType {
   None,
   ECoupon,
@@ -27,27 +20,11 @@ enum SendPayType {
   Individual,
 }
 
-registerEnumType(SendType, { name: 'SendType' });
-registerEnumType(SendPayType, { name: 'SendPayType' });
-
-@InputType({ isAbstract: true })
-@ObjectType()
 export class MasterItemSellingItemInfo {
-  @Field(() => SendType, { nullable: true })
   sendType?: SendType;
-
-  @Field(() => SendPayType, { nullable: true })
   sendPayType?: SendPayType;
-
-  @Field(() => String, { nullable: true })
   sourceMarket?: string;
-
-  @Field(() => String, { nullable: true })
   sellerId?: string;
-
-  @Field(() => String, { nullable: true })
   sellingItemNo?: string;
-
-  @Field(() => String, { nullable: true })
   itemLink?: string;
 }

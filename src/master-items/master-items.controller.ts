@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { Param } from '@nestjs/common/decorators/http/route-params.decorator';
 import { CommonOutput } from 'src/common/dtos/output.dto';
 import { MasterItem } from './entities/master-items.entity';
@@ -47,10 +47,8 @@ export class MasterItemsController {
     };
   }
 
-  //   @Mutation(() => DeleteMasterItemsOutput)
-  //   async deleteMasterItems(
-  //     @Args('input') deleteMasterItemsInput: DeleteMasterItemsInput,
-  //   ): Promise<DeleteMasterItemsOutput> {
-  //     return this.masterItemsService.deleteItems(deleteMasterItemsInput);
-  //   }
+  @Delete()
+  async deleteMasterItems(@Body() body): Promise<CommonOutput> {
+    return this.service.deleteItems(body.data);
+  }
 }

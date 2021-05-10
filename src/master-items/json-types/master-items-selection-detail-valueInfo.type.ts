@@ -1,10 +1,3 @@
-import {
-  Field,
-  InputType,
-  ObjectType,
-  registerEnumType,
-} from '@nestjs/graphql';
-
 // 무게 단위
 enum weightUnit {
   mg, // 밀리그램
@@ -40,21 +33,9 @@ enum capacityUnit {
   mal, // 말
 }
 
-registerEnumType(weightUnit, { name: 'weightUnit' });
-registerEnumType(capacityUnit, { name: 'capacityUnit' });
-
-@InputType({ isAbstract: true })
-@ObjectType()
 export class MasterItemSelectionDetailExtend {
-  @Field(() => Number, { nullable: true })
   weight?: number;
-
-  @Field(() => weightUnit, { nullable: true })
   weightUnit?: weightUnit;
-
-  @Field(() => Number, { nullable: true })
   capacity?: number;
-
-  @Field(() => capacityUnit, { nullable: true })
   capacityUnit?: capacityUnit;
 }

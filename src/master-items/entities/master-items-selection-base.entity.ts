@@ -1,10 +1,4 @@
 import {
-  Field,
-  InputType,
-  ObjectType,
-  registerEnumType,
-} from '@nestjs/graphql';
-import {
   Column,
   CreateDateColumn,
   Entity,
@@ -22,33 +16,24 @@ enum SelectionType {
   Input,
 }
 
-registerEnumType(SelectionType, { name: 'SelectionType' });
-
-@InputType({ isAbstract: true })
-@ObjectType()
 @Entity('master_selection')
 export class MasterItemSelectionBase {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  @Field(() => Number)
   selectionId?: number;
 
-  @OneToOne(() => MasterItem, (master) => master.selectionBase, {
+  @OneToOne(() => MasterItem, (master) => master.selection, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  @Field(() => MasterItem, { nullable: true })
   masterItem?: MasterItem;
 
   @Column()
-  @Field(() => SelectionType)
   type: SelectionType;
 
   @Column('simple-array')
-  @Field(() => [String])
   options: string[];
 
   @CreateDateColumn()
-  @Field(() => Date)
   createAt?: Date;
 
   @OneToMany(
@@ -56,6 +41,5 @@ export class MasterItemSelectionBase {
     (detail) => detail.selectionBase,
     { cascade: true },
   )
-  @Field(() => [MasterItemSelectionDetail], { nullable: true })
   details?: MasterItemSelectionDetail[];
 }

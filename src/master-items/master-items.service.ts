@@ -2,17 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { CommonOutput } from 'src/common/dtos/output.dto';
 import { getManager, In, InsertResult, Repository } from 'typeorm';
-import {
-  CreateMasterItemsInput,
-  CreateMasterItemsOutput,
-  CreateMasterItemsResult,
-  MasterItemsBaseInput,
-} from './dtos/create-master-items.dto';
-import {
-  DeleteMasterItemsInput,
-  DeleteMasterItemsOutput,
-} from './dtos/delete-master-items.dto';
-import { ReadMasterItemsOutput } from './dtos/read-master-items.dto';
+import { CreateMasterItemsResult } from './dtos/create-master-items.dto';
 import { MasterItemAddoption } from './entities/master-items-addoption.entity';
 import { MasterItemExtend } from './entities/master-items-extend.entity';
 import { MasterItemImage } from './entities/master-items-image.entity';
@@ -164,78 +154,6 @@ export class MasterItemsService {
     }
   }
 
-  private createMasterItemEntity(
-    masterItemBase: MasterItemsBaseInput,
-  ): MasterItem {
-    // 이미지
-    const images: MasterItemImage[] = [];
-    const createImageEntityAsync = async () => {
-      masterItemBase.imagesInput.forEach((image) => {
-        const masterItemImage: MasterItemImage = { ...image };
-        masterItemImage.extendInfo = image.extendInfoInput || undefined;
-
-        images.push(masterItemImage);
-      });
-    };
-
-    // 선택사항
-    const selectionBase: MasterItemSelectionBase = {
-      ...masterItemBase.selectionBaseInput,
-      details: [],
-    };
-    const createSelectionEntityAsync = async () => {
-      masterItemBase.selectionBaseInput.detailsInput.forEach(
-        (selectionDetail) => {
-          const masterItemSelectionDetail: MasterItemSelectionDetail = {
-            ...selectionDetail,
-            extendInfo: selectionDetail.extendInput || undefined,
-          };
-          selectionBase.details.push(masterItemSelectionDetail);
-        },
-      );
-    };
-
-    // 추가구성
-    const addOptionInfoList: MasterItemAddoption[] = [];
-    const createAddOptionEntityAsync = async () => {
-      masterItemBase.addOptionInfoListInput.forEach((addOption) => {
-        const masterItemAddOption: MasterItemAddoption = { ...addOption };
-        addOptionInfoList.push(masterItemAddOption);
-      });
-    };
-
-    // 확장정보
-    const extendInfoList: MasterItemExtend[] = [];
-    const createExtendEntityAsync = async () => {
-      masterItemBase.extendInfoListInput?.forEach((ext) => {
-        const extendInfo: MasterItemExtend = { ...ext };
-        extendInfoList.push(extendInfo);
-      });
-
-      return extendInfoList;
-    };
-
-    Promise.all([
-      createImageEntityAsync(),
-      createSelectionEntityAsync(),
-      createAddOptionEntityAsync(),
-      createExtendEntityAsync(),
-    ]);
-
-    const masterItem: MasterItem = {
-      ...masterItemBase,
-      categoryInfo: masterItemBase.categoryInfoInput,
-      additionalInfo: masterItemBase.additionalInfoInput || undefined,
-      sellingItemInfo: masterItemBase.sellingItemInfoInput || undefined,
-      images,
-      selectionBase,
-      addOptionInfoList,
-      extendInfoList,
-    };
-
-    return masterItem;
-  }
-
   async insertItems(masterItemList: MasterItem[]): Promise<CommonOutput> {
     try {
       if (masterItemList.length > 100) {
@@ -271,12 +189,12 @@ export class MasterItemsService {
 
           const eachPromises: Promise<InsertResult>[] = [];
 
-          if (masterItem.extendInfoList) {
-            masterItem.extendInfoList.forEach(
+          if (masterItem.extends) {
+            masterItem.extends.forEach(
               (item) => (item.masterItem = resultMasterItem.raw.insertId),
             );
             const extendInsert = this.masterItemsExtendsRepo.insert(
-              masterItem.extendInfoList,
+              masterItem.extends,
             );
 
             eachPromises.push(extendInsert);
@@ -292,29 +210,29 @@ export class MasterItemsService {
             eachPromises.push(imageInsert);
           }
 
-          if (masterItem.addOptionInfoList) {
-            masterItem.addOptionInfoList.forEach(
+          if (masterItem.addOptions) {
+            masterItem.addOptions.forEach(
               (item) => (item.masterItem = resultMasterItem.raw.insertId),
             );
             const addoptionInsert = this.masterItemsAddOptionsRepo.insert(
-              masterItem.addOptionInfoList,
+              masterItem.addOptions,
             );
             eachPromises.push(addoptionInsert);
           }
 
-          if (masterItem.selectionBase) {
+          if (masterItem.selection) {
             const selectionInsert = this.masterItemsSelectionBaseRepo
               .insert({
                 masterItem: resultMasterItem.raw.insertId,
-                ...masterItem.selectionBase,
+                ...masterItem.selection,
               })
               .then((result) => {
-                if (masterItem.selectionBase.details) {
-                  masterItem.selectionBase.details.forEach(
+                if (masterItem.selection.details) {
+                  masterItem.selection.details.forEach(
                     (item) => (item.selectionBase = result.raw.insertId),
                   );
                   return this.masterItemsSelectionDetailsRepo.insert(
-                    masterItem.selectionBase.details,
+                    masterItem.selection.details,
                   );
                 }
               });
@@ -398,47 +316,49 @@ export class MasterItemsService {
       const insertProcess = async () => {
         try {
           const extendList: MasterItemExtend[] = [];
-          const images: MasterItemImage[] = [];
-          const addoptions: MasterItemAddoption[] = [];
-          const selectionBases: MasterItemSelectionBase[] = [];
+          const imageList: MasterItemImage[] = [];
+          const addoptionList: MasterItemAddoption[] = [];
+          const selectionList: MasterItemSelectionBase[] = [];
 
           toInsertItemsTuple?.forEach((item) => {
             const masterItemId = item[0];
-            item[1].extendInfoList?.forEach((item) => {
+            item[1].extends?.forEach((item) => {
               item.masterItem = <any>masterItemId;
               extendList.push(item);
             });
 
             item[1].images?.forEach((item) => {
               item.masterItem = <any>masterItemId;
-              images.push(item);
+              imageList.push(item);
             });
 
-            item[1].addOptionInfoList?.forEach((item) => {
+            item[1].addOptions?.forEach((item) => {
               item.masterItem = <any>masterItemId;
-              addoptions.push(item);
+              addoptionList.push(item);
             });
 
-            selectionBases?.push({
+            selectionList?.push({
               masterItem: <any>masterItemId,
-              ...item[1].selectionBase,
+              ...item[1].selection,
             });
           });
 
           const insertExtendResult = this.masterItemsExtendsRepo.insert(
             extendList,
           );
-          const insertImageResult = this.masterItemsImagesRepo.insert(images);
+          const insertImageResult = this.masterItemsImagesRepo.insert(
+            imageList,
+          );
           const insertAddoptionResult = this.masterItemsAddOptionsRepo.insert(
-            addoptions,
+            addoptionList,
           );
           const insertSelectionResult = this.masterItemsSelectionBaseRepo
-            .insert(selectionBases)
+            .insert(selectionList)
             .then((result) => {
               const selectionDetails: MasterItemSelectionDetail[] = [];
               toInsertItemsTuple?.forEach((item, idx) => {
                 const selectionBaseId = result.identifiers[idx].selectionId;
-                item[1].selectionBase.details?.forEach((item) => {
+                item[1].selection.details?.forEach((item) => {
                   item.selectionBase = selectionBaseId;
                   selectionDetails.push(item);
                 });
@@ -482,11 +402,9 @@ export class MasterItemsService {
     }
   }
 
-  async deleteItems(
-    deleteMasterItemsInput: DeleteMasterItemsInput,
-  ): Promise<DeleteMasterItemsOutput> {
+  async deleteItems(ids: number[]): Promise<CommonOutput> {
     try {
-      await this.masterItemsRepo.delete(deleteMasterItemsInput.ids);
+      await this.masterItemsRepo.delete(ids);
 
       return {
         ok: true,

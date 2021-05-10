@@ -6,7 +6,6 @@ import { MasterItemImage } from './entities/master-items-image.entity';
 import { MasterItemSelectionBase } from './entities/master-items-selection-base.entity';
 import { MasterItemSelectionDetail } from './entities/master-items-selection-detail.entity';
 import { MasterItem } from './entities/master-items.entity';
-import { MasterItemsResolver } from './master-items.resolver';
 import { MasterItemsService } from './master-items.service';
 import { MasterItemsController } from './master-items.controller';
 
@@ -21,7 +20,7 @@ import { MasterItemsController } from './master-items.controller';
       MasterItemAddoption,
     ]),
   ],
-  providers: [MasterItemsResolver, MasterItemsService],
+  providers: [MasterItemsService],
   controllers: [MasterItemsController],
 })
 export class MasterItemsModule {}
