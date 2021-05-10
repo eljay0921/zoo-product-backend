@@ -32,7 +32,7 @@ export class MasterItemsResolver {
   async getMasterItems(
     @Args('input') readMasterItemsInput: ReadMasterItemsInput,
   ): Promise<ReadMasterItemsOutput> {
-    return this.masterItemsService.getMasterItemsWithRelations(
+    return this.masterItemsService.getMasterItemListWithRelations(
       readMasterItemsInput.ids,
     );
   }
@@ -42,7 +42,7 @@ export class MasterItemsResolver {
     @Args('page') page: number,
     @Args('size') size: number,
   ): Promise<ReadMasterItemsOutput> {
-    return this.masterItemsService.getMasterItemsNoRelations(page, size);
+    return this.masterItemsService.getMasterItemListNoRelations(page, size);
   }
 
   // @Mutation(() => CreateMasterItemsOutput)
@@ -52,14 +52,14 @@ export class MasterItemsResolver {
   //   return this.masterItemsService.insertItems(createMasterItemsInput);
   // }
 
-  @Mutation(() => CreateMasterItemsOutput)
-  async createMasterItemsBulk(
-    @Args('input') createMasterItemsInput: CreateMasterItemsInput,
-    @Context() ctx,
-  ): Promise<CreateMasterItemsOutput> {
-    console.log('Resolver : ', ctx.req.dbname);
-    return this.masterItemsService.insertItemsBulk(createMasterItemsInput);
-  }
+  // @Mutation(() => CreateMasterItemsOutput)
+  // async createMasterItemsBulk(
+  //   @Args('input') createMasterItemsInput: CreateMasterItemsInput,
+  //   @Context() ctx,
+  // ): Promise<CreateMasterItemsOutput> {
+  //   console.log('Resolver : ', ctx.req.dbname);
+  //   return this.masterItemsService.insertItemsBulk(createMasterItemsInput);
+  // }
 
   @Mutation(() => DeleteMasterItemsOutput)
   async deleteMasterItems(
