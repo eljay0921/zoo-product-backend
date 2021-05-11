@@ -54,10 +54,10 @@ export class ItemService {
         },
         relations: [
           'images',
-          'addOptionInfoList',
-          'extendInfoList',
-          'selectionBase',
-          'selectionBase.details',
+          'addOptions',
+          'extends',
+          'selection',
+          'selection.details',
         ],
       });
 
@@ -88,10 +88,10 @@ export class ItemService {
         },
         relations: [
           'images',
-          'addOptionInfoList',
-          'extendInfoList',
-          'selectionBase',
-          'selectionBase.details',
+          'addOptions',
+          'extends',
+          'selection',
+          'selection.details',
         ],
       });
 
