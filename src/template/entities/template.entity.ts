@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
-export class MarketTemplates {
+@Entity('template')
+export class Template {
   @IsOptional()
   @IsNumber()
   @PrimaryGeneratedColumn()

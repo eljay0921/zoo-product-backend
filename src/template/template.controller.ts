@@ -10,14 +10,13 @@ import {
 } from '@nestjs/common';
 import { CommonOutput } from 'src/common/dtos/output.dto';
 import { DatabaseGuard } from 'src/common/guards/database.guard';
-import { MarketTemplates } from './entities/market-templates.entity';
-// import { CreateMarketTemplate } from './entities/market-templates.entity';
-import { MarketTemplatesService } from './market-templates.service';
+import { Template } from './entities/template.entity';
+import { TemplateService } from './template.service';
 
 @UseGuards(DatabaseGuard)
-@Controller('market-templates')
-export class MarketTemplatesController {
-  constructor(private readonly service: MarketTemplatesService) {}
+@Controller('template')
+export class TemplateController {
+  constructor(private readonly service: TemplateService) {}
 
   @Get()
   async getMarketTemplateList(
@@ -34,7 +33,7 @@ export class MarketTemplatesController {
 
   @Post()
   async createMarketTemplate(
-    @Body() createMarketTemplateDto: MarketTemplates,
+    @Body() createMarketTemplateDto: Template,
   ): Promise<CommonOutput> {
     return this.service.insertMarketTemplate(createMarketTemplateDto);
   }

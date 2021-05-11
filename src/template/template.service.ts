@@ -2,16 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { CommonOutput } from 'src/common/dtos/output.dto';
 import { getManager, Repository } from 'typeorm';
-import { MarketTemplates } from './entities/market-templates.entity';
+import { Template } from './entities/template.entity';
 
 @Injectable()
-export class MarketTemplatesService {
+export class TemplateService {
 
-  private readonly marketTemplatesRepo: Repository<MarketTemplates>;
+  private readonly templateRepo: Repository<Template>;
   constructor(@Inject(REQUEST) private readonly request) {
-    this.marketTemplatesRepo = getManager(
+    this.templateRepo = getManager(
       this.request.dbname,
-    ).getRepository(MarketTemplates);
+    ).getRepository(Template);
   }
 
   async getMarketTemplate(
@@ -19,7 +19,7 @@ export class MarketTemplatesService {
   ): Promise<CommonOutput> {
     try {
 
-      const marketTemplate = await this.marketTemplatesRepo.findOne({
+      const marketTemplate = await this.templateRepo.findOne({
         id: templateId,
       });
 
@@ -49,9 +49,9 @@ export class MarketTemplatesService {
 
       let marketTemplates;
       if(marketSubCode) {
-        marketTemplates = await this.marketTemplatesRepo.find({marketCode, marketSubCode});
+        marketTemplates = await this.templateRepo.find({marketCode, marketSubCode});
       } else {
-        marketTemplates = await this.marketTemplatesRepo.find({marketCode});
+        marketTemplates = await this.templateRepo.find({marketCode});
       }
 
       if (marketTemplates) {
@@ -75,11 +75,11 @@ export class MarketTemplatesService {
   }
 
   async insertMarketTemplate(
-    marketTemplatesInput: MarketTemplates,
+    marketTemplatesInput: Template,
   ): Promise<CommonOutput> {
     try {
-      const result = await this.marketTemplatesRepo.insert(
-        this.marketTemplatesRepo.create(marketTemplatesInput),
+      const result = await this.templateRepo.insert(
+        this.templateRepo.create(marketTemplatesInput),
       );
       return {
         ok: true,
@@ -98,7 +98,7 @@ export class MarketTemplatesService {
 
   async deleteMarketTemplate(id: number): Promise<CommonOutput> {
     try {
-      await this.marketTemplatesRepo.delete({id});
+      await this.templateRepo.delete({id});
       return {
         ok: true
       };

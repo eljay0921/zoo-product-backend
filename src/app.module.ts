@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CommonModule } from './common/common.module';
 import { ItemModule } from './item/item.module';
-import { MarketTemplatesModule } from './market-templates/market-templates.module';
+import { TemplateModule } from './template/template.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomNamingStrategy } from './common/typeorm/custom-naming-strategy';
 import {
@@ -37,7 +37,7 @@ import { UserFolderModule } from './user-folder/user-folder.module';
     }),
     ItemModule,
     CommonModule,
-    MarketTemplatesModule,
+    TemplateModule,
     UserFolderModule,
   ],
   controllers: [],
