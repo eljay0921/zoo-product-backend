@@ -21,29 +21,23 @@ export class ItemService {
 
   constructor(@Inject(REQUEST) private readonly request) {
     // console.log('Service : ', request.req.dbname);
-    this.itemRepo = getManager(this.request.dbname).getRepository(
-      Item,
-    );
+    this.itemRepo = getManager(this.request.dbname).getRepository(Item);
 
-    this.itemExtendRepo = getManager(this.request.dbname).getRepository(
-      Extend,
-    );
+    this.itemExtendRepo = getManager(this.request.dbname).getRepository(Extend);
 
-    this.itemSelectionRepo = getManager(
-      this.request.dbname,
-    ).getRepository(Selection);
+    this.itemSelectionRepo = getManager(this.request.dbname).getRepository(
+      Selection,
+    );
 
     this.itemSelectionDetailRepo = getManager(
       this.request.dbname,
     ).getRepository(SelectionDetail);
 
-    this.itemAddOptionRepo = getManager(
-      this.request.dbname,
-    ).getRepository(Addoption);
-
-    this.itemImageRepo = getManager(this.request.dbname).getRepository(
-      Image,
+    this.itemAddOptionRepo = getManager(this.request.dbname).getRepository(
+      Addoption,
     );
+
+    this.itemImageRepo = getManager(this.request.dbname).getRepository(Image);
   }
 
   async getOneMasterItemWithRelations(id: number): Promise<CommonOutput> {
@@ -182,62 +176,47 @@ export class ItemService {
           }
           // const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
           const masterItem: Item = eachItem;
-          const resultMasterItem = await this.itemRepo.insert(
-            masterItem,
-          );
+          const resultMasterItem = await this.itemRepo.insert(masterItem);
           eachResult.itemId = resultMasterItem.raw.insertId;
 
           const eachPromises: Promise<InsertResult>[] = [];
 
           if (masterItem.extends) {
-            masterItem.extends.forEach(
-              (item) => (item.item = resultMasterItem.raw.insertId),
-            );
-            const extendInsert = this.itemExtendRepo.insert(
-              masterItem.extends,
-            );
-
+            masterItem.extends.forEach((item) => (item.item = masterItem));
+            const extendInsert = this.itemExtendRepo.insert(masterItem.extends);
             eachPromises.push(extendInsert);
           }
 
           if (masterItem.images) {
-            masterItem.images?.forEach(
-              (item) => (item.item = resultMasterItem.raw.insertId),
-            );
-            const imageInsert = this.itemImageRepo.insert(
-              masterItem.images,
-            );
+            masterItem.images?.forEach((item) => (item.item = masterItem));
+            const imageInsert = this.itemImageRepo.insert(masterItem.images);
             eachPromises.push(imageInsert);
           }
 
           if (masterItem.addOptions) {
-            masterItem.addOptions.forEach(
-              (item) => (item.item = resultMasterItem.raw.insertId),
-            );
+            masterItem.addOptions.forEach((item) => (item.item = masterItem));
             const addoptionInsert = this.itemAddOptionRepo.insert(
               masterItem.addOptions,
             );
             eachPromises.push(addoptionInsert);
           }
 
-          if (masterItem.selection) {
-            const selectionInsert = this.itemSelectionRepo
-              .insert({
-                item: resultMasterItem.raw.insertId,
-                ...masterItem.selection,
-              })
-              .then((result) => {
-                if (masterItem.selection.details) {
-                  masterItem.selection.details.forEach(
-                    (item) => (item.selection = result.raw.insertId),
-                  );
-                  return this.itemSelectionDetailRepo.insert(
-                    masterItem.selection.details,
-                  );
-                }
-              });
+          if (masterItem.selections) {
+            for (let i = 0; i < masterItem.selections.length; i++) {
+              const selection = masterItem.selections[i];
+              selection.item = masterItem;
+              await this.itemSelectionRepo.insert(selection);
 
-            eachPromises.push(selectionInsert);
+              if (selection.details) {
+                selection.details.forEach(
+                  (detail) => (detail.selection = selection),
+                );
+                const selectionInsertAll = this.itemSelectionDetailRepo.insert(
+                  selection.details,
+                );
+                eachPromises.push(selectionInsertAll);
+              }
+            }
           }
 
           await Promise.all(eachPromises)
@@ -277,9 +256,7 @@ export class ItemService {
     }
   }
 
-  async insertItemsBulk(
-    createMasterItemsInput: Item[],
-  ): Promise<CommonOutput> {
+  async insertItemsBulk(createMasterItemsInput: Item[]): Promise<CommonOutput> {
     try {
       if (createMasterItemsInput.length > 100) {
         return {
@@ -289,18 +266,14 @@ export class ItemService {
       }
 
       const toInsertPromises: Promise<any>[] = [];
-      const toInsertItemsTuple: [string, Item][] = [];
+      const toInsertItems: Item[] = [];
       for (let index = 0; index < createMasterItemsInput.length; index++) {
         try {
-          const eachItem = createMasterItemsInput[index];
-          // const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-          const masterItem: Item = eachItem;
-
+          const masterItem: Item = createMasterItemsInput[index];
           const insertPromise = this.itemRepo
             .insert(masterItem)
-            .then((result) =>
-              toInsertItemsTuple.push([result.raw.insertId, masterItem]),
-            );
+            .then(() => toInsertItems.push(masterItem));
+
           toInsertPromises.push(insertPromise);
         } catch (error) {
           console.log('Entity 객체 생성 중 실패 : ', error);
@@ -319,54 +292,55 @@ export class ItemService {
           const imageList: Image[] = [];
           const addoptionList: Addoption[] = [];
           const selectionList: Selection[] = [];
+          const selectionDetailList: [number, SelectionDetail[]][] = [];
 
-          toInsertItemsTuple?.forEach((item) => {
-            const masterItemId = item[0];
-            item[1].extends?.forEach((item) => {
-              item.item = <any>masterItemId;
-              extendList.push(item);
+          toInsertItems?.forEach((item) => {
+            item.extends?.forEach((ext) => {
+              extendList.push({ item, ...ext });
             });
 
-            item[1].images?.forEach((item) => {
-              item.item = <any>masterItemId;
-              imageList.push(item);
+            item.images?.forEach((img) => {
+              imageList.push({ item, ...img });
             });
 
-            item[1].addOptions?.forEach((item) => {
-              item.item = <any>masterItemId;
-              addoptionList.push(item);
+            item.addOptions?.forEach((add) => {
+              addoptionList.push({ item, ...add });
             });
 
-            selectionList?.push({
-              item: <any>masterItemId,
-              ...item[1].selection,
+            item.selections?.forEach((sel, idx) => {
+              selectionList.push({ item, ...sel });
+              selectionDetailList.push([idx, sel?.details]);
             });
           });
 
-          const insertExtendResult = this.itemExtendRepo.insert(
-            extendList,
-          );
-          const insertImageResult = this.itemImageRepo.insert(
-            imageList,
-          );
+          const insertExtendResult = this.itemExtendRepo.insert(extendList);
+          const insertImageResult = this.itemImageRepo.insert(imageList);
           const insertAddoptionResult = this.itemAddOptionRepo.insert(
             addoptionList,
           );
           const insertSelectionResult = this.itemSelectionRepo
             .insert(selectionList)
-            .then((result) => {
-              const selectionDetails: SelectionDetail[] = [];
-              toInsertItemsTuple?.forEach((item, idx) => {
-                const selectionBaseId = result.identifiers[idx].selectionId;
-                item[1].selection.details?.forEach((item) => {
-                  item.selection = selectionBaseId;
-                  selectionDetails.push(item);
-                });
+            .then((insertResults) => {
+              const promises: Promise<InsertResult>[] = [];
+
+              insertResults?.identifiers.forEach(async (identifier, idx) => {
+                const details = selectionDetailList[idx][1];
+                if (details) {
+                  details.forEach(
+                    (detail) =>
+                      (detail.selection = <Selection>{
+                        id: identifier.id,
+                        type: identifier.type,
+                      }),
+                  );
+                  const insertDetails = this.itemSelectionDetailRepo.insert(
+                    details,
+                  );
+                  promises.push(insertDetails);
+                }
               });
 
-              return this.itemSelectionDetailRepo.insert(
-                selectionDetails,
-              );
+              return Promise.all(promises);
             });
 
           return await Promise.all([
@@ -384,7 +358,7 @@ export class ItemService {
         .then((results) => {
           return {
             ok: true,
-            count: toInsertItemsTuple?.length,
+            count: toInsertItems?.length,
           };
         })
         .catch((err) => {

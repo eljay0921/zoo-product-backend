@@ -10,8 +10,8 @@ export class CustomNamingStrategy
     referencedTablePath?: string,
     referencedColumnNames?: string[],
   ): string {
-      
-    tableOrName = typeof tableOrName === 'string' ? tableOrName : tableOrName.name;
+    tableOrName =
+      typeof tableOrName === 'string' ? tableOrName : tableOrName.name;
 
     // console.log('#1', tableOrName);
     // console.log('#2', columnNames);
@@ -19,9 +19,9 @@ export class CustomNamingStrategy
     // console.log('#4', referencedColumnNames);
 
     // const name = columnNames.reduce(
-    //   (name, column) => { 
+    //   (name, column) => {
     //       console.log('##', name, column);
-    //       return `${name}_${column}_${tableOrName}_${referencedTablePath}`; 
+    //       return `${name}_${column}_${tableOrName}_${referencedTablePath}`;
     //     }
     // );
 
@@ -30,5 +30,15 @@ export class CustomNamingStrategy
 
     return name;
     // return `fk_${crypto.createHash('md5').update(name).digest('hex')}`;
+  }
+
+  uniqueConstraintName(
+    tableOrName: Table | string,
+    columnNames: string[],
+  ): string {
+    tableOrName =
+      typeof tableOrName === 'string' ? tableOrName : tableOrName.name;
+    const name = `${tableOrName}_ibuk_${columnNames.join('_')}`;
+    return name;
   }
 }

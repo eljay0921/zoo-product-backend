@@ -56,10 +56,10 @@ export class Item {
   updatedAt?: Date;
 
   // relation entities
-  @OneToOne(() => Selection, (base) => base.item, {
+  @OneToMany(() => Selection, (base) => base.item, {
     cascade: true,
   })
-  selection?: Selection;
+  selections?: Selection[];
 
   @OneToMany(() => Image, (image) => image.item, {
     cascade: true,

@@ -4,20 +4,21 @@ import {
   Entity,
   ManyToOne,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Extend } from '../json-types/item-selection-detail-extend.type';
 import { Selection } from './item-selection.entity';
 
 @Entity('item_selection_detail')
 export class SelectionDetail {
-  @PrimaryColumn({ type: 'smallint' })
-  order: number;
-
   @ManyToOne(() => Selection, (base) => base.details, {
     primary: true,
     onDelete: 'CASCADE',
   })
   selection?: Selection;
+
+  @PrimaryColumn({ type: 'smallint' })
+  order: number;
 
   @Column()
   count: number;

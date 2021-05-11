@@ -3,8 +3,10 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SelectionDetail } from './item-selection-detail.entity';
@@ -21,14 +23,14 @@ export class Selection {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id?: number;
 
-  @OneToOne(() => Item, (item) => item.selection, {
+  @PrimaryColumn()
+  type: SelectionType;
+
+  @ManyToOne(() => Item, (item) => item.selections, {
+    primary: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   item?: Item;
-
-  @Column()
-  type: SelectionType;
 
   @Column('simple-array')
   options: string[];
@@ -36,10 +38,8 @@ export class Selection {
   @CreateDateColumn()
   createAt?: Date;
 
-  @OneToMany(
-    () => SelectionDetail,
-    (detail) => detail.selection,
-    { cascade: true },
-  )
+  @OneToMany(() => SelectionDetail, (detail) => detail.selection, {
+    cascade: true,
+  })
   details?: SelectionDetail[];
 }
