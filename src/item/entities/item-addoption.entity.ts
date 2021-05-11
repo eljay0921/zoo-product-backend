@@ -5,15 +5,15 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { MasterItem } from './master-items.entity';
+import { Item } from './item.entity';
 
-@Entity('master_addoption')
-export class MasterItemAddoption {
-  @ManyToOne(() => MasterItem, (master) => master.addOptions, {
+@Entity('item_addoption')
+export class Addoption {
+  @ManyToOne(() => Item, (master) => master.addOptions, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  masterItem?: MasterItem;
+  masterItem?: Item;
 
   @PrimaryColumn({ type: 'smallint' })
   order: number;

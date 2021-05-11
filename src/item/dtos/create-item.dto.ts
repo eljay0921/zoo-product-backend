@@ -1,4 +1,4 @@
-export class CreateMasterItemEachResult {
+export class CreateItemEachResult {
   constructor(private readonly seq: number) {
     this.ok = false;
     this.messages = [];

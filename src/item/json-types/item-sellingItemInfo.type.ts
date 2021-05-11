@@ -20,7 +20,7 @@ enum SendPayType {
   Individual,
 }
 
-export class MasterItemSellingItemInfo {
+export class SellingItemInfo {
   sendType?: SendType;
   sendPayType?: SendPayType;
   sourceMarket?: string;

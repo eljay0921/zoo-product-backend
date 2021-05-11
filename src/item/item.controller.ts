@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { Param } from '@nestjs/common/decorators/http/route-params.decorator';
 import { CommonOutput } from 'src/common/dtos/output.dto';
-import { MasterItem } from './entities/master-items.entity';
-import { MasterItemsService } from './master-items.service';
+import { Item } from './entities/item.entity';
+import { ItemService } from './item.service';
 
-@Controller('master-items')
-export class MasterItemsController {
-  constructor(private readonly service: MasterItemsService) {}
+@Controller('item')
+export class ItemController {
+  constructor(private readonly service: ItemService) {}
 
   @Get('list-simple')
   async getMasterItemsQuick(
@@ -29,7 +29,7 @@ export class MasterItemsController {
   @Post()
   async createMasterItems(
     @Query('mode') mode: string,
-    @Body() body: MasterItem[],
+    @Body() body: Item[],
   ): Promise<CommonOutput> {
     if (mode) {
       const masterItems = body;

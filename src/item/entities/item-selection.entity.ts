@@ -7,8 +7,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MasterItemSelectionDetail } from './master-items-selection-detail.entity';
-import { MasterItem } from './master-items.entity';
+import { SelectionDetail } from './item-selection-detail.entity';
+import { Item } from './item.entity';
 
 enum SelectionType {
   Combined,
@@ -16,16 +16,16 @@ enum SelectionType {
   Input,
 }
 
-@Entity('master_selection')
-export class MasterItemSelectionBase {
+@Entity('item_selection')
+export class Selection {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   selectionId?: number;
 
-  @OneToOne(() => MasterItem, (master) => master.selection, {
+  @OneToOne(() => Item, (master) => master.selection, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  masterItem?: MasterItem;
+  masterItem?: Item;
 
   @Column()
   type: SelectionType;
@@ -37,9 +37,9 @@ export class MasterItemSelectionBase {
   createAt?: Date;
 
   @OneToMany(
-    () => MasterItemSelectionDetail,
+    () => SelectionDetail,
     (detail) => detail.selectionBase,
     { cascade: true },
   )
-  details?: MasterItemSelectionDetail[];
+  details?: SelectionDetail[];
 }

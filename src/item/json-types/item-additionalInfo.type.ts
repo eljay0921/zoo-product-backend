@@ -3,7 +3,7 @@ enum Tax {
   TaxFree,
 }
 
-export class MasterItemAdditionalInfo {
+export class AdditionalInfo {
   tax?: Tax;
   origin?: string;
   brand?: string;

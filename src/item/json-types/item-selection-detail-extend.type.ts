@@ -33,7 +33,7 @@ enum capacityUnit {
   mal, // 말
 }
 
-export class MasterItemSelectionDetailExtend {
+export class Extend {
   weight?: number;
   weightUnit?: weightUnit;
   capacity?: number;

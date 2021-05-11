@@ -5,15 +5,15 @@ import {
   PrimaryColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { MasterItem } from './master-items.entity';
+import { Item } from './item.entity';
 
-@Entity('master_extend')
-export class MasterItemExtend {
-  @ManyToOne(() => MasterItem, (master) => master.extends, {
+@Entity('item_extend')
+export class Extend {
+  @ManyToOne(() => Item, (master) => master.extends, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  masterItem?: MasterItem;
+  masterItem?: Item;
 
   @PrimaryColumn({ type: 'char', length: 1 })
   marketCode: string;

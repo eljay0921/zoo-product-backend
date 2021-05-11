@@ -2,53 +2,53 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { CommonOutput } from 'src/common/dtos/output.dto';
 import { getManager, In, InsertResult, Repository } from 'typeorm';
-import { CreateMasterItemEachResult } from './dtos/create-master-items.dto';
-import { MasterItemAddoption } from './entities/master-items-addoption.entity';
-import { MasterItemExtend } from './entities/master-items-extend.entity';
-import { MasterItemImage } from './entities/master-items-image.entity';
-import { MasterItemSelectionBase } from './entities/master-items-selection-base.entity';
-import { MasterItemSelectionDetail } from './entities/master-items-selection-detail.entity';
-import { MasterItem } from './entities/master-items.entity';
+import { CreateItemEachResult } from './dtos/create-item.dto';
+import { Addoption } from './entities/item-addoption.entity';
+import { Extend } from './entities/item-extend.entity';
+import { Image } from './entities/item-image.entity';
+import { SelectionDetail } from './entities/item-selection-detail.entity';
+import { Selection } from './entities/item-selection.entity';
+import { Item } from './entities/item.entity';
 
 @Injectable()
-export class MasterItemsService {
-  private readonly masterItemsRepo: Repository<MasterItem>;
-  private readonly masterItemsExtendsRepo: Repository<MasterItemExtend>;
-  private readonly masterItemsSelectionBaseRepo: Repository<MasterItemSelectionBase>;
-  private readonly masterItemsSelectionDetailsRepo: Repository<MasterItemSelectionDetail>;
-  private readonly masterItemsAddOptionsRepo: Repository<MasterItemAddoption>;
-  private readonly masterItemsImagesRepo: Repository<MasterItemImage>;
+export class ItemService {
+  private readonly itemRepo: Repository<Item>;
+  private readonly itemExtendRepo: Repository<Extend>;
+  private readonly itemSelectionRepo: Repository<Selection>;
+  private readonly itemSelectionDetailRepo: Repository<SelectionDetail>;
+  private readonly itemAddOptionRepo: Repository<Addoption>;
+  private readonly itemImageRepo: Repository<Image>;
 
   constructor(@Inject(REQUEST) private readonly request) {
     // console.log('Service : ', request.req.dbname);
-    this.masterItemsRepo = getManager(this.request.dbname).getRepository(
-      MasterItem,
+    this.itemRepo = getManager(this.request.dbname).getRepository(
+      Item,
     );
 
-    this.masterItemsExtendsRepo = getManager(this.request.dbname).getRepository(
-      MasterItemExtend,
+    this.itemExtendRepo = getManager(this.request.dbname).getRepository(
+      Extend,
     );
 
-    this.masterItemsSelectionBaseRepo = getManager(
+    this.itemSelectionRepo = getManager(
       this.request.dbname,
-    ).getRepository(MasterItemSelectionBase);
+    ).getRepository(Selection);
 
-    this.masterItemsSelectionDetailsRepo = getManager(
+    this.itemSelectionDetailRepo = getManager(
       this.request.dbname,
-    ).getRepository(MasterItemSelectionDetail);
+    ).getRepository(SelectionDetail);
 
-    this.masterItemsAddOptionsRepo = getManager(
+    this.itemAddOptionRepo = getManager(
       this.request.dbname,
-    ).getRepository(MasterItemAddoption);
+    ).getRepository(Addoption);
 
-    this.masterItemsImagesRepo = getManager(this.request.dbname).getRepository(
-      MasterItemImage,
+    this.itemImageRepo = getManager(this.request.dbname).getRepository(
+      Image,
     );
   }
 
   async getOneMasterItemWithRelations(id: number): Promise<CommonOutput> {
     try {
-      const masterItem = await this.masterItemsRepo.find({
+      const masterItem = await this.itemRepo.find({
         where: {
           id,
         },
@@ -82,7 +82,7 @@ export class MasterItemsService {
 
   async getMasterItemListWithRelations(ids: number[]): Promise<CommonOutput> {
     try {
-      const masterItems = await this.masterItemsRepo.find({
+      const masterItems = await this.itemRepo.find({
         where: {
           id: In([ids]),
         },
@@ -134,7 +134,7 @@ export class MasterItemsService {
         };
       }
 
-      const masterItems = await this.masterItemsRepo.find({
+      const masterItems = await this.itemRepo.find({
         skip: size * (page - 1),
         take: size,
         order: { id: 'ASC' },
@@ -154,7 +154,7 @@ export class MasterItemsService {
     }
   }
 
-  async insertItems(masterItemList: MasterItem[]): Promise<CommonOutput> {
+  async insertItems(masterItemList: Item[]): Promise<CommonOutput> {
     try {
       if (masterItemList.length > 100) {
         return {
@@ -163,15 +163,15 @@ export class MasterItemsService {
         };
       }
 
-      const totalResult: CreateMasterItemEachResult[] = [];
+      const totalResult: CreateItemEachResult[] = [];
 
       for (let index = 0; index < masterItemList.length; index++) {
-        const eachResult = new CreateMasterItemEachResult(index);
+        const eachResult = new CreateItemEachResult(index);
         try {
           const eachItem = masterItemList[index];
 
           // 원본상품 중복 체크
-          const existItem = await this.masterItemsRepo.findOne({
+          const existItem = await this.itemRepo.findOne({
             id: eachItem.id,
           });
 
@@ -181,8 +181,8 @@ export class MasterItemsService {
             continue;
           }
           // const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-          const masterItem: MasterItem = eachItem;
-          const resultMasterItem = await this.masterItemsRepo.insert(
+          const masterItem: Item = eachItem;
+          const resultMasterItem = await this.itemRepo.insert(
             masterItem,
           );
           eachResult.masterItemId = resultMasterItem.raw.insertId;
@@ -193,7 +193,7 @@ export class MasterItemsService {
             masterItem.extends.forEach(
               (item) => (item.masterItem = resultMasterItem.raw.insertId),
             );
-            const extendInsert = this.masterItemsExtendsRepo.insert(
+            const extendInsert = this.itemExtendRepo.insert(
               masterItem.extends,
             );
 
@@ -204,7 +204,7 @@ export class MasterItemsService {
             masterItem.images?.forEach(
               (item) => (item.masterItem = resultMasterItem.raw.insertId),
             );
-            const imageInsert = this.masterItemsImagesRepo.insert(
+            const imageInsert = this.itemImageRepo.insert(
               masterItem.images,
             );
             eachPromises.push(imageInsert);
@@ -214,14 +214,14 @@ export class MasterItemsService {
             masterItem.addOptions.forEach(
               (item) => (item.masterItem = resultMasterItem.raw.insertId),
             );
-            const addoptionInsert = this.masterItemsAddOptionsRepo.insert(
+            const addoptionInsert = this.itemAddOptionRepo.insert(
               masterItem.addOptions,
             );
             eachPromises.push(addoptionInsert);
           }
 
           if (masterItem.selection) {
-            const selectionInsert = this.masterItemsSelectionBaseRepo
+            const selectionInsert = this.itemSelectionRepo
               .insert({
                 masterItem: resultMasterItem.raw.insertId,
                 ...masterItem.selection,
@@ -231,7 +231,7 @@ export class MasterItemsService {
                   masterItem.selection.details.forEach(
                     (item) => (item.selectionBase = result.raw.insertId),
                   );
-                  return this.masterItemsSelectionDetailsRepo.insert(
+                  return this.itemSelectionDetailRepo.insert(
                     masterItem.selection.details,
                   );
                 }
@@ -278,7 +278,7 @@ export class MasterItemsService {
   }
 
   async insertItemsBulk(
-    createMasterItemsInput: MasterItem[],
+    createMasterItemsInput: Item[],
   ): Promise<CommonOutput> {
     try {
       if (createMasterItemsInput.length > 100) {
@@ -289,14 +289,14 @@ export class MasterItemsService {
       }
 
       const toInsertPromises: Promise<any>[] = [];
-      const toInsertItemsTuple: [string, MasterItem][] = [];
+      const toInsertItemsTuple: [string, Item][] = [];
       for (let index = 0; index < createMasterItemsInput.length; index++) {
         try {
           const eachItem = createMasterItemsInput[index];
           // const masterItem: MasterItem = this.createMasterItemEntity(eachItem);
-          const masterItem: MasterItem = eachItem;
+          const masterItem: Item = eachItem;
 
-          const insertPromise = this.masterItemsRepo
+          const insertPromise = this.itemRepo
             .insert(masterItem)
             .then((result) =>
               toInsertItemsTuple.push([result.raw.insertId, masterItem]),
@@ -315,10 +315,10 @@ export class MasterItemsService {
 
       const insertProcess = async () => {
         try {
-          const extendList: MasterItemExtend[] = [];
-          const imageList: MasterItemImage[] = [];
-          const addoptionList: MasterItemAddoption[] = [];
-          const selectionList: MasterItemSelectionBase[] = [];
+          const extendList: Extend[] = [];
+          const imageList: Image[] = [];
+          const addoptionList: Addoption[] = [];
+          const selectionList: Selection[] = [];
 
           toInsertItemsTuple?.forEach((item) => {
             const masterItemId = item[0];
@@ -343,19 +343,19 @@ export class MasterItemsService {
             });
           });
 
-          const insertExtendResult = this.masterItemsExtendsRepo.insert(
+          const insertExtendResult = this.itemExtendRepo.insert(
             extendList,
           );
-          const insertImageResult = this.masterItemsImagesRepo.insert(
+          const insertImageResult = this.itemImageRepo.insert(
             imageList,
           );
-          const insertAddoptionResult = this.masterItemsAddOptionsRepo.insert(
+          const insertAddoptionResult = this.itemAddOptionRepo.insert(
             addoptionList,
           );
-          const insertSelectionResult = this.masterItemsSelectionBaseRepo
+          const insertSelectionResult = this.itemSelectionRepo
             .insert(selectionList)
             .then((result) => {
-              const selectionDetails: MasterItemSelectionDetail[] = [];
+              const selectionDetails: SelectionDetail[] = [];
               toInsertItemsTuple?.forEach((item, idx) => {
                 const selectionBaseId = result.identifiers[idx].selectionId;
                 item[1].selection.details?.forEach((item) => {
@@ -364,7 +364,7 @@ export class MasterItemsService {
                 });
               });
 
-              return this.masterItemsSelectionDetailsRepo.insert(
+              return this.itemSelectionDetailRepo.insert(
                 selectionDetails,
               );
             });
@@ -404,7 +404,7 @@ export class MasterItemsService {
 
   async deleteItems(ids: number[]): Promise<CommonOutput> {
     try {
-      await this.masterItemsRepo.delete(ids);
+      await this.itemRepo.delete(ids);
 
       return {
         ok: true,

@@ -5,19 +5,19 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { MasterItemSelectionDetailExtend } from '../json-types/master-items-selection-detail-valueInfo.type';
-import { MasterItemSelectionBase } from './master-items-selection-base.entity';
+import { Extend } from '../json-types/item-selection-detail-extend.type';
+import { Selection } from './item-selection.entity';
 
-@Entity('selection_detail')
-export class MasterItemSelectionDetail {
+@Entity('item_selection_detail')
+export class SelectionDetail {
   @PrimaryColumn({ type: 'smallint' })
   order: number;
 
-  @ManyToOne(() => MasterItemSelectionBase, (base) => base.details, {
+  @ManyToOne(() => Selection, (base) => base.details, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  selectionBase?: MasterItemSelectionBase;
+  selectionBase?: Selection;
 
   @Column()
   count: number;
@@ -32,7 +32,7 @@ export class MasterItemSelectionDetail {
   userCode?: string;
 
   @Column({ type: 'simple-json', nullable: true })
-  extendInfo?: MasterItemSelectionDetailExtend;
+  extendInfo?: Extend;
 
   @CreateDateColumn()
   createdAt?: Date;

@@ -5,16 +5,16 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { MasterItemImageExtendInfo } from '../json-types/master-items-image-extendInfo.type';
-import { MasterItem } from './master-items.entity';
+import { ItemImageExtend } from '../json-types/item-image-extend.type';
+import { Item } from './item.entity';
 
-@Entity('master_image')
-export class MasterItemImage {
-  @ManyToOne(() => MasterItem, (master) => master.images, {
+@Entity('item_image')
+export class Image {
+  @ManyToOne(() => Item, (master) => master.images, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  masterItem?: MasterItem;
+  masterItem?: Item;
 
   @PrimaryColumn({ type: 'tinyint' })
   order: number;
@@ -23,7 +23,7 @@ export class MasterItemImage {
   url: string;
 
   @Column('simple-json', { nullable: true })
-  extendInfo?: MasterItemImageExtendInfo = {};
+  extend?: ItemImageExtend = {};
 
   @CreateDateColumn()
   createdAt?: Date;

@@ -5,7 +5,7 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { CommonModule } from './common/common.module';
-import { MasterItemsModule } from './master-items/master-items.module';
+import { ItemModule } from './item/item.module';
 import { MarketTemplatesModule } from './market-templates/market-templates.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomNamingStrategy } from './common/typeorm/custom-naming-strategy';
@@ -35,7 +35,7 @@ import { UserFolderModule } from './user-folder/user-folder.module';
         'src/**/entities/*.entity{.ts}',
       ],
     }),
-    MasterItemsModule,
+    ItemModule,
     CommonModule,
     MarketTemplatesModule,
     UserFolderModule,
