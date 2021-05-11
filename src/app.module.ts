@@ -16,7 +16,7 @@ import {
   DB_USER,
 } from './common/database/constants/mariadb.constants';
 import { DatabaseMiddleware } from './common/middlewares/database.middleware';
-import { UserFolderModule } from './user-folder/user-folder.module';
+import { FolderModule } from './folder/folder.module';
 
 @Module({
   imports: [
@@ -38,7 +38,7 @@ import { UserFolderModule } from './user-folder/user-folder.module';
     ItemModule,
     CommonModule,
     TemplateModule,
-    UserFolderModule,
+    FolderModule,
   ],
   controllers: [],
   providers: [],

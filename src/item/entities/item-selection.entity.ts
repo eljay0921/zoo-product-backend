@@ -19,13 +19,13 @@ enum SelectionType {
 @Entity('item_selection')
 export class Selection {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  selectionId?: number;
+  id?: number;
 
-  @OneToOne(() => Item, (master) => master.selection, {
+  @OneToOne(() => Item, (item) => item.selection, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  masterItem?: Item;
+  item?: Item;
 
   @Column()
   type: SelectionType;
@@ -38,7 +38,7 @@ export class Selection {
 
   @OneToMany(
     () => SelectionDetail,
-    (detail) => detail.selectionBase,
+    (detail) => detail.selection,
     { cascade: true },
   )
   details?: SelectionDetail[];

@@ -185,13 +185,13 @@ export class ItemService {
           const resultMasterItem = await this.itemRepo.insert(
             masterItem,
           );
-          eachResult.masterItemId = resultMasterItem.raw.insertId;
+          eachResult.itemId = resultMasterItem.raw.insertId;
 
           const eachPromises: Promise<InsertResult>[] = [];
 
           if (masterItem.extends) {
             masterItem.extends.forEach(
-              (item) => (item.masterItem = resultMasterItem.raw.insertId),
+              (item) => (item.item = resultMasterItem.raw.insertId),
             );
             const extendInsert = this.itemExtendRepo.insert(
               masterItem.extends,
@@ -202,7 +202,7 @@ export class ItemService {
 
           if (masterItem.images) {
             masterItem.images?.forEach(
-              (item) => (item.masterItem = resultMasterItem.raw.insertId),
+              (item) => (item.item = resultMasterItem.raw.insertId),
             );
             const imageInsert = this.itemImageRepo.insert(
               masterItem.images,
@@ -212,7 +212,7 @@ export class ItemService {
 
           if (masterItem.addOptions) {
             masterItem.addOptions.forEach(
-              (item) => (item.masterItem = resultMasterItem.raw.insertId),
+              (item) => (item.item = resultMasterItem.raw.insertId),
             );
             const addoptionInsert = this.itemAddOptionRepo.insert(
               masterItem.addOptions,
@@ -223,13 +223,13 @@ export class ItemService {
           if (masterItem.selection) {
             const selectionInsert = this.itemSelectionRepo
               .insert({
-                masterItem: resultMasterItem.raw.insertId,
+                item: resultMasterItem.raw.insertId,
                 ...masterItem.selection,
               })
               .then((result) => {
                 if (masterItem.selection.details) {
                   masterItem.selection.details.forEach(
-                    (item) => (item.selectionBase = result.raw.insertId),
+                    (item) => (item.selection = result.raw.insertId),
                   );
                   return this.itemSelectionDetailRepo.insert(
                     masterItem.selection.details,
@@ -247,13 +247,13 @@ export class ItemService {
             .catch((err) => {
               eachResult.ok = false;
               eachResult.messages.push(
-                `원본상품 ${eachResult.masterItemId} : 개별 정보 입력 실패`,
+                `원본상품 ${eachResult.itemId} : 개별 정보 입력 실패`,
                 err,
               );
             });
         } catch (error) {
           console.log(error);
-          eachResult.masterItemId = -1;
+          eachResult.itemId = -1;
           const errMsg = error.message.substring(0, 200);
           eachResult.messages.push(`원본상품 생성 실패 - ${errMsg}...`);
         } finally {
@@ -323,22 +323,22 @@ export class ItemService {
           toInsertItemsTuple?.forEach((item) => {
             const masterItemId = item[0];
             item[1].extends?.forEach((item) => {
-              item.masterItem = <any>masterItemId;
+              item.item = <any>masterItemId;
               extendList.push(item);
             });
 
             item[1].images?.forEach((item) => {
-              item.masterItem = <any>masterItemId;
+              item.item = <any>masterItemId;
               imageList.push(item);
             });
 
             item[1].addOptions?.forEach((item) => {
-              item.masterItem = <any>masterItemId;
+              item.item = <any>masterItemId;
               addoptionList.push(item);
             });
 
             selectionList?.push({
-              masterItem: <any>masterItemId,
+              item: <any>masterItemId,
               ...item[1].selection,
             });
           });
@@ -359,7 +359,7 @@ export class ItemService {
               toInsertItemsTuple?.forEach((item, idx) => {
                 const selectionBaseId = result.identifiers[idx].selectionId;
                 item[1].selection.details?.forEach((item) => {
-                  item.selectionBase = selectionBaseId;
+                  item.selection = selectionBaseId;
                   selectionDetails.push(item);
                 });
               });

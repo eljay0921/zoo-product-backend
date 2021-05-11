@@ -13,7 +13,7 @@ import { CategoryInfo } from '../json-types/item-categoryInfo.type';
 import { Addoption } from './item-addoption.entity';
 import { Image } from './item-image.entity';
 import { Selection } from './item-selection.entity';
-import { UserFolderItem } from 'src/user-folder/entities/user-folder-master-item.entity';
+import { FolderItem } from 'src/folder/entities/folder-item.entity';
 
 // 원본상품
 @Entity('item')
@@ -56,32 +56,32 @@ export class Item {
   updatedAt?: Date;
 
   // relation entities
-  @OneToOne(() => Selection, (base) => base.masterItem, {
+  @OneToOne(() => Selection, (base) => base.item, {
     cascade: true,
   })
   selection?: Selection;
 
-  @OneToMany(() => Image, (image) => image.masterItem, {
+  @OneToMany(() => Image, (image) => image.item, {
     cascade: true,
   })
   images?: Image[];
 
-  @OneToMany(() => Addoption, (addOption) => addOption.masterItem, {
+  @OneToMany(() => Addoption, (addOption) => addOption.item, {
     cascade: true,
   })
   addOptions?: Addoption[];
 
-  @OneToMany(() => Extend, (ext) => ext.masterItem, {
+  @OneToMany(() => Extend, (ext) => ext.item, {
     cascade: true,
   })
   extends?: Extend[];
 
   @OneToMany(
-    () => UserFolderItem,
-    (userFolderMasterItem) => userFolderMasterItem.masterItem,
+    () => FolderItem,
+    (userFolderMasterItem) => userFolderMasterItem.item,
     {
       cascade: true,
     },
   )
-  userFolderMasterItems?: UserFolderItem[];
+  folderItems?: FolderItem[];
 }

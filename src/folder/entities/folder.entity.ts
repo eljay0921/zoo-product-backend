@@ -1,9 +1,9 @@
 import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserFolderItem } from "./user-folder-master-item.entity";
+import { FolderItem } from "./folder-item.entity";
 
-@Entity('user_folder')
-export class UserFolder {
+@Entity('folder')
+export class Folder {
     @IsOptional()
     @IsNumber()
     @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
@@ -27,9 +27,9 @@ export class UserFolder {
     updatedAt?: Date;
 
     @IsOptional()
-    @OneToMany(() => UserFolderItem, (userFolderMasterItem) => userFolderMasterItem.userFolder, {
+    @OneToMany(() => FolderItem, (folderItem) => folderItem.folder, {
         cascade: true,
       })
     // @Field(() => [UserFolderMasterItem], { nullable: true })
-    userFolderMasterItems?: UserFolderItem[];
+    folderItems?: FolderItem[];
 }

@@ -43,121 +43,122 @@ export class CommonService {
     const dbEngineAndOptions =
       'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 KEY_BLOCK_SIZE=8';
     const createTablesQuery = `
-            CREATE TABLE ${userDBName}.\`market_templates\` (
-                \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT\,
-                \`marketCode\` varchar(1) NOT NULL\,
-                \`marketSubCode\` varchar(4) DEFAULT NULL,
-                \`smid\` int(10) unsigned NOT NULL\,
-                \`marketID\` varchar(40) NOT NULL\,
-                \`name\` varchar(100) NOT NULL\,
-                \`description\` varchar(100) NOT NULL\,
-                \`baseInfo\` text NOT NULL\,
-                \`basicExtendInfo\` text DEFAULT NULL\,
-                \`extendInfo\` text DEFAULT NULL\,
-                \`deliveryInfo\` text DEFAULT NULL\,
-                \`addServiceInfo\` text DEFAULT NULL\,
-                \`etcInfo\` text DEFAULT NULL\,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6)\,
-                \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6)\,
-                PRIMARY KEY (\`id\`)
-            ) ${dbEngineAndOptions};
 
-            CREATE TABLE ${userDBName}.\`master_item\` (
-                \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                \`name\` varchar(300) NOT NULL,
-                \`categoryCode\` varchar(12) NOT NULL,
-                \`categoryInfo\` text DEFAULT NULL,
-                \`price\` int(11) NOT NULL,
-                \`count\` int(11) NOT NULL,
-                \`userCode\` varchar(40) DEFAULT NULL,
-                \`description\` text DEFAULT NULL,
-                \`additionalInfo\` text DEFAULT NULL,
-                \`sellingItemInfo\` text DEFAULT NULL,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                PRIMARY KEY (\`id\`)
-              ) ${dbEngineAndOptions};
-
-            CREATE TABLE ${userDBName}.\`master_addoption\` (
-                \`order\` smallint(5) unsigned NOT NULL,
-                \`name\` varchar(100) NOT NULL,
-                \`value\` varchar(100) NOT NULL,
-                \`count\` int(11) NOT NULL,
-                \`price\` int(11) NOT NULL,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`masterItemId\` int(10) unsigned NOT NULL,
-                PRIMARY KEY (\`order\`,\`masterItemId\`),
-                KEY \`master_addoption_ibfk_id\` (\`masterItemId\`),
-                CONSTRAINT \`master_addoption_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions};
-              
-            CREATE TABLE ${userDBName}.\`master_extend\` (
-                \`marketCode\` char(1) NOT NULL,
-                \`marketSubCode\` char(4) NOT NULL,
-                \`info\` varchar(255) NOT NULL,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`masterItemId\` int(10) unsigned NOT NULL,
-                PRIMARY KEY (\`marketCode\`,\`marketSubCode\`,\`masterItemId\`),
-                KEY \`master_extend_ibfk_id\` (\`masterItemId\`),
-                CONSTRAINT \`master_extend_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions};
-              
-            CREATE TABLE ${userDBName}.\`master_image\` (
-                \`order\` tinyint(3) unsigned NOT NULL,
-                \`url\` varchar(1000) NOT NULL,
-                \`extendInfo\` text DEFAULT NULL,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`masterItemId\` int(10) unsigned NOT NULL,
-                PRIMARY KEY (\`order\`,\`masterItemId\`),
-                KEY \`master_image_ibfk_id\` (\`masterItemId\`),
-                CONSTRAINT \`master_image_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions};
-              
-            CREATE TABLE ${userDBName}.\`master_selection\` (
-                \`selectionId\` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                \`type\` int(11) NOT NULL,
-                \`options\` text NOT NULL,
-                \`createAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`masterItemId\` int(10) unsigned DEFAULT NULL,
-                PRIMARY KEY (\`selectionId\`),
-                UNIQUE KEY \`REL_3c665db984c5a94e12bc4781b0\` (\`masterItemId\`),
-                CONSTRAINT \`master_selection_ibfk_id\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions};
-              
-            CREATE TABLE ${userDBName}.\`selection_detail\` (
-                \`order\` smallint(5) unsigned NOT NULL,
-                \`count\` int(11) NOT NULL,
-                \`price\` int(11) NOT NULL,
-                \`values\` text DEFAULT NULL,
-                \`userCode\` varchar(40) DEFAULT NULL,
-                \`extendInfo\` text DEFAULT NULL,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`selectionBaseSelectionId\` int(10) unsigned NOT NULL,
-                PRIMARY KEY (\`order\`,\`selectionBaseSelectionId\`),
-                KEY \`selection_detail_ibfk_selectionId\` (\`selectionBaseSelectionId\`),
-                CONSTRAINT \`selection_detail_ibfk_selectionId\` FOREIGN KEY (\`selectionBaseSelectionId\`) REFERENCES \`master_selection\` (\`selectionId\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions}; 
-
-            CREATE TABLE ${userDBName}.\`user_folder\` (
-                \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                \`parentId\` int(10) unsigned DEFAULT NULL,
-                \`name\` varchar(40) NOT NULL,
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                PRIMARY KEY (\`id\`)
-              ) ${dbEngineAndOptions};
-              
-            CREATE TABLE ${userDBName}.\`user_folder_master_item\` (
-                \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-                \`userFolderId\` int(10) unsigned NOT NULL,
-                \`masterItemId\` int(10) unsigned NOT NULL,
-                PRIMARY KEY (\`userFolderId\`,\`masterItemId\`),
-                KEY \`user_folder_master_item_ibfk_masterItemId\` (\`masterItemId\`),
-                CONSTRAINT \`user_folder_master_item_ibfk_masterItemId\` FOREIGN KEY (\`masterItemId\`) REFERENCES \`master_item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                CONSTRAINT \`user_folder_master_item_ibfk_userFolderId\` FOREIGN KEY (\`userFolderId\`) REFERENCES \`user_folder\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-              ) ${dbEngineAndOptions};
-            `;
+    CREATE TABLE ${userDBName}.\`folder\` (
+      \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      \`parentId\` int(10) unsigned DEFAULT NULL,
+      \`name\` varchar(40) NOT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      PRIMARY KEY (\`id\`)
+    ) ${dbEngineAndOptions};
+    
+    CREATE TABLE ${userDBName}.\`item\` (
+      \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      \`name\` varchar(300) NOT NULL,
+      \`categoryCode\` varchar(12) NOT NULL,
+      \`categoryInfo\` text DEFAULT NULL,
+      \`price\` int(11) NOT NULL,
+      \`count\` int(11) NOT NULL,
+      \`userCode\` varchar(40) DEFAULT NULL,
+      \`describe\` text DEFAULT NULL,
+      \`additionalInfo\` text DEFAULT NULL,
+      \`sellingItemInfo\` text DEFAULT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      PRIMARY KEY (\`id\`)
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`template\` (
+      \`id\` int(11) NOT NULL AUTO_INCREMENT,
+      \`marketCode\` varchar(1) NOT NULL,
+      \`marketSubCode\` varchar(4) DEFAULT NULL,
+      \`smid\` int(11) NOT NULL,
+      \`marketID\` varchar(40) NOT NULL,
+      \`name\` varchar(100) NOT NULL,
+      \`description\` varchar(100) NOT NULL,
+      \`baseInfo\` text NOT NULL,
+      \`basicExtendInfo\` text DEFAULT NULL,
+      \`extendInfo\` text DEFAULT NULL,
+      \`deliveryInfo\` text DEFAULT NULL,
+      \`addServiceInfo\` text DEFAULT NULL,
+      \`etcInfo\` text DEFAULT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      PRIMARY KEY (\`id\`)
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`folder_item\` (
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`folderId\` int(10) unsigned NOT NULL,
+      \`itemId\` int(10) unsigned NOT NULL,
+      PRIMARY KEY (\`folderId\`,\`itemId\`),
+      KEY \`folder_item_ibfk_itemId\` (\`itemId\`),
+      CONSTRAINT \`folder_item_ibfk_folderId\` FOREIGN KEY (\`folderId\`) REFERENCES \`folder\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION,
+      CONSTRAINT \`folder_item_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`item_addoption\` (
+      \`order\` smallint(6) NOT NULL,
+      \`name\` varchar(100) NOT NULL,
+      \`value\` varchar(100) NOT NULL,
+      \`count\` int(11) NOT NULL,
+      \`price\` int(11) NOT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`itemId\` int(10) unsigned NOT NULL,
+      PRIMARY KEY (\`order\`,\`itemId\`),
+      KEY \`item_addoption_ibfk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_addoption_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`item_extend\` (
+      \`marketCode\` char(1) NOT NULL,
+      \`marketSubCode\` char(4) NOT NULL,
+      \`info\` varchar(255) NOT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`itemId\` int(10) unsigned NOT NULL,
+      PRIMARY KEY (\`marketCode\`,\`marketSubCode\`,\`itemId\`),
+      KEY \`item_extend_ibfk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_extend_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`item_image\` (
+      \`order\` tinyint(4) NOT NULL,
+      \`url\` varchar(1000) NOT NULL,
+      \`extend\` text DEFAULT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`itemId\` int(10) unsigned NOT NULL,
+      PRIMARY KEY (\`order\`,\`itemId\`),
+      KEY \`item_image_ibfk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_image_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`item_selection\` (
+      \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      \`type\` int(11) NOT NULL,
+      \`options\` text NOT NULL,
+      \`createAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`itemId\` int(10) unsigned DEFAULT NULL,
+      PRIMARY KEY (\`id\`),
+      UNIQUE KEY \`REL_a78ad8a5853555a0ca22052c5c\` (\`itemId\`),
+      CONSTRAINT \`item_selection_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};    
+    
+    CREATE TABLE ${userDBName}.\`item_selection_detail\` (
+      \`order\` smallint(6) NOT NULL,
+      \`count\` int(11) NOT NULL,
+      \`price\` int(11) NOT NULL,
+      \`values\` text DEFAULT NULL,
+      \`userCode\` varchar(40) DEFAULT NULL,
+      \`extendInfo\` text DEFAULT NULL,
+      \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+      \`selectionId\` int(10) unsigned NOT NULL,
+      PRIMARY KEY (\`order\`,\`selectionId\`),
+      KEY \`item_selection_detail_ibfk_selectionId\` (\`selectionId\`),
+      CONSTRAINT \`item_selection_detail_ibfk_selectionId\` FOREIGN KEY (\`selectionId\`) REFERENCES \`item_selection\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};    
+                `;
 
     const createTableResult = await sendQuery(createTablesQuery);
     return {

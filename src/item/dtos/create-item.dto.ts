@@ -5,6 +5,6 @@ export class CreateItemEachResult {
   }
 
   ok: boolean;
-  masterItemId?: number;
+  itemId?: number;
   messages?: string[];
 }

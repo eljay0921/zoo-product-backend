@@ -17,7 +17,7 @@ export class SelectionDetail {
     primary: true,
     onDelete: 'CASCADE',
   })
-  selectionBase?: Selection;
+  selection?: Selection;
 
   @Column()
   count: number;

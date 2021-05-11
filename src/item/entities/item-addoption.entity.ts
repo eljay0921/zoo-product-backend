@@ -9,11 +9,11 @@ import { Item } from './item.entity';
 
 @Entity('item_addoption')
 export class Addoption {
-  @ManyToOne(() => Item, (master) => master.addOptions, {
+  @ManyToOne(() => Item, (item) => item.addOptions, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  masterItem?: Item;
+  item?: Item;
 
   @PrimaryColumn({ type: 'smallint' })
   order: number;

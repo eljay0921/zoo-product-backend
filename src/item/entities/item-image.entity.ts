@@ -10,11 +10,11 @@ import { Item } from './item.entity';
 
 @Entity('item_image')
 export class Image {
-  @ManyToOne(() => Item, (master) => master.images, {
+  @ManyToOne(() => Item, (item) => item.images, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  masterItem?: Item;
+  item?: Item;
 
   @PrimaryColumn({ type: 'tinyint' })
   order: number;

@@ -9,11 +9,11 @@ import { Item } from './item.entity';
 
 @Entity('item_extend')
 export class Extend {
-  @ManyToOne(() => Item, (master) => master.extends, {
+  @ManyToOne(() => Item, (item) => item.extends, {
     primary: true,
     onDelete: 'CASCADE',
   })
-  masterItem?: Item;
+  item?: Item;
 
   @PrimaryColumn({ type: 'char', length: 1 })
   marketCode: string;

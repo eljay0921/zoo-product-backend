@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CommonOutput } from 'src/common/dtos/output.dto';
-import { UserFolder } from './entities/user-folder.entity';
-import { UserFolderService } from './user-folder.service';
+import { Folder } from './entities/folder.entity';
+import { FolderService } from './folder.service';
 
-@Controller('user-folder')
-export class UserFolderController {
-    constructor(private readonly userFolderService: UserFolderService) {}
+@Controller('folder')
+export class FolderController {
+    constructor(private readonly userFolderService: FolderService) {}
 
     @Get()
     async getUserFolders(): Promise<CommonOutput> {
@@ -13,7 +13,7 @@ export class UserFolderController {
     }
 
     @Post()
-    async createUserFolder(@Body() createUserFolderInput: UserFolder): Promise<CommonOutput> {
+    async createUserFolder(@Body() createUserFolderInput: Folder): Promise<CommonOutput> {
         return this.userFolderService.createUserFolder(createUserFolderInput);
     }
 
