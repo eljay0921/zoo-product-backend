@@ -53,6 +53,8 @@ export class CommonService {
       PRIMARY KEY (\`id\`)
     ) ${dbEngineAndOptions};
     
+    -- ProductManage_admin.item definition
+    
     CREATE TABLE ${userDBName}.\`item\` (
       \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
       \`name\` varchar(300) NOT NULL,
@@ -67,8 +69,8 @@ export class CommonService {
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       PRIMARY KEY (\`id\`)
-      ) ${dbEngineAndOptions};    
-    
+      ) ${dbEngineAndOptions};
+        
     CREATE TABLE ${userDBName}.\`template\` (
       \`id\` int(11) NOT NULL AUTO_INCREMENT,
       \`marketCode\` varchar(1) NOT NULL,
@@ -86,7 +88,7 @@ export class CommonService {
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       \`updatedAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       PRIMARY KEY (\`id\`)
-      ) ${dbEngineAndOptions};    
+      ) ${dbEngineAndOptions};
     
     CREATE TABLE ${userDBName}.\`folder_item\` (
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
@@ -94,10 +96,10 @@ export class CommonService {
       \`folderId\` int(10) unsigned NOT NULL,
       \`itemId\` int(10) unsigned NOT NULL,
       PRIMARY KEY (\`folderId\`,\`itemId\`),
-      KEY \`folder_item_ibfk_itemId\` (\`itemId\`),
-      CONSTRAINT \`folder_item_ibfk_folderId\` FOREIGN KEY (\`folderId\`) REFERENCES \`folder\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION,
-      CONSTRAINT \`folder_item_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-      ) ${dbEngineAndOptions};    
+      KEY \`folder_item_fk_itemId\` (\`itemId\`),
+      CONSTRAINT \`folder_item_fk_folderId\` FOREIGN KEY (\`folderId\`) REFERENCES \`folder\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION,
+      CONSTRAINT \`folder_item_fk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};
     
     CREATE TABLE ${userDBName}.\`item_addoption\` (
       \`order\` smallint(6) NOT NULL,
@@ -108,9 +110,9 @@ export class CommonService {
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       \`itemId\` int(10) unsigned NOT NULL,
       PRIMARY KEY (\`order\`,\`itemId\`),
-      KEY \`item_addoption_ibfk_itemId\` (\`itemId\`),
-      CONSTRAINT \`item_addoption_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-      ) ${dbEngineAndOptions};    
+      KEY \`item_addoption_fk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_addoption_fk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};
     
     CREATE TABLE ${userDBName}.\`item_extend\` (
       \`marketCode\` char(1) NOT NULL,
@@ -119,9 +121,9 @@ export class CommonService {
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       \`itemId\` int(10) unsigned NOT NULL,
       PRIMARY KEY (\`marketCode\`,\`marketSubCode\`,\`itemId\`),
-      KEY \`item_extend_ibfk_itemId\` (\`itemId\`),
-      CONSTRAINT \`item_extend_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-      ) ${dbEngineAndOptions};    
+      KEY \`item_extend_fk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_extend_fk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};
     
     CREATE TABLE ${userDBName}.\`item_image\` (
       \`order\` tinyint(4) NOT NULL,
@@ -130,20 +132,20 @@ export class CommonService {
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       \`itemId\` int(10) unsigned NOT NULL,
       PRIMARY KEY (\`order\`,\`itemId\`),
-      KEY \`item_image_ibfk_itemId\` (\`itemId\`),
-      CONSTRAINT \`item_image_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-      ) ${dbEngineAndOptions};    
+      KEY \`item_image_fk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_image_fk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};
     
     CREATE TABLE ${userDBName}.\`item_selection\` (
       \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
       \`type\` int(11) NOT NULL,
       \`options\` text NOT NULL,
       \`createAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-      \`itemId\` int(10) unsigned DEFAULT NULL,
-      PRIMARY KEY (\`id\`),
-      UNIQUE KEY \`REL_a78ad8a5853555a0ca22052c5c\` (\`itemId\`),
-      CONSTRAINT \`item_selection_ibfk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-      ) ${dbEngineAndOptions};    
+      \`itemId\` int(10) unsigned NOT NULL,
+      PRIMARY KEY (\`id\`,\`type\`,\`itemId\`),
+      KEY \`item_selection_fk_itemId\` (\`itemId\`),
+      CONSTRAINT \`item_selection_fk_itemId\` FOREIGN KEY (\`itemId\`) REFERENCES \`item\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};
     
     CREATE TABLE ${userDBName}.\`item_selection_detail\` (
       \`order\` smallint(6) NOT NULL,
@@ -154,11 +156,12 @@ export class CommonService {
       \`extendInfo\` text DEFAULT NULL,
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
       \`selectionId\` int(10) unsigned NOT NULL,
-      PRIMARY KEY (\`order\`,\`selectionId\`),
-      KEY \`item_selection_detail_ibfk_selectionId\` (\`selectionId\`),
-      CONSTRAINT \`item_selection_detail_ibfk_selectionId\` FOREIGN KEY (\`selectionId\`) REFERENCES \`item_selection\` (\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
-      ) ${dbEngineAndOptions};    
-                `;
+      \`selectionType\` int(11) NOT NULL,
+      PRIMARY KEY (\`order\`,\`selectionId\`,\`selectionType\`),
+      KEY \`item_selection_detail_fk_selectionId_selectionType\` (\`selectionId\`,\`selectionType\`),
+      CONSTRAINT \`item_selection_detail_fk_selectionId_selectionType\` FOREIGN KEY (\`selectionId\`, \`selectionType\`) REFERENCES \`item_selection\` (\`id\`, \`type\`) ON DELETE CASCADE ON UPDATE NO ACTION
+      ) ${dbEngineAndOptions};
+      `;
 
     const createTableResult = await sendQuery(createTablesQuery);
     return {
@@ -171,17 +174,20 @@ export class CommonService {
   async truncateUserDatabase(id: string): Promise<CommonOutput> {
     const userDBName = getDatabaseName(id);
     const query = `
-        set FOREIGN_KEY_CHECKS = 0;
-        TRUNCATE TABLE ${userDBName}.user_folder_master_item;
-        TRUNCATE TABLE ${userDBName}.user_folder;
-        TRUNCATE TABLE ${userDBName}.selection_detail;
-        TRUNCATE TABLE ${userDBName}.master_selection;
-        TRUNCATE TABLE ${userDBName}.master_addoption;
-        TRUNCATE TABLE ${userDBName}.master_extend;
-        TRUNCATE TABLE ${userDBName}.master_image;
-        TRUNCATE TABLE ${userDBName}.master_item;
-        TRUNCATE TABLE ${userDBName}.market_templates;
-        set FOREIGN_KEY_CHECKS = 1;`;
+    set FOREIGN_KEY_CHECKS = 0;
+
+    TRUNCATE TABLE ${userDBName}.template ;
+    TRUNCATE TABLE ${userDBName}.folder_item ;
+    TRUNCATE TABLE ${userDBName}.folder ;
+    TRUNCATE TABLE ${userDBName}.item_selection_detail ;
+    TRUNCATE TABLE ${userDBName}.item_selection ;
+    TRUNCATE TABLE ${userDBName}.item_addoption ;
+    TRUNCATE TABLE ${userDBName}.item_extend ;
+    TRUNCATE TABLE ${userDBName}.item_image ;
+    TRUNCATE TABLE ${userDBName}.item ;
+    
+    set FOREIGN_KEY_CHECKS = 1;
+    `;
 
     const truncateResult = await sendQuery(query);
     return {

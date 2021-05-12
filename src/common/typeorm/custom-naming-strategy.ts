@@ -25,20 +25,11 @@ export class CustomNamingStrategy
     //     }
     // );
 
-    const name = `${tableOrName}_ibfk_${columnNames.join('_')}`;
+    const name = `${tableOrName}_fk_${columnNames.join('_')}`;
     // console.log('#5', name);
 
     return name;
     // return `fk_${crypto.createHash('md5').update(name).digest('hex')}`;
   }
 
-  uniqueConstraintName(
-    tableOrName: Table | string,
-    columnNames: string[],
-  ): string {
-    tableOrName =
-      typeof tableOrName === 'string' ? tableOrName : tableOrName.name;
-    const name = `${tableOrName}_ibuk_${columnNames.join('_')}`;
-    return name;
-  }
 }

@@ -21,7 +21,7 @@ export const sendQuery = async (query: string): Promise<DBOutput> => {
       result: JSON.parse(JSON.stringify(result)),
     };
   } catch (error) {
-    // console.log('[# Error] mariadb.adapter => sendQuery :', error);
+    console.log('[# Error] mariadb.adapter => sendQuery :', error);
     return {
       ok: false,
       error,

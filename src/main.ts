@@ -2,11 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { TimeoutGlobalInterceptor } from './common/interceptors/timeout-global-interceptor';
 import { urlencoded, json } from 'express';
-import * as morgan from 'morgan';
-import { DatabaseGuard } from './common/guards/database.guard';
-import { DatabaseMiddleware } from './common/middlewares/database.middleware';
 import { ValidationPipe } from '@nestjs/common';
-
+import * as morgan from 'morgan';
 const fs = require('fs');
 
 async function bootstrap() {
