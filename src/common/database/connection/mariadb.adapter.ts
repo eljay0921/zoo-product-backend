@@ -7,6 +7,7 @@ export const getDatabaseName = (userId: string): string => {
 };
 
 export const sendQuery = async (query: string): Promise<DBOutput> => {
+  console.log('[# connect] :', query.substring(0, 50));
   const conn = await mariadb.createConnection({
     host: DB_HOST,
     user: DB_USER,
@@ -29,6 +30,7 @@ export const sendQuery = async (query: string): Promise<DBOutput> => {
   } finally {
     if (conn) {
       conn.close();
+      console.log('[# closed]');
     }
   }
 };

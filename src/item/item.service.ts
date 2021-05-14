@@ -50,8 +50,8 @@ export class ItemService {
           'images',
           'addOptions',
           'extends',
-          'selection',
-          'selection.details',
+          'selections',
+          'selections.details',
         ],
       });
 
@@ -84,8 +84,8 @@ export class ItemService {
           'images',
           'addOptions',
           'extends',
-          'selection',
-          'selection.details',
+          'selections',
+          'selections.details',
         ],
       });
 

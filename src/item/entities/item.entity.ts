@@ -40,7 +40,7 @@ export class Item {
   @Column({ length: 40, nullable: true })
   userCode?: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   describe?: string;
 
   @Column('simple-json', { nullable: true })
