@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { CommonOutput } from './dtos/output.dto';
 
@@ -31,5 +31,11 @@ export class CommonController {
   async truncateDatabaseProcess(@Req() req): Promise<CommonOutput> {
     const id = req.headers['user-id'];
     return this.commonService.truncateUserDatabase(id);
+  }
+
+  @Post('test')
+  async createTestUsers(@Req() req, @Body() body: any): Promise<CommonOutput> {
+    const id = req.headers['user-id'];
+    return this.commonService.createTestUsers(id, body);
   }
 }

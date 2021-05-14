@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import {
   getDatabaseName,
   sendQuery,
+  sendQueryValues,
 } from './database/connection/mariadb.adapter';
 import { CommonOutput } from './dtos/output.dto';
+
 @Injectable()
 export class CommonService {
   async checkUser(id: string, pw: string): Promise<boolean> {
@@ -194,6 +196,16 @@ export class CommonService {
       ok: truncateResult.ok,
       message: `# TRUNCATE TABLES : ${userDBName}`,
       error: truncateResult.error,
+    };
+  }
+
+  async createTestUsers(id: string, values: any): Promise<CommonOutput> {
+    const userDBName = getDatabaseName(id);
+    const query = `INSERT INTO ${userDBName}.user (name, age, sex) VALUES (?, ?, ?)`;
+    const result = await sendQueryValues(query, values);
+    return {
+      ok: result.ok,
+      error: result.error,
     };
   }
 }
