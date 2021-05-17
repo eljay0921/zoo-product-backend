@@ -41,7 +41,7 @@ export class Item {
   userCode?: string;
 
   @Column({ type: 'longtext', nullable: true })
-  describe?: string;
+  description?: string;
 
   @Column('simple-json', { nullable: true })
   additionalInfo?: AdditionalInfo;

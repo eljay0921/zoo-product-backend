@@ -65,7 +65,7 @@ export class CommonService {
       \`price\` int(11) NOT NULL,
       \`count\` int(11) NOT NULL,
       \`userCode\` varchar(40) DEFAULT NULL,
-      \`describe\` longtext DEFAULT NULL,
+      \`description\` longtext DEFAULT NULL,
       \`additionalInfo\` text DEFAULT NULL,
       \`sellingItemInfo\` text DEFAULT NULL,
       \`createdAt\` datetime(6) NOT NULL DEFAULT current_timestamp(6),
